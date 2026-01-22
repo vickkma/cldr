@@ -1,25 +1,26 @@
 package org.unicode.cldr.util;
 
+import com.ibm.icu.impl.Row.R2;
+import com.ibm.icu.text.StringTransform;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.unicode.cldr.tool.LikelySubtags;
 import org.unicode.cldr.util.LanguageTagParser.OutputOption;
 import org.unicode.cldr.util.StandardCodes.LstrType;
 
-import com.ibm.icu.impl.Row.R2;
-import com.ibm.icu.text.StringTransform;
-
 public class LanguageTagCanonicalizer implements StringTransform {
 
     private static final SupplementalDataInfo info = SupplementalDataInfo.getInstance();
-    private static final LikelySubtags LIKELY_FAVOR_SCRIPT = new LikelySubtags(info.getLikelySubtags());
-    private static final LikelySubtags LIKELY_FAVOR_REGION = new LikelySubtags(info.getLikelySubtags()).setFavorRegion(true);
-    private static final Map<String, Map<String, R2<List<String>, String>>> ALIASES = info.getLocaleAliasInfo();
+    private static final LikelySubtags LIKELY_FAVOR_SCRIPT =
+            new LikelySubtags(info.getLikelySubtags());
+    private static final LikelySubtags LIKELY_FAVOR_REGION =
+            new LikelySubtags(info.getLikelySubtags()).setFavorRegion(true);
+    private static final Map<String, Map<String, R2<List<String>, String>>> ALIASES =
+            info.getLocaleAliasInfo();
 
     private final LikelySubtags likely;
 
@@ -28,38 +29,63 @@ public class LanguageTagCanonicalizer implements StringTransform {
     private final LanguageTagParser ltp1 = new LanguageTagParser();
     private final LanguageTagParser ltp2 = new LanguageTagParser();
 
+    /** Use a parameter to specify LIKELY_FAVOR_SCRIPT or no minimization */
     public LanguageTagCanonicalizer() {
         this(LstrType.script);
     }
 
+    @Deprecated
     public LanguageTagCanonicalizer(boolean favorRegion) {
         this(favorRegion ? LstrType.region : LstrType.script);
     }
 
-    public LanguageTagCanonicalizer(LstrType lstrType) {
-        switch(lstrType) {
-        case region: likely = LIKELY_FAVOR_REGION; break;
-        case script: likely = LIKELY_FAVOR_SCRIPT; break;
-        default: likely = null;
+    /**
+     * Choose the style of minimization, or null for none.
+     *
+     * @param minimizationTypeOrNull
+     */
+    public LanguageTagCanonicalizer(LstrType minimizationTypeOrNull) {
+        if (minimizationTypeOrNull == null) {
+            likely = null; // don't minimize.
+        } else {
+            switch (minimizationTypeOrNull) {
+                case region:
+                    likely = LIKELY_FAVOR_REGION;
+                    break;
+                case script:
+                    likely = LIKELY_FAVOR_SCRIPT;
+                    break;
+                default:
+                    likely = null;
+            }
         }
     }
 
     /**
-     * Convert a locale (language tag) into the canonical form.
-     * <br>Any invalid variant code is removed.
-     * <br>TODO: map invalid language tags to <unknown>, eg ZZ; drop invalid U or T extensions, convert ICU locale extensions to BCP47
+     * Convert a locale (language tag) into the canonical form. <br>
+     * Any invalid variant code is removed. <br>
+     * TODO: map invalid language tags to <unknown>, eg ZZ; drop invalid U or T extensions, convert
+     * ICU locale extensions to BCP47
      */
     // TODO, handle variants
     @Override
     public synchronized String transform(String locale) {
-        return transform (locale, OutputOption.ICU_LCVARIANT);
+        return transform(locale, OutputOption.ICU_LCVARIANT);
     }
+
     public synchronized String transform(String locale, OutputOption oo) {
         ltp1.set(locale);
 
-        copyFields2(LanguageTagField.language, getReplacement(LanguageTagField.language, LanguageTagField.language.get(ltp1), locale));
-        copyFields2(LanguageTagField.script, getReplacement(LanguageTagField.script, LanguageTagField.script.get(ltp1), locale));
-        copyFields2(LanguageTagField.region, getReplacement(LanguageTagField.region, LanguageTagField.region.get(ltp1), locale));
+        copyFields2(
+                LanguageTagField.language,
+                getReplacement(
+                        LanguageTagField.language, LanguageTagField.language.get(ltp1), locale));
+        copyFields2(
+                LanguageTagField.script,
+                getReplacement(LanguageTagField.script, LanguageTagField.script.get(ltp1), locale));
+        copyFields2(
+                LanguageTagField.region,
+                getReplacement(LanguageTagField.region, LanguageTagField.region.get(ltp1), locale));
 
         // special code for variants
 
@@ -89,7 +115,10 @@ public class LanguageTagCanonicalizer implements StringTransform {
     }
 
     private enum LanguageTagField {
-        language("language"), script("script"), region("territory"), variant("variant");
+        language("language"),
+        script("script"),
+        region("territory"),
+        variant("variant");
 
         private final Map<String, R2<List<String>, String>> replacements;
 
@@ -99,30 +128,30 @@ public class LanguageTagCanonicalizer implements StringTransform {
 
         private String get(LanguageTagParser parser) {
             switch (this) {
-            case language:
-                return parser.getLanguage();
-            case script:
-                return parser.getScript();
-            case region:
-                return parser.getRegion();
-            default:
-                throw new UnsupportedOperationException();
-                // case variant: return parser.getVariants();
+                case language:
+                    return parser.getLanguage();
+                case script:
+                    return parser.getScript();
+                case region:
+                    return parser.getRegion();
+                default:
+                    throw new UnsupportedOperationException();
+                    // case variant: return parser.getVariants();
             }
         }
 
-        /**
-         * Get the replacements, or the empty list if there are none.
-         */
+        /** Get the replacements, or the empty list if there are none. */
         private List<String> getReplacements(String field) {
-            final R2<List<String>, String> data = replacements.get(this == variant ? field.toUpperCase(Locale.ROOT) : field);
+            final R2<List<String>, String> data =
+                    replacements.get(this == variant ? field.toUpperCase(Locale.ROOT) : field);
             return data == null ? Collections.emptyList() : data.get0();
         }
     }
 
     /**
-     * Return the replacement value for the tagField (eg territory) in the field (eg "en") in languageTag.
-     * It special-cases cases where regions split, using likely subtags to get the best answer.
+     * Return the replacement value for the tagField (eg territory) in the field (eg "en") in
+     * languageTag. It special-cases cases where regions split, using likely subtags to get the best
+     * answer.
      */
     private String getReplacement(LanguageTagField tagField, String field, String languageTag) {
         String newField = null;
@@ -134,9 +163,13 @@ public class LanguageTagCanonicalizer implements StringTransform {
             if (list.size() > 1 && tagField == LanguageTagField.region) {
                 LanguageTagParser x = new LanguageTagParser().set(languageTag).setRegion("");
                 String max = LIKELY_FAVOR_REGION.maximize(x.toString());
-                String region = x.set(max).getRegion();
-                if (list.contains(region)) {
-                    newField = region;
+                if (max == null) {
+                    int debug = 0;
+                } else {
+                    String region = x.set(max).getRegion();
+                    if (list.contains(region)) {
+                        newField = region;
+                    }
                 }
             }
         }
@@ -147,8 +180,8 @@ public class LanguageTagCanonicalizer implements StringTransform {
      * Copy fields from one language tag into another.
      *
      * @param otherField
-     * @param mainField
-     *            - for this field, force a copy. For other fields, only copy if target is empty
+     * @param mainField - for this field, force a copy. For other fields, only copy if target is
+     *     empty
      */
     private void copyFields2(LanguageTagField mainField, String otherField) {
         if (otherField == null) {
@@ -169,9 +202,16 @@ public class LanguageTagCanonicalizer implements StringTransform {
 
     public void transform(LanguageTagParser ltp1) {
         String locale = ltp1.toString(OutputOption.BCP47);
-        copyFields2(LanguageTagField.language, getReplacement(LanguageTagField.language, LanguageTagField.language.get(ltp1), locale));
-        copyFields2(LanguageTagField.script, getReplacement(LanguageTagField.script, LanguageTagField.script.get(ltp1), locale));
-        copyFields2(LanguageTagField.region, getReplacement(LanguageTagField.region, LanguageTagField.region.get(ltp1), locale));
+        copyFields2(
+                LanguageTagField.language,
+                getReplacement(
+                        LanguageTagField.language, LanguageTagField.language.get(ltp1), locale));
+        copyFields2(
+                LanguageTagField.script,
+                getReplacement(LanguageTagField.script, LanguageTagField.script.get(ltp1), locale));
+        copyFields2(
+                LanguageTagField.region,
+                getReplacement(LanguageTagField.region, LanguageTagField.region.get(ltp1), locale));
 
         // special code for variants
 

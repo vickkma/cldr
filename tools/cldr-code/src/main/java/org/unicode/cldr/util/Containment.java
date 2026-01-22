@@ -1,5 +1,8 @@
 package org.unicode.cldr.util;
 
+import com.google.common.collect.Multimap;
+import com.ibm.icu.impl.Relation;
+import com.ibm.icu.util.TimeZone;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,20 +10,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Multimap;
-import com.ibm.icu.impl.Relation;
-import com.ibm.icu.util.TimeZone;
-
 public class Containment {
     private static final SupplementalDataInfo supplementalData = SupplementalDataInfo.getInstance();
-    static final Relation<String, String> containmentCore = supplementalData
-        .getContainmentCore();
+    static final Relation<String, String> containmentCore = supplementalData.getContainmentCore();
     static final Set<String> continents = containmentCore.get("001");
     static final Set<String> subcontinents;
+
     static {
         LinkedHashSet<String> temp = new LinkedHashSet<>();
         for (String continent : continents) {
@@ -28,19 +28,18 @@ public class Containment {
         }
         subcontinents = Collections.unmodifiableSet(temp);
     }
-    static final Relation<String, String> containmentFull = supplementalData
-        .getTerritoryToContained();
-    static final Relation<String, String> containedToContainer = Relation
-        .of(new HashMap<String, Set<String>>(),
-            HashSet.class)
-        .addAllInverted(containmentFull)
-        .freeze();
+
+    static final Relation<String, String> containmentFull =
+            supplementalData.getTerritoryToContained();
+    static final Relation<String, String> containedToContainer =
+            Relation.of(new HashMap<String, Set<String>>(), HashSet.class)
+                    .addAllInverted(containmentFull)
+                    .freeze();
 
     static final Relation<String, String> leavesToContainers;
+
     static {
-        leavesToContainers = Relation
-            .of(new HashMap<String, Set<String>>(),
-                HashSet.class);
+        leavesToContainers = Relation.of(new HashMap<String, Set<String>>(), HashSet.class);
         // for each container, get all of its leaf nodes
         Set<String> containers = supplementalData.getContainers();
         for (String s : containers) {
@@ -49,22 +48,26 @@ public class Containment {
             leavesToContainers.putAll(leaves, s);
         }
         leavesToContainers.freeze();
-//        for (Entry<String, Set<String>> e : leavesToContainers.keyValuesSet()) {
-//            System.out.println(e.getKey() + " " + e.getValue());
-//        }
+        //        for (Entry<String, Set<String>> e : leavesToContainers.keyValuesSet()) {
+        //            System.out.println(e.getKey() + " " + e.getValue());
+        //        }
     }
 
-    static final Relation<String, String> containedToContainerCore = Relation
-        .of(new HashMap<String, Set<String>>(),
-            HashSet.class)
-        .addAllInverted(containmentCore)
-        .freeze();
+    static final Relation<String, String> containedToContainerCore =
+            Relation.of(new HashMap<String, Set<String>>(), HashSet.class)
+                    .addAllInverted(containmentCore)
+                    .freeze();
     static final Map<String, Integer> toOrder = new LinkedHashMap<>();
     static int level = 0;
     static int order;
+
+    /** track whether any errors, such as loops, were detected */
+    public static boolean hadErrors = false;
+
     static {
         initOrder("001");
-        // Special cases. Cyprus is because it is in the wrong location because it gets picked up in the EU.
+        // Special cases. Cyprus is because it is in the wrong location because it gets picked up in
+        // the EU.
         resetOrder("003", "021");
         resetOrder("419", "005");
         resetOrder("CY", "BH");
@@ -103,14 +106,16 @@ public class Containment {
         if (containers == null) {
             containers = containedToContainer.get(territory);
         }
-        String container = containers != null
-            ? containers.iterator().next()
-            : territory.equals("001") ? "001" : "ZZ";
+        String container =
+                containers != null
+                        ? containers.iterator().next()
+                        : territory.equals("001") ? "001" : "ZZ";
         return container;
     }
 
     /**
      * Return all the containers, including deprecated.
+     *
      * @param territory
      * @return
      */
@@ -126,9 +131,9 @@ public class Containment {
     public static String getContinent(String territory) {
         while (true) {
             if (territory == null
-                || territory.equals("001")
-                || territory.equals("ZZ")
-                || continents.contains(territory)) {
+                    || territory.equals("001")
+                    || territory.equals("ZZ")
+                    || continents.contains(territory)) {
                 return territory;
             }
             String newTerritory = getContainer(territory);
@@ -148,9 +153,9 @@ public class Containment {
     public static String getSubcontinent(String territory) {
         while (true) {
             if (territory.equals("001")
-                || territory.equals("ZZ")
-                || continents.contains(territory)
-                || subcontinents.contains(territory)) {
+                    || territory.equals("ZZ")
+                    || continents.contains(territory)
+                    || subcontinents.contains(territory)) {
                 return territory;
             }
             territory = getContainer(territory);
@@ -187,6 +192,7 @@ public class Containment {
         // }
         final Integer oldOrder = toOrder.get(oldTerritory);
         if (oldOrder == null) {
+            hadErrors = true;
             throw new IllegalArgumentException(oldTerritory + " not yet defined");
         }
         toOrder.put(newTerritory, oldOrder);
@@ -202,12 +208,44 @@ public class Containment {
 
     public static Set<List<String>> getAllDirected(Multimap<String, String> multimap, String lang) {
         LinkedHashSet<List<String>> result = new LinkedHashSet<>();
-        getAllDirected(multimap, lang, new ArrayList<String>(), result);
+        getAllDirected(
+                multimap,
+                lang,
+                new ArrayList<String>(),
+                result,
+                new LinkedList<String>(),
+                new HashSet<String>());
         return result;
     }
 
-    private static void getAllDirected(Multimap<String, String> multimap, String lang, ArrayList<String> target, Set<List<String>> targets) {
-        target.add(lang);
+    private static void getAllDirected(
+            Multimap<String, String> multimap,
+            String lang,
+            ArrayList<String> target,
+            Set<List<String>> targets,
+            List<String> depth,
+            Set<String> loops) {
+        int alreadySawThis = depth.indexOf(lang);
+        if (alreadySawThis != -1) {
+            hadErrors = true;
+            if (loops.add(lang)) {
+                System.err.println(
+                        "WARNING: CLDR-15020 getAllDirected(): Loops Detected: "
+                                + String.join(" -> ", depth)
+                                + " -> "
+                                + lang);
+            } // else: already reported it.
+            return;
+        } else {
+            depth.add(lang);
+        }
+        if (!target.add(lang)) {
+            hadErrors = true;
+            throw new StackOverflowError("Error: Saw " + lang + " multiple times in this target.");
+        } else if (depth.size() > 999) {
+            hadErrors = true;
+            throw new StackOverflowError("Error: Too deep getting " + lang);
+        }
         Collection<String> parents = multimap.get(lang);
         int size = parents.size();
         if (size == 0) {
@@ -215,24 +253,34 @@ public class Containment {
         } else if (size == 1) {
             for (String parent : parents) {
                 if (parent.equals(lang)) {
-                    System.err.println("ERR: "+ lang + " is its own parent");
+                    hadErrors = true;
+                    System.err.println("ERR: " + lang + " is its own parent");
                 } else {
-                    getAllDirected(multimap, parent, target, targets);
+                    getAllDirected(multimap, parent, target, targets, depth, loops);
                 }
             }
         } else {
             for (String parent : parents) {
                 if (parent.equals(lang)) {
-                    System.err.println("ERR: "+ lang + " is its own parent");
+                    hadErrors = true;
+                    System.err.println("ERR: " + lang + " is its own parent");
                 } else {
-                    getAllDirected(multimap, parent, (ArrayList<String>) target.clone(), targets);
+                    getAllDirected(
+                            multimap,
+                            parent,
+                            (ArrayList<String>) target.clone(),
+                            targets,
+                            depth,
+                            loops);
                 }
             }
         }
+        depth.remove(lang); // pop stack
     }
 
     /**
      * For each leaf region (eg "CO"), return all containers [019, 419, 005, 001]
+     *
      * @param leaf
      * @return
      */

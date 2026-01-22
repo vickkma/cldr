@@ -1,10 +1,16 @@
 package org.unicode.cldr.test;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.unicode.cldr.test.CheckCLDR.CheckStatus;
 import org.unicode.cldr.test.CheckCLDR.Options;
 import org.unicode.cldr.util.CLDRConfig;
@@ -15,67 +21,79 @@ import org.unicode.cldr.util.Factory;
 import org.unicode.cldr.util.Pair;
 import org.unicode.cldr.util.XMLSource;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.ImmutableList;
-
 /**
- * Caches tests and examples
- * Call XMLSource.addListener() on the instance to notify it of changes to the XMLSource.
+ * Caches tests and examples Call XMLSource.addListener() on the instance to notify it of changes to
+ * the XMLSource.
  *
  * @author srl
  * @see XMLSource#addListener(org.unicode.cldr.util.XMLSource.Listener)
  */
 public class TestCache implements XMLSource.Listener {
+    private static final Logger logger = Logger.getLogger(TestCache.class.getSimpleName());
+
     public class TestResultBundle {
-        final private CheckCLDR cc = CheckCLDR.getCheckAll(getFactory(), nameMatcher);
+        private final CheckCLDR cc = CheckCLDR.getCheckAll(getFactory(), nameMatcher);
         final CLDRFile file;
-        final private CheckCLDR.Options options;
-        final private ConcurrentHashMap<Pair<String, String>, List<CheckStatus>> pathCache;
-        final protected List<CheckStatus> possibleProblems = new ArrayList<>();
+        private final CheckCLDR.Options options;
+        private final ConcurrentHashMap<Pair<String, String>, List<CheckStatus>> pathCache;
+        protected final List<CheckStatus> possibleProblems = new ArrayList<>();
 
         protected TestResultBundle(CheckCLDR.Options cldrOptions) {
             options = cldrOptions;
             pathCache = new ConcurrentHashMap<>();
             file = getFactory().make(options.getLocale().getBaseName(), true);
-            cc.setCldrFileToCheck(file, options, possibleProblems);
+            synchronized (cc) {
+                cc.setCldrFileToCheck(file, options, possibleProblems);
+            }
         }
 
         /**
-         * Check the given value for the given path, using this TestResultBundle for
-         * options, pathCache and cc (CheckCLDR).
+         * Check the given value for the given path, using this TestResultBundle for options,
+         * pathCache and cc (CheckCLDR).
          *
          * @param path the path
-         * @param result the list to which CheckStatus objects may be added; this function
-         *               clears any objects that might already be in it
+         * @param result the list to which CheckStatus objects may be added; this function clears
+         *     any objects that might already be in it
          * @param value the value to be checked
          */
-         public void check(String path, List<CheckStatus> result, String value) {
-             /*
-              * result.clear() is needed to avoid phantom warnings in the Info Panel, if we're called
-              * with non-empty result (leftover from another row) and we get cachedResult != null.
-              * cc.check() also calls result.clear() (at least as of 2018-11-20) so in that case it's
-              * currently redundant here. Clear it here unconditionally to be sure.
-              */
-             result.clear();
-             Pair<String, String> key = new Pair<>(path, value);
-             List<CheckStatus> cachedResult = pathCache.get(key);
-             if (cachedResult != null) {
-                 result.addAll(cachedResult);
-             }
-             else {
-                 cc.check(path, file.getFullXPath(path), value, options, result);
-                 pathCache.put(key, ImmutableList.copyOf(result));
-             }
-         }
+        public void check(String path, List<CheckStatus> result, String value) {
+            /*
+             * result.clear() is needed to avoid phantom warnings in the Info Panel, if we're called
+             * with non-empty result (leftover from another row) and we get cachedResult != null.
+             * cc.check() also calls result.clear() (at least as of 2018-11-20) so in that case it's
+             * currently redundant here. Clear it here unconditionally to be sure.
+             */
+            result.clear();
+            Pair<String, String> key = new Pair<>(path, value);
+            List<CheckStatus> cachedResult =
+                    pathCache.computeIfAbsent(
+                            key,
+                            (Pair<String, String> k) -> {
+                                List<CheckStatus> l = new ArrayList<CheckStatus>();
+                                synchronized (cc) {
+                                    cc.check(
+                                            k.getFirst(),
+                                            file.getFullXPath(k.getFirst()),
+                                            k.getSecond(),
+                                            options,
+                                            l);
+                                }
+                                return l;
+                            });
+            if (cachedResult != null) {
+                result.addAll(cachedResult);
+            }
+        }
 
-         public void getExamples(String path, String value, List<CheckStatus> result) {
-             cc.getExamples(path, file.getFullXPath(path), value, options, result);
-         }
+        public void getExamples(String path, String value, List<CheckStatus> result) {
+            synchronized (cc) {
+                cc.getExamples(path, file.getFullXPath(path), value, options, result);
+            }
+        }
 
-         public List<CheckStatus> getPossibleProblems() {
-             return possibleProblems;
-         }
+        public List<CheckStatus> getPossibleProblems() {
+            return possibleProblems;
+        }
     }
 
     private static final boolean DEBUG = false;
@@ -85,61 +103,69 @@ public class TestCache implements XMLSource.Listener {
      * evaluate why the fallback 12 for CLDR_TESTCACHE_SIZE is appropriate or too small. Consider not
      * using maximumSize() at all, depending on softValues() instead to garbage collect only when needed.
      */
-    private Cache<CheckCLDR.Options, TestResultBundle> testResultCache = CacheBuilder.newBuilder().maximumSize(CLDRConfig.getInstance()
-        .getProperty("CLDR_TESTCACHE_SIZE", 12)).softValues().build();
+    private LoadingCache<CheckCLDR.Options, TestResultBundle> testResultCache =
+            CacheBuilder.newBuilder()
+                    .maximumSize(CLDRConfig.getInstance().getProperty("CLDR_TESTCACHE_SIZE", 12))
+                    .softValues()
+                    .build(
+                            new CacheLoader<CheckCLDR.Options, TestResultBundle>() {
 
-    private Factory factory = null;
+                                @Override
+                                public TestResultBundle load(Options key) throws Exception {
+                                    return new TestResultBundle(key);
+                                }
+                            });
 
-    private String nameMatcher = null;
+    private final Factory factory;
 
-    /**
-     * Get the bundle for this test
-     */
-    public TestResultBundle getBundle(CheckCLDR.Options options) {
-        TestResultBundle b = testResultCache.getIfPresent(options);
-        if (DEBUG) {
-             if (b != null) {
-                 System.err.println("Bundle refvalid: " + options + " -> " + (b != null));
-             }
-             System.err.println("Bundle " + b + " for " + options + " in " + this.toString());
-         }
-         if (b == null) {
-             // ElapsedTimer et = new ElapsedTimer("New test bundle " + locale + " opt " + options);
-             b = new TestResultBundle(options);
-             // System.err.println(et.toString());
-             testResultCache.put(options, b);
-         }
-         return b;
+    private String nameMatcher = ".*";
+
+    /** Get the bundle for this test */
+    public TestResultBundle getBundle(final CheckCLDR.Options options) {
+        TestResultBundle b;
+        try {
+            b = testResultCache.get(options);
+        } catch (ExecutionException e) {
+            logger.log(Level.SEVERE, e, () -> "Failed to load " + options);
+            throw new RuntimeException(e);
+        }
+        return b;
     }
 
     protected Factory getFactory() {
         return factory;
     }
 
-    /**
-     * Set up the basic info needed for tests
-     *
-     * @param factory
-     * @param nameMatcher
-     * @param displayInformation
-     */
-    public void setFactory(Factory factory, String nameMatcher) {
-        if (this.factory != null) {
-            throw new InternalError("setFactory() can only be called once.");
-        }
-        this.factory = factory;
+    /** construct a new TestCache with this factory. Intended for use from within Factory. */
+    public TestCache(Factory f) {
+        this.factory = f;
+        logger.fine(() -> toString() + " - init(" + f + ")");
+    }
+
+    /** Change which checks are run. Invalidates all caches. */
+    public void setNameMatcher(String nameMatcher) {
+        logger.finest(() -> toString() + " - setNameMatcher(" + nameMatcher + ")");
         this.nameMatcher = nameMatcher;
+        invalidateAllCached();
     }
 
     /**
      * Convert this TestCache to a string
      *
-     * Used only for debugging?
+     * <p>Used only for debugging?
      */
     @Override
     public String toString() {
         StringBuilder stats = new StringBuilder();
-        stats.append("{" + this.getClass().getSimpleName() + super.toString() + " Size: " + testResultCache.size() + " (");
+        stats.append(
+                "{"
+                        + this.getClass().getSimpleName()
+                        + super.toString()
+                        + " F="
+                        + factory.getClass().getSimpleName()
+                        + " Size: "
+                        + testResultCache.size()
+                        + " (");
         int good = 0;
         int total = 0;
         for (Entry<Options, TestResultBundle> k : testResultCache.asMap().entrySet()) {
@@ -172,16 +198,14 @@ public class TestCache implements XMLSource.Listener {
     /**
      * Update the caches as needed, given that the value has changed for this xpath and locale.
      *
-     * Called by valueChanged(String xpath, XMLSource source),
-     * and also calls itself recursively for sublocales
+     * <p>Called by valueChanged(String xpath, XMLSource source), and also calls itself recursively
+     * for sublocales
      *
      * @param xpath the xpath
      * @param locale the CLDRLocale
      */
     private void valueChangedInvalidateRecursively(String xpath, final CLDRLocale locale) {
-        if (DEBUG) {
-            System.err.println("BundDelLoc " + locale + " @ " + xpath);
-        }
+        logger.finer(() -> "BundDelLoc " + locale + " @ " + xpath);
         /*
          * Call self recursively for all sub-locales
          */
@@ -203,10 +227,10 @@ public class TestCache implements XMLSource.Listener {
      *
      * @param xpath the xpath whose value has changed
      * @param locale the CLDRLocale
-     *
-     * Called by valueChangedInvalidateRecursively
+     *     <p>Called by valueChangedInvalidateRecursively
      */
-    private void updateTestResultCache(@SuppressWarnings("unused") String xpath, CLDRLocale locale) {
+    private void updateTestResultCache(
+            @SuppressWarnings("unused") String xpath, CLDRLocale locale) {
         if (!testResultCache.asMap().isEmpty()) {
             // Filter the testResultCache to only remove the items where the locale matches
             List<Options> toRemove = new ArrayList<>();
@@ -231,44 +255,42 @@ public class TestCache implements XMLSource.Listener {
     /**
      * Per-locale testResultCache of ExampleGenerator objects
      *
-     * Re-use the TestCache implementation of XMLSource.Listener for ExampleGenerator
-     * objects in addition to TestResultBundle objects. The actual caches are distinct,
-     * only the Listener interface is shared.
+     * <p>Re-use the TestCache implementation of XMLSource.Listener for ExampleGenerator objects in
+     * addition to TestResultBundle objects. The actual caches are distinct, only the Listener
+     * interface is shared.
      *
-     * ExampleGenerator objects are for generating examples, rather than for
-     * checking validity, unlike other TestCache-related objects such as TestResultBundle.
-     * Still, ExampleGenerator has similar dependence on locales, paths, and values, and
-     * needs similar treatment for caching and performance. ExampleGenerator is in the
-     * same package ("test") as TestCache.
+     * <p>ExampleGenerator objects are for generating examples, rather than for checking validity,
+     * unlike other TestCache-related objects such as TestResultBundle. Still, ExampleGenerator has
+     * similar dependence on locales, paths, and values, and needs similar treatment for caching and
+     * performance. ExampleGenerator is in the same package ("test") as TestCache.
      *
-     * There are currently unused (?) files Registerable.java and LocaleChangeRegistry.java
-     * that appear to have been intended for a similar purpose. They are in the web package.
+     * <p>There are currently unused (?) files Registerable.java and LocaleChangeRegistry.java that
+     * appear to have been intended for a similar purpose. They are in the web package.
      *
-     * Reference: https://unicode-org.atlassian.net/browse/CLDR-12020
+     * <p>Reference: https://unicode-org.atlassian.net/browse/CLDR-12020
      */
-    private static Cache<String, ExampleGenerator> exampleGeneratorCache = CacheBuilder.newBuilder().softValues().build();
+    private static Cache<String, ExampleGenerator> exampleGeneratorCache =
+            CacheBuilder.newBuilder().softValues().build();
 
     /**
      * Get an ExampleGenerator for the given locale, etc.
      *
-     * Use a cache for performance.
+     * <p>Use a cache for performance.
      *
      * @param locale the CLDRLocale
      * @param ourSrc the CLDRFile for the locale
      * @param translationHintsFile the CLDRFile for translation hints (English)
-     * @param englishPath (a.k.a. supplementalDataDirectory)
      * @return the ExampleGenerator
-     *
-     * Called by DataSection.make for use in SurveyTool.
-     *
-     * Note: other objects also have functions named "getExampleGenerator":
-     * org.unicode.cldr.unittest.TestExampleGenerator.getExampleGenerator(String)
-     * org.unicode.cldr.test.ConsoleCheckCLDR.getExampleGenerator()
+     *     <p>Called by DataPage.make for use in SurveyTool.
+     *     <p>Note: other objects also have functions named "getExampleGenerator":
+     *     org.unicode.cldr.unittest.TestExampleGenerator.getExampleGenerator(String)
+     *     org.unicode.cldr.test.ConsoleCheckCLDR.getExampleGenerator()
      */
-    public static ExampleGenerator getExampleGenerator(CLDRLocale locale, CLDRFile ourSrc, CLDRFile translationHintsFile, String englishPath) {
+    public static ExampleGenerator getExampleGenerator(
+            CLDRLocale locale, CLDRFile ourSrc, CLDRFile translationHintsFile) {
         boolean egCacheIsEnabled = true;
         if (!egCacheIsEnabled) {
-            return new ExampleGenerator(ourSrc, translationHintsFile, englishPath);
+            return new ExampleGenerator(ourSrc, translationHintsFile);
         }
         /*
          * TODO: consider get(locString, Callable) instead of getIfPresent and put.
@@ -276,10 +298,10 @@ public class TestCache implements XMLSource.Listener {
         String locString = locale.toString();
         ExampleGenerator eg = exampleGeneratorCache.getIfPresent(locString);
         if (eg == null) {
-            synchronized(exampleGeneratorCache) {
+            synchronized (exampleGeneratorCache) {
                 eg = exampleGeneratorCache.getIfPresent(locString);
                 if (eg == null) {
-                    eg = new ExampleGenerator(ourSrc, translationHintsFile, englishPath);
+                    eg = new ExampleGenerator(ourSrc, translationHintsFile);
                     exampleGeneratorCache.put(locString, eg);
                 }
             }
@@ -292,8 +314,7 @@ public class TestCache implements XMLSource.Listener {
      *
      * @param xpath the xpath whose value has changed
      * @param locale the CLDRLocale determining which ExampleGenerator to update
-     *
-     * Called by valueChangedInvalidateRecursively
+     *     <p>Called by valueChangedInvalidateRecursively
      */
     private static void updateExampleGeneratorCache(String xpath, CLDRLocale locale) {
         ExampleGenerator eg = exampleGeneratorCache.getIfPresent(locale.toString());
@@ -311,10 +332,9 @@ public class TestCache implements XMLSource.Listener {
         }
     }
 
-    /**
-     * For tests. Invalidate cache.
-     */
+    /** Public for tests. Invalidate cache. */
     public void invalidateAllCached() {
+        logger.fine(() -> toString() + " - invalidateAllCached()");
         testResultCache.invalidateAll();
         exampleGeneratorCache.invalidateAll();
     }

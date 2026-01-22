@@ -5,7 +5,7 @@
         Locale: {{ locale }}
         <span v-if="rowData"> ({{ rowData.localeDisplayName }}) </span>
       </p>
-      <p v-if="xpath">XPath: {{ xpath }}</p>
+      <p v-if="xpstrid">XPath: {{ xpstrid }}</p>
       <p v-if="page">Page: {{ page }}</p>
       <a-spin v-if="!rowData" delay="1000" tip="Loading Locale Data" />
       <span v-if="rowData.isReadOnly"
@@ -24,7 +24,7 @@
           <th title="Other non-winning items">Others</th>
         </tr>
       </thead>
-      <tbody v-for="row in rowData.rows" :key="row.xpath">
+      <tbody v-for="row in rowData.rows" :key="row.xpstrid">
         <CldrRow :row="row" :locale="locale" />
       </tbody>
     </table>
@@ -33,12 +33,13 @@
 
 <script>
 import CldrRow from "./CldrRow.vue";
+import * as cldrStatus from "../esm/cldrStatus.mjs";
 
 export default {
   components: {
     CldrRow,
   },
-  props: ["locale", "xpath", "page"],
+  props: ["locale", "xpstrid", "page"],
   data: function () {
     return {
       rowData: {},
@@ -48,14 +49,14 @@ export default {
     let theUrl;
     if (this.page) {
       theUrl = `api/voting/${this.locale}/page/${this.page}`;
-    } else if (this.xpath) {
-      theUrl = `api/voting/${this.locale}/row/${this.xpath}`;
+    } else if (this.xpstrid) {
+      theUrl = `api/voting/${this.locale}/row/${this.xpstrid}`;
     } else {
-      throw Error(`Need xpath= or page= to continue.`);
+      throw new Error(`Need xpstrid= or page= to continue.`);
     }
     fetch(theUrl, {
       headers: {
-        "X-SurveyTool-Session": this.$cldrOpts.sessionId,
+        "X-SurveyTool-Session": cldrStatus.getSessionId(),
       },
     })
       .then((r) => r.json())

@@ -1,102 +1,177 @@
 package org.unicode.cldr.web.api;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
-
+import javax.json.bind.spi.JsonbProvider;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
 import org.unicode.cldr.test.CheckCLDR;
 import org.unicode.cldr.test.CheckCLDR.CheckStatus;
 import org.unicode.cldr.test.CheckCLDR.CheckStatus.Subtype;
 import org.unicode.cldr.test.CheckForCopy;
 import org.unicode.cldr.test.DisplayAndInputProcessor;
 import org.unicode.cldr.test.TestCache.TestResultBundle;
-import org.unicode.cldr.util.CLDRConfig;
-import org.unicode.cldr.util.CLDRFile;
+import org.unicode.cldr.util.*;
 import org.unicode.cldr.util.CLDRInfo.CandidateInfo;
 import org.unicode.cldr.util.CLDRInfo.UserInfo;
-import org.unicode.cldr.util.CLDRLocale;
-import org.unicode.cldr.util.CldrUtility;
-import org.unicode.cldr.util.PatternPlaceholders;
 import org.unicode.cldr.util.PathHeader.PageId;
-import org.unicode.cldr.util.SupplementalDataInfo;
-import org.unicode.cldr.web.BallotBox;
+import org.unicode.cldr.web.*;
 import org.unicode.cldr.web.BallotBox.VoteNotAcceptedException;
-import org.unicode.cldr.web.CookieSession;
-import org.unicode.cldr.web.DataSection;
-import org.unicode.cldr.web.DataSection.DataRow;
-import org.unicode.cldr.web.DataSection.DataRow.CandidateItem;
-import org.unicode.cldr.web.STFactory;
+import org.unicode.cldr.web.DataPage.DataRow;
+import org.unicode.cldr.web.DataPage.DataRow.CandidateItem;
 import org.unicode.cldr.web.SurveyException.ErrorCode;
-import org.unicode.cldr.web.SurveyLog;
-import org.unicode.cldr.web.SurveyMain;
-import org.unicode.cldr.web.UserRegistry;
 import org.unicode.cldr.web.UserRegistry.User;
-import org.unicode.cldr.web.XPathMatcher;
-import org.unicode.cldr.web.XPathTable;
+import org.unicode.cldr.web.api.VoteAPI.EntireLocaleStatusResponse;
 import org.unicode.cldr.web.api.VoteAPI.RowResponse;
 import org.unicode.cldr.web.api.VoteAPI.RowResponse.Row.Candidate;
 import org.unicode.cldr.web.api.VoteAPI.VoteResponse;
 
-import com.ibm.icu.util.Output;
-
 /**
- * Note: The functions in this class needed to be separated from VoteAPI because of static init problems.
- *
- * As of 2022-04-07, this class hasn't been used yet, except for testing in conjunction
- * with CldrRows.vue and CldrRow.vue. This is intended to be a modernized replacement
- * for SurveyAjax.getRow (WHAT_GETROW). It isn't ready to be used since it doesn't produce
- * json compatible with the front end. References:
- * https://unicode-org.atlassian.net/browse/CLDR-15368
- * https://unicode-org.atlassian.net/browse/CLDR-15403
+ * Note: The functions in this class needed to be separated from VoteAPI because of static init
+ * problems.
  */
 public class VoteAPIHelper {
-    public static final class VoteEntry {
-        public Object userid;
-        public int votes;
-        public Integer override = null;
+    private static final boolean DEBUG_SERIALIZATION = false;
 
-        public VoteEntry(int id, int votes, Integer override) {
-            this.userid = id;
-            this.votes = votes;
-            this.override = override;
+    public static final class VoteEntry {
+        public final VoteDetails voteDetails;
+        public final String userid;
+        public final int votes;
+
+        // TODO: CLDR-16829 remove these fields, and all 'redacted' parameters in this file.
+        public final String email;
+        public final VoteResolver.Level level;
+        public final String name;
+        public final String org;
+
+        public VoteEntry(User u, VoteDetails voteDetails, boolean redacted) {
+            this.level = u.getLevel();
+            this.org = u.getOrganization().toString();
+            this.voteDetails = voteDetails;
+            this.userid = Integer.toString(u.id);
+            this.votes = u.getVoteCount();
+            if (!redacted) {
+                this.email = u.email.replace("@", " (at) ");
+                this.name = u.name;
+            } else {
+                this.email = "(hidden)";
+                this.name = "User#" + userid;
+            }
         }
     }
 
-    static final boolean DEBUG = false;
+    /**
+     * Details about a single voting event, for use on the front end
+     *
+     * <p>This is a subset of the data included in STFactory.PerLocaleData.PerXPathData.PerUserData.
+     */
+    public static final class VoteDetails {
+
+        /** This user's override strength for this vote */
+        public Integer override;
+
+        /** The type of vote */
+        public VoteType voteType;
+
+        /** How many days ago the vote occurred */
+        public final long daysAgo;
+
+        public VoteDetails(Integer override, VoteType voteType, Date date) {
+            this.override = override;
+            this.voteType = voteType;
+            this.daysAgo = TimeDiff.daysSinceDate(date);
+        }
+    }
+
     static final Logger logger = SurveyLog.forClass(VoteAPIHelper.class);
 
-    private static class ArgsForGet {
+    public static class ArgsForGet {
         String localeId;
         String sessionId;
         String page = null;
-        String xpath = null;
+        String autoPage = null;
+        public String xpstrid = null;
         Boolean getDashboard = false;
 
         public ArgsForGet(String loc, String session) {
-            this.localeId = loc;
+            this.localeId = UserRegistry.substituteUserWildcardLocale(loc, session);
             this.sessionId = session;
         }
     }
 
-    static Response handleGetOneRow(String loc, String session, String xpath, Boolean getDashboard) {
+    static Response handleGetOneRow(
+            String loc, String session, String xpstrid, Boolean getDashboard) {
         ArgsForGet args = new ArgsForGet(loc, session);
-        args.xpath = xpath;
+        args.xpstrid = xpstrid;
         args.getDashboard = getDashboard;
         return handleGetRows(args);
     }
 
-    static Response handleGetOnePage(String loc, String session, String page) {
+    static Response handleGetLocaleErrors(String loc) {
+        final SurveyMain sm = CookieSession.sm;
+        final CLDRLocale locale = CLDRLocale.getInstance(loc);
+        final STFactory factory = sm.getSTFactory();
+        if (!factory.getAvailableCLDRLocales().contains(locale)) {
+            // locale not found
+            return Response.status(404).build();
+        }
+
+        TestResultBundle test = factory.getTestResult(locale, DataPage.getSimpleOptions(locale));
+
+        CLDRFile cldrFile = factory.make(locale, true);
+
+        if (test != null) {
+            EntireLocaleStatusResponse resp = new VoteAPI.EntireLocaleStatusResponse();
+
+            // add any 'early' errors
+            resp.addAll(test.getPossibleProblems());
+
+            // add all non-path status
+            for (final String x : cldrFile) {
+                List<CheckStatus> result = new ArrayList<>();
+                test.check(x, result, cldrFile.getStringValue(x));
+                for (final CheckStatus s : result) {
+                    if (s.getEntireLocale()) resp.add(s);
+                }
+            }
+
+            if (resp.isEmpty()) {
+                // nothing.
+                return Response.noContent().build();
+            }
+
+            return Response.ok(resp).build();
+        } else {
+            return Response.status(500, "could not load test data").build();
+        }
+    }
+
+    static Response handleGetOnePage(String loc, String session, String page, String xpstrid) {
         ArgsForGet args = new ArgsForGet(loc, session);
-        args.page = page;
+        if (xpstrid != null && !xpstrid.isEmpty()) {
+            // Note: autoPage may be used if page is "auto" or if page is unrecognized.
+            // Sometimes a row is bookmarked and the page name changes, but xpstrid is still valid,
+            // and the bookmark can still be used.
+            args.autoPage = getPageFromXpathStringId(xpstrid);
+        }
+        args.page = "auto".equals(page) ? args.autoPage : page;
         return handleGetRows(args);
+    }
+
+    private static String getPageFromXpathStringId(String xpstrid) {
+        try {
+            String xpath = CookieSession.sm.xpt.getByStringID(xpstrid);
+            if (xpath != null) {
+                PathHeader ph = CookieSession.sm.getSTFactory().getPathHeader(xpath);
+                if (ph != null) {
+                    return ph.getPageId().name();
+                }
+            }
+        } catch (Throwable t) {
+            return null;
+        }
+        return null;
     }
 
     private static Response handleGetRows(ArgsForGet args) {
@@ -107,191 +182,408 @@ public class VoteAPIHelper {
             return Auth.noSessionResponse();
         }
         try {
-            final RowResponse r = new RowResponse();
-            XPathMatcher matcher = null;
-            PageId pageId = null;
-            String xp = null;
-
-            if (args.xpath == null && args.page != null) {
-                try {
-                    pageId = PageId.valueOf(args.page);
-                } catch (IllegalArgumentException iae) {
-                    return Response.status(404).entity(new STError(ErrorCode.E_BAD_SECTION)).build();
-                }
-                if (pageId != null && pageId.getSectionId() == org.unicode.cldr.util.PathHeader.SectionId.Special) {
-                    return new STError(ErrorCode.E_SPECIAL_SECTION, "Items not visible - page " + pageId + " section " + pageId.getSectionId()).build();
-                }
-                r.pageId = pageId.name();
-            } else if (args.xpath != null && args.page == null) {
-                xp = sm.xpt.getByStringID(args.xpath);
-                if (xp == null) {
-                    return Response.status(404).entity(new STError(ErrorCode.E_BAD_XPATH)).build();
-                }
-                matcher = XPathMatcher.getMatcherForString(xp); // single string
-            } else {
-                // Should not get here.
-                return new STError(ErrorCode.E_INTERNAL, "handleGetRows: need xpath or page, but not both").build();
-            }
-            final DataSection pageData = DataSection.make(pageId, null, mySession, locale, xp, matcher);
-            pageData.setUserForVotelist(mySession.user);
-
-            // don't return default content
-            CLDRLocale dcParent = SupplementalDataInfo.getInstance().getBaseFromDefaultContent(locale);
-            if (dcParent != null) {
-                r.dcParent = dcParent.getBaseName();
-            } else {
-                r.isReadOnly = STFactory.isReadOnlyLocale(locale);
-                r.localeDisplayName = locale.getDisplayName();
-                r.rows = calculateRows(pageData.getAll());
-            }
-            if (args.getDashboard) {
-                /*
-                 * TODO: implement single-path dashboard in this modern-api context
-                 * See existing implementation in SurveyAjax.java, Dashboard.java
-                 * Reference: https://unicode-org.atlassian.net/browse/CLDR-15368
-                 */
-                return new STError(ErrorCode.E_INTERNAL, "handleGetRows: single-path dashboard not implemented yet").build();
-            }
+            /* if true, hide emails. TODO: CLDR-16829 remove this parameter */
+            final boolean redacted =
+                    ((mySession.user == null) || (!mySession.user.getLevel().isGuestOrStronger()));
+            final RowResponse r = getRowsResponse(args, sm, locale, mySession, redacted);
             return Response.ok(r).build();
         } catch (Throwable t) {
-            SurveyLog.logException(logger, t, "Trying to load " + args.localeId + " / " + args.xpath);
-            return new STError(t).build(); // 500
+            t.printStackTrace();
+            if (!(t instanceof SurveyException
+                    && ((SurveyException) t).getErrCode() != ErrorCode.E_INTERNAL)) {
+                // log unknown or internal errs
+                SurveyLog.logException(
+                        logger, t, "Trying to load " + args.localeId + " / " + args.xpstrid);
+            }
+            return new STError(t).build();
         }
     }
 
-    private static RowResponse.Row[] calculateRows(Collection<DataRow> all) {
-        List<RowResponse.Row> list = new LinkedList<>();
+    public static RowResponse getRowsResponse(
+            ArgsForGet args,
+            final SurveyMain sm,
+            final CLDRLocale locale,
+            final CookieSession mySession,
+            final boolean redacted)
+            throws SurveyException {
+        final RowResponse r = new RowResponse();
+        XPathMatcher matcher = null;
+        PageId pageId = null;
+        String xp = null;
+
+        if (args.page != null || args.autoPage != null) {
+            // Give priority to autoPage (derived from path) if it's valid. For a bookmarked
+            // page+path, the user most likely wants the specific path, which may have moved from
+            // one page to another.
+            if (args.autoPage != null) {
+                pageId = PageId.fromStringCompatible(args.autoPage);
+            }
+            if (pageId == null && args.page != null) {
+                pageId = PageId.fromStringCompatible(args.page);
+            }
+            if (pageId == null) {
+                throw new SurveyException(ErrorCode.E_BAD_SECTION);
+            }
+            if (pageId.getSectionId() == org.unicode.cldr.util.PathHeader.SectionId.Special) {
+                throw new SurveyException(
+                        ErrorCode.E_SPECIAL_SECTION,
+                        "Items not visible - page " + pageId + " section " + pageId.getSectionId());
+            }
+            r.pageId = pageId.name();
+        } else if (args.xpstrid != null) {
+            xp = sm.xpt.getByStringID(args.xpstrid);
+            if (xp == null) {
+                throw new SurveyException(ErrorCode.E_BAD_XPATH);
+            }
+            matcher = XPathMatcher.exactMatcherForString(xp);
+        } else {
+            // Should not get here. but could be a 'not acceptable'
+            throw new SurveyException(
+                    ErrorCode.E_INTERNAL, // or E_BAD_XPATH?
+                    "handleGetRows: need xpstrid or page");
+        }
+        final DataPage pageData = DataPage.make(pageId, mySession, locale, xp, matcher, null);
+        pageData.setUserForVotelist(mySession.user);
+        r.page = new RowResponse.Page();
+        if (args.xpstrid != null) {
+            r.setOneRowPath(args.xpstrid);
+        }
+
+        // don't return default content
+        CLDRLocale dcParent = SupplementalDataInfo.getInstance().getBaseFromDefaultContent(locale);
+        if (dcParent != null) {
+            r.dcParent = dcParent.getBaseName();
+            r.page.nocontent = true;
+        } else {
+            r.canModify = UserRegistry.userCanModifyLocale(mySession.user, locale);
+            r.loc = locale.getBaseName();
+            r.localeDisplayName = locale.getDisplayName();
+            r.page.nocontent = false;
+            Collection<DataRow> dataRows = pageData.getAll();
+            r.page.rows = makePageRows(dataRows, redacted);
+            if (args.page != null) {
+                r.displaySets = makeDisplaySets(dataRows);
+            }
+        }
+        if (args.getDashboard) {
+            r.notifications = getOnePathDash(XPathTable.xpathToBaseXpath(xp), locale, mySession);
+        }
+        if (DEBUG_SERIALIZATION) {
+            debugSerialization(r, args);
+        }
+        return r;
+    }
+
+    private static void debugSerialization(RowResponse r, ArgsForGet args) {
+        try {
+            JsonbProvider.provider().create().build().toJson(r, new PrintWriter(System.out));
+        } catch (Throwable t) {
+            t.printStackTrace();
+            SurveyLog.logException(
+                    logger, t, "DEBUG_SERIALIZATION: " + args.localeId + " / " + args.xpstrid);
+        }
+    }
+
+    private static RowResponse.DisplaySets makeDisplaySets(Collection<DataRow> dataRows) {
+        final RowResponse.DisplaySets displaySets = new RowResponse.DisplaySets();
+        final SortMode sortMode = new PathHeaderSort();
+        displaySets.ph = sortMode.createDisplaySet(null, dataRows);
+        return displaySets;
+    }
+
+    private static Map<String, RowResponse.Row> makePageRows(
+            Collection<DataRow> all, boolean redacted) {
+        final Map<String, RowResponse.Row> rows = new HashMap<>();
         for (final DataRow r : all) {
-            list.add(calculateRow(r));
+            rows.put(r.fieldHash(), calculateRow(r, redacted));
         }
-        return list.toArray(new RowResponse.Row[list.size()]);
+        return rows;
     }
 
-    private static RowResponse.Row calculateRow(final DataRow r) {
-        RowResponse.Row row = new RowResponse.Row();
-        // from DataSection.DataRow.toJSONString()
-
-        // TODO: ourVote
+    private static RowResponse.Row calculateRow(final DataRow r, boolean redacted) {
+        final RowResponse.Row row = new RowResponse.Row();
+        final VoteResolver<String> resolver = r.getResolver();
         final String xpath = r.getXpath();
-        row.xpath = XPathTable.getStringIDString(xpath);
+        final PatternPlaceholders placeholders = PatternPlaceholders.getInstance();
 
+        row.canFlagOnLosing = resolver.canFlagOnLosing();
+        row.confirmStatus = r.getConfirmStatus();
+        row.coverageValue = r.getCoverageValue();
         row.code = r.getCode();
-        row.resolver = r.getResolver();
-        row.dir = r.getDirectionality(); // TODO: should not be needed, but there are some override situations.
+        row.dir = r.getDirectionality(); // should not be needed, but there are some override
+        // situations.
         row.displayExample = r.getDisplayExample();
         row.displayName = r.getDisplayName();
         row.extraAttributes = r.getNonDistinguishingAttributes();
-        row.hasVoted = r.userHasVoted();
-        row.inheritedLocale = r.getInheritedLocaleName();
-        // NB: "winningValue" is in the resolver info.
-        row.inheritedXpath = r.getInheritedXPath();
         row.flagged = r.isFlagged();
-        row.statusAction = r.getStatusAction();
-        row.voteResolver = r.getResolver();
+        row.forumStatus = new SurveyForum.PathForumStatus(r.getLocale(), xpath);
+        row.hasVoted = r.userHasVoted();
         row.helpHtml = r.getHelpHTML();
-        row.rdf = r.getRDFURI();
-
-        row.items = calculateItems(r, row);
-        PatternPlaceholders placeholders = PatternPlaceholders.getInstance();
-        row.placeholderStatus = placeholders.getStatus(xpath);
+        row.inheritedLocale = r.getInheritedLocaleName();
+        row.inheritedValue = r.getInheritedValue();
+        row.inheritedDisplayValue = r.getInheritedDisplayValue();
+        row.inheritedUrl = makeInheritedUrl(r);
+        row.items = calculateItems(r, redacted);
         row.placeholderInfo = placeholders.get(xpath);
+        row.placeholderStatus = placeholders.getStatus(xpath);
+        row.rdf = r.getRDFURI();
+        row.rowFlagged = r.isFlagged();
+        row.statusAction = r.getStatusAction();
+        row.translationHint = r.getTranslationHint();
+        row.voteVhash = r.getVoteVHash();
+        row.votingResults = getVotingResults(resolver);
+        row.winningValue = r.getWinningValue();
+        row.winningVhash = r.getWinningVHash();
+        row.voteTranscript = r.getVoteTranscript();
+        row.xpath = xpath;
+        row.xpathId = CookieSession.sm.xpt.getByXpath(xpath);
+        row.xpstrid = XPathTable.getStringIDString(xpath);
+        row.fixedCandidates = r.fixedCandidates();
+        row.noEscaping = DisplayAndInputProcessor.hasUnicodeSetValue(xpath);
         return row;
     }
 
-    private static Candidate[] calculateItems(final DataRow r, RowResponse.Row row) {
-        // Add candidate items
-        List<RowResponse.Row.Candidate> items = new LinkedList<>();
-        for (final CandidateItem i : r.items.values()) {
-            RowResponse.Row.Candidate c = calculateItem(i);
-            items.add(c);
+    /**
+     * Make a relative URL to the inherited path
+     *
+     * @param r the DataRow
+     * @return the URL, such as "#/fr//97554ebf534323c", or null
+     */
+    private static String makeInheritedUrl(DataRow r) {
+        String inheritedLocale = r.getInheritedLocaleName();
+        if (inheritedLocale != null) {
+            String inheritedXpid = r.getInheritedXPath();
+            if (inheritedXpid == null) {
+                inheritedXpid = XPathTable.getStringIDString(r.getXpath());
+            }
+            if (XMLSource.CODE_FALLBACK_ID.equals(inheritedLocale)) {
+                // Never use 'code-fallback' in the link, use 'root' instead.
+                inheritedLocale = XMLSource.ROOT_ID;
+            }
+            return "#/" + inheritedLocale + "//" + inheritedXpid;
         }
-        return items.toArray(new RowResponse.Row.Candidate[items.size()]);
+        return null;
     }
 
-    private static RowResponse.Row.Candidate calculateItem(final CandidateItem i) {
-        // from DataSection.DataRow.CandidateItem.toJSONString()
-        // Ideally this would go into RowResponse.Row.Candidate but can't due to
-        // static initialization problems.
+    /**
+     * Convert the given back-end VoteResolver into a front-end VotingResults
+     *
+     * @param resolver the back-end VoteResolver
+     * @return the VotingResults
+     */
+    public static <T> RowResponse.Row.VotingResults<T> getVotingResults(VoteResolver<T> resolver) {
+        final RowResponse.Row.VotingResults<T> results = new RowResponse.Row.VotingResults<>();
+        final EnumSet<Organization> conflictedOrgs = resolver.getConflictedOrganizations();
+        /* array of Key, Value, Key, Value… */
+        final List<Object> valueToVoteA = new ArrayList<>();
+        final Map<T, Long> valueToVote = resolver.getResolvedVoteCountsIncludingIntraOrgDisputes();
+        for (Map.Entry<T, Long> e : valueToVote.entrySet()) {
+            valueToVoteA.add(e.getKey());
+            valueToVoteA.add(String.valueOf(e.getValue()));
+        }
+        results.nameTime = resolver.getNameTime();
+        results.requiredVotes = resolver.getRequiredVotes();
+        results.value_vote = valueToVoteA.toArray(new Object[0]);
+        final Set<Entry<Integer, Integer>> votesForMissing = resolver.getVotesForMissing();
+        if (!votesForMissing.isEmpty()) {
+            results.votesForMissing =
+                    votesForMissing.stream().map(Entry::getKey).toArray(Integer[]::new);
+        } else {
+            results.votesForMissing = null;
+        }
+        results.valueIsLocked = resolver.isValueLocked();
+        results.orgs = new HashMap<>();
+        for (Organization o : Organization.values()) {
+            final T orgVote = resolver.getOrgVote(o);
+            if (orgVote != null) {
+                final RowResponse.Row.OrgValueVotes<T> org = new RowResponse.Row.OrgValueVotes<>();
+                org.conflicted = conflictedOrgs.contains(o);
+                org.orgVote = orgVote;
+                org.status = resolver.getStatusForOrganization(o).name();
+                org.votes = resolver.getOrgToVotes(o);
+                results.orgs.put(o.name(), org);
+            }
+        }
+        return results;
+    }
+
+    private static Map<String, Candidate> calculateItems(final DataRow r, boolean redacted) {
+        final Map<String, Candidate> items = new HashMap<>();
+        for (final CandidateItem i : r.items.values()) {
+            items.put(i.getValueHash(), calculateItem(i, redacted));
+        }
+        return items;
+    }
+
+    private static RowResponse.Row.Candidate calculateItem(
+            final CandidateItem i, boolean redacted) {
         RowResponse.Row.Candidate c = new RowResponse.Row.Candidate();
-        c.value = i.getValue();
-        c.displayValue = i.getProcessedValue();
         c.example = i.getExample();
+        c.history = i.getHistory();
         c.isBaselineValue = i.isBaselineValue();
-        // TODO: pass underlying values to FE. Don't pass CSS class.
-        //    c.pClass = i.getPClass();
-        // TODO: c.tests = i.tests
-        c.votes = calculateVotes(i.getVotes(), i.getOverrides());
+        c.status = i.getCandidateStatus().toString();
+        c.rawValue = i.getValue();
+        c.tests = getConvertedTests(i.getTests());
+        c.value = i.getProcessedValue();
+        c.valueHash = i.getValueHash();
+        c.votes = calculateVotes(i.getVotes(), i.getVoteDetails(), redacted);
         return c;
     }
 
-    private static VoteEntry[] calculateVotes(Set<User> votes, Map<User, Integer> overrides) {
-        if (votes == null) return new VoteEntry[0];
-        List<VoteEntry> entries = new ArrayList<>(votes.size());
-        for (final User u : votes) {
+    private static List<VoteAPI.CheckStatusSummary> getConvertedTests(List<CheckStatus> tests) {
+        List<VoteAPI.CheckStatusSummary> newTests = new ArrayList<>();
+        if (tests != null) {
+            for (CheckStatus test : tests) {
+                newTests.add(new VoteAPI.CheckStatusSummary(test));
+            }
+        }
+        return newTests;
+    }
+
+    private static Map<String, VoteEntry> calculateVotes(
+            Set<User> users, Map<User, VoteDetails> voteDetailMap, boolean redacted) {
+        if (users == null) {
+            return null;
+        }
+        Map<String, VoteEntry> votes = new HashMap<>(users.size());
+        for (final User u : users) {
             if (UserRegistry.userIsLocked(u)) {
                 continue;
             }
-            Integer override = null;
-            if (overrides != null) {
-                override = overrides.get(u);
-            }
-            entries.add(new VoteEntry(u.id, u.getVoteCount(), override));
+            VoteDetails voteDetails = (voteDetailMap == null) ? null : voteDetailMap.get(u);
+            VoteEntry voteEntry = new VoteEntry(u, voteDetails, redacted);
+            votes.put(voteEntry.userid, voteEntry);
         }
-        return entries.toArray(new VoteEntry[entries.size()]);
+        return votes;
     }
 
-    static Response handleVote(String loc, String xpath, VoteRequest request, final CookieSession mySession) {
+    private static Dashboard.ReviewNotification[] getOnePathDash(
+            String baseXp, CLDRLocale locale, CookieSession mySession) {
+        Level coverageLevel = Level.get(mySession.getEffectiveCoverageLevel(locale.toString()));
+        Dashboard.ReviewOutput ro =
+                new Dashboard()
+                        .get(
+                                locale,
+                                mySession.user,
+                                coverageLevel,
+                                baseXp,
+                                false /* includeOther */);
+        return ro.getNotifications();
+    }
+
+    // forbiddenIsOk is true when called from VoteAPI for the main, original usage of this method;
+    // when true, it means
+    // that even if we get statusAction.isForbidden, we'll return an OK (200) response, with
+    // json.didVote false.
+    //
+    // forbiddenIsOk is false when called from XPathAlt for the special purpose of adding a new
+    // path, so that
+    // XPathAlt will get something other than OK (200) in case of failure.
+    //
+    // This method needs refactoring into smaller subroutines, with the lower-level details
+    // separated from
+    // the HTTP response concerns, so that VoteAPI and XPathAlt can share code without the
+    // awkwardness of forbiddenIsOk.
+    public static Response handleVote(
+            String loc,
+            String xp,
+            String value,
+            int voteLevelChanged,
+            final CookieSession mySession,
+            boolean forbiddenIsOk) {
+        // translate this call into jax-rs Response
+        try {
+            final VoteResponse r =
+                    getHandleVoteResponse(
+                            loc, xp, value, voteLevelChanged, mySession, forbiddenIsOk);
+            return Response.ok(r).build();
+        } catch (Throwable se) {
+            return new STError(se).build();
+        }
+    }
+
+    public static Response handleVoteForMissing(
+            String loc,
+            String xp,
+            Integer voteLevelChanged,
+            final CookieSession mySession,
+            boolean forbiddenIsOk) {
+        // translate this call into jax-rs Response
+        try {
+            final VoteResponse r =
+                    getHandleVoteForMissingResponse(
+                            loc, xp, voteLevelChanged, mySession, forbiddenIsOk);
+            return Response.status(204).build();
+        } catch (Throwable se) {
+            return new STError(se).build();
+        }
+    }
+
+    /**
+     * this function is the implementation of handleVote() but does not use any jax-rs, for unit
+     * tests
+     */
+    public static VoteResponse getHandleVoteResponse(
+            String loc,
+            String xp,
+            String value,
+            int voteLevelChanged,
+            final CookieSession mySession,
+            boolean forbiddenIsOk)
+            throws SurveyException {
         VoteResponse r = new VoteResponse();
-
         mySession.userDidAction();
-
         CLDRLocale locale = CLDRLocale.getInstance(loc);
         if (!UserRegistry.userCanModifyLocale(mySession.user, locale)) {
-            return Response.status(Status.FORBIDDEN).build();
+            throw new SurveyException(ErrorCode.E_NO_PERMISSION, "Not allowed to modify " + locale);
         }
+        loc = locale.getBaseName(); // sanitized
         final SurveyMain sm = CookieSession.sm;
-        final String xp = sm.xpt.getByStringID(xpath);
-        if (xp == null) {
-            return Response.status(Status.NOT_FOUND).build(); // no XPath found
-        }
-        CheckCLDR.Options options = DataSection.getOptions(null, mySession, locale); // TODO: why null for WebContext here?
+        CheckCLDR.Options options = DataPage.getSimpleOptions(locale);
         final STFactory stf = sm.getSTFactory();
         synchronized (mySession) {
             try {
-                final String origValue = request.value;
+                final String origValue = value;
                 final Exception[] exceptionList = new Exception[1];
-                final String val = processValue(locale, xp, exceptionList, origValue);
+                final CLDRFile cldrFile = stf.make(loc, true, true);
+                final String val = processValue(locale, xp, exceptionList, origValue, cldrFile);
                 final List<CheckStatus> result = new ArrayList<>();
+                if (val == null && origValue != null && !origValue.isEmpty()) {
+                    normalizedToZeroLengthError(r, result);
+                }
                 final TestResultBundle cc = stf.getTestResult(locale, options);
-                runTests(mySession, r, locale, sm, cc, xp, val, result);
+                runTests(cc, xp, val, result);
                 addDaipException(loc, xp, result, exceptionList, val, origValue);
-                r.setResults(result);
-                r.testsRun = cc.toString();
-                // Create a DataSection for this single XPath.
-                DataSection section = DataSection.make(null, null, mySession, locale, xp, null);
-                section.setUserForVotelist(mySession.user);
-                DataRow pvi = section.getDataRow(xp);
-                // First, calculate the status for showing
-                r.statusAction = calculateShowRowAction(locale, stf, xp, val, pvi);
+                r.setTestResults(result);
+                // Create a DataPage for this single XPath.
+                DataPage page = DataPage.make(null, mySession, locale, xp, null, cc);
+                page.setUserForVotelist(mySession.user);
+                DataRow dataRow = page.getDataRow(xp);
+                // First, calculate the status for showing (unless already set by
+                // normalizedToZeroLengthError)
+                if (r.statusAction == null) {
+                    r.statusAction = calculateShowRowAction(cldrFile, xp, val, dataRow);
+                }
 
                 if (!r.statusAction.isForbidden()) {
-                    CandidateInfo ci = calculateCandidateItem(result, val, pvi);
-                    // Now, recalculate the statusACtion for accepting the new item
-                    r.statusAction = CLDRConfig.getInstance().getPhase()
-                        .getAcceptNewItemAction(ci, pvi, CheckCLDR.InputMethod.DIRECT,
-                            stf.getPathHeader(xp), mySession.user);
+                    CandidateInfo ci = calculateCandidateItem(result, val, dataRow);
+                    // Now, recalculate the statusAction for accepting the new item
+                    r.statusAction =
+                            SurveyMain.checkCLDRPhase(locale)
+                                    .getAcceptNewItemAction(
+                                            ci, dataRow, stf.getPathHeader(xp), mySession.user);
                     if (!r.statusAction.isForbidden()) {
                         try {
-                            final BallotBox<UserRegistry.User> ballotBox = stf.ballotBoxForLocale(locale);
-                            if (request.voteLevelChanged == 0) { // treat 0 as null
-                                request.voteLevelChanged = null;
-                            }
-                            ballotBox.voteForValue(mySession.user, xp, val, request.voteLevelChanged);
-                            r.submitResult = ballotBox.getResolver(xp);
+                            final BallotBox<UserRegistry.User> ballotBox =
+                                    stf.ballotBoxForLocale(locale);
+                            Integer withVote = (voteLevelChanged == 0) ? null : voteLevelChanged;
+                            ballotBox.voteForValueWithType(
+                                    mySession.user, xp, val, withVote, VoteType.DIRECT);
                             r.didVote = true;
                         } catch (VoteNotAcceptedException e) {
                             if (e.getErrCode() == ErrorCode.E_PERMANENT_VOTE_NO_FORUM) {
-                                r.statusAction = CheckCLDR.StatusAction.FORBID_PERMANENT_WITHOUT_FORUM;
+                                r.statusAction =
+                                        CheckCLDR.StatusAction.FORBID_PERMANENT_WITHOUT_FORUM;
                             } else {
                                 throw (e);
                             }
@@ -300,97 +592,221 @@ public class VoteAPIHelper {
                 }
             } catch (Throwable t) {
                 SurveyLog.logException(logger, t, "Processing submission " + locale + ":" + xp);
-                return (new STError(t).build());
+                throw new SurveyException(
+                        ErrorCode.E_INTERNAL, "Processing submission " + locale + ":" + xp);
             }
         }
-
-        return Response.ok(r).build();
+        if (!forbiddenIsOk && r.statusAction.isForbidden()) {
+            throw new SurveyException(
+                    ErrorCode.E_VOTE_NOT_ACCEPTED, "Status action is forbidden: " + r.statusAction);
+        }
+        return r;
     }
 
-    private static void runTests(final CookieSession mySession, VoteResponse r, CLDRLocale locale, final SurveyMain sm, TestResultBundle cc, String xp,
-        String val, final List<CheckStatus> result) {
+    public static VoteResponse getHandleVoteForMissingResponse(
+            String loc,
+            String xp,
+            Integer voteLevelChanged,
+            final CookieSession mySession,
+            boolean forbiddenIsOk)
+            throws SurveyException {
+        VoteResponse r = new VoteResponse();
+        mySession.userDidAction();
+        CLDRLocale locale = CLDRLocale.getInstance(loc);
+        if (!UserRegistry.userCanModifyLocale(mySession.user, locale)
+                || !mySession.user.getLevel().canVoteForMissing()) {
+            throw new SurveyException(ErrorCode.E_NO_PERMISSION, "Not allowed to modify " + locale);
+        }
+        loc = locale.getBaseName(); // sanitized
+        final SurveyMain sm = CookieSession.sm;
+        final STFactory stf = sm.getSTFactory();
+        synchronized (mySession) {
+            try {
+                final CLDRFile cldrFile = stf.make(loc, true, true);
+                // don't need to check value.
+                // Create a DataPage for this single XPath.
+                DataPage page = DataPage.make(null, mySession, locale, xp, null, null);
+                page.setUserForVotelist(mySession.user);
+                DataRow dataRow = page.getDataRow(xp);
+
+                if (r.statusAction == null) {
+                    r.statusAction = calculateShowRowAction(cldrFile, xp, null, dataRow);
+                }
+
+                if (!r.statusAction.isForbidden()) {
+
+                    CandidateInfo ci =
+                            calculateCandidateItem(Collections.emptyList(), null, dataRow);
+                    // Now, recalculate the statusAction for accepting the new item
+                    r.statusAction =
+                            SurveyMain.checkCLDRPhase(locale)
+                                    .getAcceptNewItemAction(
+                                            ci, dataRow, stf.getPathHeader(xp), mySession.user);
+                    if (!r.statusAction.isForbidden()) {
+                        final BallotBox<UserRegistry.User> ballotBox =
+                                stf.ballotBoxForLocale(locale);
+                        // Hey, VOTE_FOR_MISSING is the point of this function..
+                        ballotBox.voteForValueWithType(
+                                mySession.user,
+                                xp,
+                                null,
+                                voteLevelChanged,
+                                VoteType.VOTE_FOR_MISSING);
+                        r.didVote = true;
+                    }
+                }
+            } catch (Throwable t) {
+                SurveyLog.logException(logger, t, "Processing submission " + locale + ":" + xp);
+                throw new SurveyException(
+                        ErrorCode.E_INTERNAL, "Processing submission " + locale + ":" + xp);
+            }
+        }
+        if (!forbiddenIsOk && r.statusAction.isForbidden()) {
+            throw new SurveyException(
+                    ErrorCode.E_VOTE_NOT_ACCEPTED, "Status action is forbidden: " + r.statusAction);
+        }
+        return r;
+    }
+
+    private static void normalizedToZeroLengthError(VoteResponse r, List<CheckStatus> result) {
+        final String message = "DAIP returned a 0 length string";
+        r.reasonNotSubmitted = message;
+        r.statusAction = CheckCLDR.StatusAction.FORBID_ERRORS;
+        String[] list = {message};
+        result.add(
+                new CheckStatus()
+                        .setMainType(CheckStatus.errorType)
+                        .setSubtype(Subtype.internalError)
+                        .setCause(
+                                new CheckCLDR() {
+                                    @Override
+                                    public CheckCLDR handleCheck(
+                                            String path,
+                                            String fullPath,
+                                            String value,
+                                            Options options,
+                                            List<CheckStatus> result) {
+                                        return null;
+                                    }
+                                })
+                        .setMessage("Input Processor Error: {0}")
+                        .setParameters(list));
+    }
+
+    private static void runTests(
+            TestResultBundle cc, String xp, String val, final List<CheckStatus> result) {
         if (val != null) {
-            try (SurveyMain.UserLocaleStuff uf = sm.getUserFile(mySession, locale);) {
-                final CLDRFile file = uf.cldrfile;
-                cc.check(xp, result, val);
-                r.dataEmpty = file.isEmpty();
-            }
+            cc.check(xp, result, val);
         }
     }
 
-    private static String processValue(CLDRLocale locale, String xp, Exception[] exceptionList, final String origValue) {
+    private static String processValue(
+            CLDRLocale locale,
+            String xp,
+            Exception[] exceptionList,
+            final String origValue,
+            CLDRFile cldrFile) {
         String val;
-        if (origValue != null) {
+        if (origValue != null && !origValue.isEmpty()) {
             final DisplayAndInputProcessor daip = new DisplayAndInputProcessor(locale, true);
+            if (VoteResolver.DROP_HARD_INHERITANCE) {
+                daip.enableInheritanceReplacement(cldrFile);
+            }
             val = daip.processInput(xp, origValue, exceptionList);
+            if (val.isEmpty()
+                    && DtdData.getValueConstraint(xp) == DtdData.Element.ValueConstraint.nonempty) {
+                val = null; // the caller will recognize this as exceptional, not Abstain
+            }
         } else {
             val = null;
         }
         return val;
     }
 
-    private static CandidateInfo calculateCandidateItem(final List<CheckStatus> result, final String candVal, DataRow pvi) {
+    private static CandidateInfo calculateCandidateItem(
+            final List<CheckStatus> result, final String candVal, DataRow dataRow) {
         CandidateInfo ci;
         if (candVal == null) {
             ci = null; // abstention
         } else {
-            ci = pvi.getItem(candVal); // existing item?
+            ci = dataRow.getItem(candVal); // existing item?
             if (ci == null) { // no, new item
-                ci = new CandidateInfo() {
-                    @Override
-                    public String getValue() {
-                        return candVal;
-                    }
+                ci =
+                        new CandidateInfo() {
+                            @Override
+                            public String getValue() {
+                                return candVal;
+                            }
 
-                    @Override
-                    public Collection<UserInfo> getUsersVotingOn() {
-                        return Collections.emptyList(); // No users voting - yet.
-                    }
+                            @Override
+                            public Collection<UserInfo> getUsersVotingOn() {
+                                return Collections.emptyList(); // No users voting - yet.
+                            }
 
-                    @Override
-                    public List<CheckStatus> getCheckStatusList() {
-                        return result;
-                    }
-                };
+                            @Override
+                            public List<CheckStatus> getCheckStatusList() {
+                                return result;
+                            }
+                        };
             }
         }
         return ci;
     }
 
-    private static CheckCLDR.StatusAction calculateShowRowAction(CLDRLocale locale, STFactory stf, String xp, String val, DataRow pvi) {
-        CheckCLDR.StatusAction showRowAction = pvi.getStatusAction();
+    private static CheckCLDR.StatusAction calculateShowRowAction(
+            CLDRFile cldrFile, String xp, String val, DataRow dataRow) {
+        CheckCLDR.StatusAction showRowAction = dataRow.getStatusAction();
         if (CldrUtility.INHERITANCE_MARKER.equals(val)) {
-            if (pvi.wouldInheritNull()) {
+            if (dataRow.wouldInheritNull()) {
                 showRowAction = CheckCLDR.StatusAction.FORBID_NULL;
-            } else {
-                // TODO: expensive, the caller probably should provide a CLDRFile.
-                CLDRFile cldrFile = stf.make(locale.getBaseName(), true, true);
-                if (CheckForCopy.sameAsCode(val, xp, cldrFile.getUnresolved(), cldrFile)) {
-                    showRowAction = CheckCLDR.StatusAction.FORBID_CODE;
-                }
+            } else if (CheckForCopy.sameAsCode(val, xp, cldrFile.getUnresolved(), cldrFile)) {
+                showRowAction = CheckCLDR.StatusAction.FORBID_CODE;
             }
-        } else if (pvi.isUnvotableRoot(val)) {
+        } else if (dataRow.isUnvotableRoot(val)) {
             showRowAction = CheckCLDR.StatusAction.FORBID_ROOT;
         }
         return showRowAction;
     }
 
-    private static void addDaipException(String loc, String xp, final List<CheckStatus> result, Exception[] exceptionList, String val, String origValue) {
+    private static void addDaipException(
+            String loc,
+            String xp,
+            final List<CheckStatus> result,
+            Exception[] exceptionList,
+            String val,
+            String origValue) {
         if (exceptionList[0] != null) {
-            result.add(new CheckStatus().setMainType(CheckStatus.errorType)
-                .setSubtype(Subtype.internalError)
-                .setCause(new CheckCLDR() {
+            result.add(
+                    new CheckStatus()
+                            .setMainType(CheckStatus.errorType)
+                            .setSubtype(Subtype.internalError)
+                            .setCause(
+                                    new CheckCLDR() {
 
-                    @Override
-                    public CheckCLDR handleCheck(String path, String fullPath, String value, Options options,
-                        List<CheckStatus> result) {
-                        return null;
-                    }
-                })
-                .setMessage("Input Processor Exception: {0}")
-                .setParameters(exceptionList));
-            SurveyLog.logException(logger, exceptionList[0], "DAIP, Processing " + loc + ":" + xp + "='" + val
-                + "' (was '" + origValue + "')");
+                                        @Override
+                                        public CheckCLDR handleCheck(
+                                                String path,
+                                                String fullPath,
+                                                String value,
+                                                Options options,
+                                                List<CheckStatus> result) {
+                                            return null;
+                                        }
+                                    })
+                            .setMessage("Input Processor Exception: {0}")
+                            .setParameters(exceptionList));
+            SurveyLog.logException(
+                    logger,
+                    exceptionList[0],
+                    "DAIP, Processing "
+                            + loc
+                            + ":"
+                            + xp
+                            + "='"
+                            + val
+                            + "' (was '"
+                            + origValue
+                            + "')");
         }
     }
 }

@@ -1,5 +1,7 @@
 package org.unicode.cldr.draft;
 
+import com.google.common.base.Joiner;
+import com.ibm.icu.text.NumberFormat;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -8,23 +10,22 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
 import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRPaths;
 import org.unicode.cldr.util.Counter2;
 import org.unicode.cldr.util.Factory;
 import org.unicode.cldr.util.LanguageTagParser;
+import org.unicode.cldr.util.NameGetter;
+import org.unicode.cldr.util.NameType;
 import org.unicode.cldr.util.StandardCodes;
 import org.unicode.cldr.util.SupplementalDataInfo;
 import org.unicode.cldr.util.SupplementalDataInfo.OfficialStatus;
 import org.unicode.cldr.util.SupplementalDataInfo.PopulationData;
 
-import com.google.common.base.Joiner;
-import com.ibm.icu.text.NumberFormat;
-
 public class GenerateLanguageData {
 
-    SupplementalDataInfo info = SupplementalDataInfo.getInstance(CLDRPaths.DEFAULT_SUPPLEMENTAL_DIRECTORY);
+    SupplementalDataInfo info =
+            SupplementalDataInfo.getInstance(CLDRPaths.DEFAULT_SUPPLEMENTAL_DIRECTORY);
     Factory cldrFactory = Factory.make(CLDRPaths.MAIN_DIRECTORY, ".*");
 
     CLDRFile english = cldrFactory.make("en", true);
@@ -38,24 +39,33 @@ public class GenerateLanguageData {
     }
 
     private void run() throws IOException {
-        try (PrintWriter out = FileUtilities.openUTF8Writer(CLDRPaths.GEN_DIRECTORY + "langData/", "generatedLanguageData.txt")) {
+        try (PrintWriter out =
+                FileUtilities.openUTF8Writer(
+                        CLDRPaths.GEN_DIRECTORY + "langData/", "generatedLanguageData.txt")) {
             Counter2<String> langToPopulation = new Counter2<>();
             // Counter2<String> langToGDP = new Counter2<String>();
             LanguageTagParser ltp = new LanguageTagParser();
             Map<String, String> languageNameToCode = new TreeMap<>();
+            NameGetter nameGetter = english.nameGetter();
             for (String languageCode : info.getLanguages()) {
-                languageNameToCode.put(english.getName(languageCode), languageCode);
+                languageNameToCode.put(
+                        nameGetter.getNameFromIdentifier(languageCode), languageCode);
             }
             out.println("\n@sheet:CLDR County Data");
             out.println("code\tgdp\tlit-pop\tpopulation\tliteracy");
 
             for (String territory : info.getTerritoriesWithPopulationData()) {
                 PopulationData terrData = info.getPopulationDataForTerritory(territory);
-                out.println(territory
-                    + "\t" + terrData.getGdp()
-                    + "\t" + terrData.getLiteratePopulation()
-                    + "\t" + terrData.getPopulation()
-                    + "\t" + (terrData.getLiteratePopulationPercent() / 100));
+                out.println(
+                        territory
+                                + "\t"
+                                + terrData.getGdp()
+                                + "\t"
+                                + terrData.getLiteratePopulation()
+                                + "\t"
+                                + terrData.getPopulation()
+                                + "\t"
+                                + (terrData.getLiteratePopulationPercent() / 100));
             }
 
             out.flush();
@@ -65,7 +75,7 @@ public class GenerateLanguageData {
             Map<String, Counter2<String>> langToCountriesOfficial = new TreeMap<>();
 
             for (String languageCode : info.getLanguages()) {
-                String languageName = english.getName(languageCode);
+                String languageName = nameGetter.getNameFromIdentifier(languageCode);
 
                 String baseLanguage = languageCode;
                 ltp.set(languageCode);
@@ -76,17 +86,19 @@ public class GenerateLanguageData {
 
                 Set<String> territories = info.getTerritoriesForPopulationData(languageCode);
                 if (territories == null) continue;
-//            out.println("langName\tcode\tregionName\tcode\tregionPop"
-//                + "\t" + "regionLitPop"
-//                + "\t" + nf.format(literatePopulationLangRegion)
-//                + "\t" + pf.format(factor)
-//                + "\t" + pf.format(status)
-//                );
+                //            out.println("langName\tcode\tregionName\tcode\tregionPop"
+                //                + "\t" + "regionLitPop"
+                //                + "\t" + nf.format(literatePopulationLangRegion)
+                //                + "\t" + pf.format(factor)
+                //                + "\t" + pf.format(status)
+                //                );
                 for (String territory : territories) {
                     PopulationData terrData = info.getPopulationDataForTerritory(territory);
-                    String territoryName = english.getName(CLDRFile.TERRITORY_NAME, territory);
+                    String territoryName =
+                            nameGetter.getNameFromTypeEnumCode(NameType.TERRITORY, territory);
 
-                    PopulationData data = info.getLanguageAndTerritoryPopulationData(languageCode, territory);
+                    PopulationData data =
+                            info.getLanguageAndTerritoryPopulationData(languageCode, territory);
                     double literatePopulationLangRegion = data.getLiteratePopulation();
                     double pop = literatePopulationLangRegion;
                     langToPopulation.add(baseLanguage, pop);
@@ -103,17 +115,23 @@ public class GenerateLanguageData {
                     double literatePopulationRegion = terrData.getLiteratePopulation();
                     double factor = literatePopulationLangRegion / literatePopulationRegion;
 
-                    //out.println("LC\tName\tCC\tName\tStatus\tLitPop\tblank\t%LitPop(CC)");
+                    // out.println("LC\tName\tCC\tName\tStatus\tLitPop\tblank\t%LitPop(CC)");
 
-                    out.println(fixLang(languageCode)
-                        + "\t" + languageName
-                        + "\t" + territory
-                        + "\t" + territoryName
-                        + "\t" + status
-                        + "\t" + literatePopulationLangRegion
-//                        + "\t" + ""
-//                        + "\t" + factor
-                    );
+                    out.println(
+                            fixLang(languageCode)
+                                    + "\t"
+                                    + languageName
+                                    + "\t"
+                                    + territory
+                                    + "\t"
+                                    + territoryName
+                                    + "\t"
+                                    + status
+                                    + "\t"
+                                    + literatePopulationLangRegion
+                            //                        + "\t" + ""
+                            //                        + "\t" + factor
+                            );
                     // double gdp = terrData.getGdp() * factor;
                     // if (!Double.isNaN(gdp)) {
                     // langToGDP.add(baseLanguage, gdp);
@@ -130,18 +148,20 @@ public class GenerateLanguageData {
                 ArrayList<String> top = new ArrayList<>(regions.getKeysetSortedByCount(false));
 
                 String lang = entry.getKey();
-                out.println(fixLang(lang)
-                    + "\t" + (top.size() < 6 ? Joiner.on(", ").join(top)
-                        : Joiner.on(", ").join(top.subList(0, 5)) + ", …"));
+                out.println(
+                        fixLang(lang)
+                                + "\t"
+                                + (top.size() < 6
+                                        ? Joiner.on(", ").join(top)
+                                        : Joiner.on(", ").join(top.subList(0, 5)) + ", …"));
                 missing.remove(lang);
             }
             for (String lang : missing) {
-                out.println(fixLang(lang)
-                    + "\tnone");
+                out.println(fixLang(lang) + "\tnone");
             }
             // for (String language :langToPopulation.keySet()) {
             // out.println(
-            // english.getName(language)
+            // english.nameGetter().getName(language)
             // + "\t" + language
             // + "\t" + langToPopulation.getCount(language)
             // + "\t" + langToGDP.getCount(language)

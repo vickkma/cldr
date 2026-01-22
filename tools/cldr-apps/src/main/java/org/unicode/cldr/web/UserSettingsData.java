@@ -1,6 +1,4 @@
-/**
- * Copyright (C) 2010-2011 IBM Corporation and others. All Rights Reserved.
- */
+/** Copyright (C) 2010-2011 IBM Corporation and others. All Rights Reserved. */
 package org.unicode.cldr.web;
 
 import java.sql.Connection;
@@ -10,20 +8,18 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.unicode.cldr.util.CldrUtility;
 import org.unicode.cldr.util.StackTracker;
 import org.unicode.cldr.web.CLDRProgressIndicator.CLDRProgressTask;
 
 /**
  * @author srl
- *
  */
 public class UserSettingsData {
     public static final String SET_KINDS = "set_kinds";
     public static final String SET_VALUES = "set_values";
 
-    CLDRProgressIndicator sm = null;
+    CLDRProgressIndicator sm;
 
     private static final boolean debug = CldrUtility.getProperty("CLDR_SETTINGS_DEBUG", false);
 
@@ -31,7 +27,7 @@ public class UserSettingsData {
 
     // One of these per user. Caches the values.
     public class DBUserSettings extends UserSettings {
-        private int id;
+        private final int id;
 
         HashMap<String, String> values = new HashMap<>();
 
@@ -63,10 +59,8 @@ public class UserSettingsData {
         /**
          * Get a string, or the default
          *
-         * @param name
-         *            name of setting to get
-         * @param defaultValue
-         *            default value to return (may be null)
+         * @param name name of setting to get
+         * @param defaultValue default value to return (may be null)
          * @return the result, or default
          */
         @Override
@@ -85,7 +79,7 @@ public class UserSettingsData {
                 }
             } catch (SQLException se) {
                 se.printStackTrace();
-                SurveyMain.busted("getting " + name + " for user id " + id + " : " + se.toString(), se);
+                SurveyMain.busted("getting " + name + " for user id " + id + " : " + se, se);
                 throw new InternalError("SQL err: " + DBUtils.unchainSqlException(se));
             }
         }
@@ -93,10 +87,8 @@ public class UserSettingsData {
         /**
          * Set a string
          *
-         * @param name
-         *            should be ASCII
-         * @param value
-         *            may be any Unicode string
+         * @param name should be ASCII
+         * @param value may be any Unicode string
          */
         @Override
         public void set(String name, String value) {
@@ -111,7 +103,7 @@ public class UserSettingsData {
                 Connection conn = null;
                 try {
                     conn = DBUtils.getInstance().getDBConnection();
-                    internalSet(id, name, value, conn);  // calls commit()
+                    internalSet(id, name, value, conn); // calls commit()
                 } finally {
                     DBUtils.closeDBConnection(conn);
                     if (value == null) {
@@ -120,16 +112,21 @@ public class UserSettingsData {
                         values.put(name, value); // store for next time.
                     }
                     if (debug) {
-                        System.out.println("DB Settings: Set value " + name + " = " + value + " for user " + id);
+                        System.out.println(
+                                "DB Settings: Set value "
+                                        + name
+                                        + " = "
+                                        + value
+                                        + " for user "
+                                        + id);
                     }
                 }
             } catch (SQLException se) {
                 se.printStackTrace();
-                SurveyMain.busted("getting " + name + " for user id " + id + " : " + se.toString(), se);
+                SurveyMain.busted("getting " + name + " for user id " + id + " : " + se, se);
                 throw new InternalError("SQL err: " + DBUtils.unchainSqlException(se));
             }
         }
-
     }
 
     public UserSettingsData(CLDRProgressIndicator sm) throws SQLException {
@@ -144,21 +141,28 @@ public class UserSettingsData {
 
         String sql = null;
         Connection conn = DBUtils.getInstance().getDBConnection();
-        CLDRProgressTask progress = (sm != null) ? sm.openProgress("Setup " + UserSettingsData.class.getName() + " database")
-            : null;
+        CLDRProgressTask progress =
+                (sm != null)
+                        ? sm.openProgress("Setup " + UserSettingsData.class.getName() + " database")
+                        : null;
         try {
 
-            if (!DBUtils.hasTable(conn, SET_KINDS)) {
+            if (!DBUtils.hasTable(SET_KINDS)) {
                 Statement s = conn.createStatement();
-                if (progress != null)
-                    progress.update("Creating table " + SET_KINDS);
-                sql = ("create table " + SET_KINDS + "(set_id INT NOT NULL " + DBUtils.DB_SQL_IDENTITY + ", "
-                    + "set_name varchar(128) not null UNIQUE " + (!DBUtils.db_Mysql ? ",primary key(set_id)" : "") + ")");
+                if (progress != null) progress.update("Creating table " + SET_KINDS);
+                sql =
+                        ("create table "
+                                + SET_KINDS
+                                + "(set_id INT NOT NULL "
+                                + DBUtils.DB_SQL_IDENTITY
+                                + ", "
+                                + "set_name varchar(128) not null UNIQUE "
+                                + (!DBUtils.db_Mysql ? ",primary key(set_id)" : "")
+                                + ")");
                 s.execute(sql);
                 conn.commit();
-                if (DBUtils.hasTable(conn, SET_VALUES)) {
-                    if (progress != null)
-                        progress.update("Clearing old values");
+                if (DBUtils.hasTable(SET_VALUES)) {
+                    if (progress != null) progress.update("Clearing old values");
                     sql = "drop table " + SET_VALUES;
                     s.execute(sql);
                 }
@@ -166,20 +170,24 @@ public class UserSettingsData {
                 conn.commit();
             }
 
-            if (!DBUtils.hasTable(conn, SET_VALUES)) {
+            if (!DBUtils.hasTable(SET_VALUES)) {
                 Statement s = conn.createStatement();
-                if (progress != null)
-                    progress.update("Creating table " + SET_VALUES);
-                sql = ("create table " + SET_VALUES + "(usr_id INT NOT NULL, " + "set_id INT NOT NULL, " + "set_value "
-                    + DBUtils.DB_SQL_UNICODE + " not null " + ",primary key(usr_id,set_id))");
+                if (progress != null) progress.update("Creating table " + SET_VALUES);
+                sql =
+                        ("create table "
+                                + SET_VALUES
+                                + "(usr_id INT NOT NULL, "
+                                + "set_id INT NOT NULL, "
+                                + "set_value "
+                                + DBUtils.DB_SQL_UNICODE
+                                + " not null "
+                                + ",primary key(usr_id,set_id))");
                 s.execute(sql);
                 s.close();
                 conn.commit();
             }
             DBUtils.closeDBConnection(conn);
-            conn = null;
-            if (progress != null)
-                progress.update("done");
+            if (progress != null) progress.update("done");
         } catch (SQLException se) {
             se.printStackTrace();
             System.err.println("SQL err: " + DBUtils.unchainSqlException(se));
@@ -193,8 +201,22 @@ public class UserSettingsData {
     private String internalGet(int id, String name) throws SQLException {
         Connection conn = DBUtils.getInstance().getAConnection();
 
-        String sql = "select " + SET_VALUES + ".set_value from " + SET_VALUES + "," + SET_KINDS + " where " + SET_VALUES
-            + ".usr_id=? AND " + SET_KINDS + ".set_id=" + SET_VALUES + ".set_id AND " + SET_KINDS + ".set_name=?";
+        String sql =
+                "select "
+                        + SET_VALUES
+                        + ".set_value from "
+                        + SET_VALUES
+                        + ","
+                        + SET_KINDS
+                        + " where "
+                        + SET_VALUES
+                        + ".usr_id=? AND "
+                        + SET_KINDS
+                        + ".set_id="
+                        + SET_VALUES
+                        + ".set_id AND "
+                        + SET_KINDS
+                        + ".set_name=?";
         PreparedStatement ps = conn.prepareStatement(sql);
         try {
             ps.setInt(1, id);
@@ -203,7 +225,8 @@ public class UserSettingsData {
             if (rs.next()) {
                 String value = DBUtils.getStringUTF8(rs, 1);
                 if (debug) {
-                    System.out.println("DB Settings: GET  value " + name + " = " + value + " for user " + id);
+                    System.out.println(
+                            "DB Settings: GET  value " + name + " = " + value + " for user " + id);
                 }
                 return value;
             }
@@ -212,16 +235,19 @@ public class UserSettingsData {
             DBUtils.closeDBConnection(conn);
         }
         if (debug) {
-            System.out.println("DB Settings: Get missing  value " + name + " = " + "NULL" + " for user " + id);
+            System.out.println(
+                    "DB Settings: Get missing  value " + name + " = " + "NULL" + " for user " + id);
         }
         return null;
     }
 
-    private void internalSet(int id, String name, String value, Connection conn) throws SQLException {
+    private void internalSet(int id, String name, String value, Connection conn)
+            throws SQLException {
         String sql;
         int set_id = getSetId(name, conn);
 
-        if (DBUtils.db_Mysql) { /* use 'on duplicate key' syntax */
+        if (DBUtils.db_Mysql) {
+            /* use 'on duplicate key' syntax */
             if (value == null) {
                 sql = "DELETE FROM " + SET_VALUES + " WHERE usr_id=? AND set_id=?";
                 PreparedStatement d0 = conn.prepareStatement(sql);
@@ -231,8 +257,11 @@ public class UserSettingsData {
 
                 d0.executeUpdate();
             } else {
-                sql = "INSERT INTO " + SET_VALUES + " (usr_id,set_id,set_value) values (?,?,?) "
-                    + "ON DUPLICATE KEY UPDATE set_value=?";
+                sql =
+                        "INSERT INTO "
+                                + SET_VALUES
+                                + " (usr_id,set_id,set_value) values (?,?,?) "
+                                + "ON DUPLICATE KEY UPDATE set_value=?";
                 PreparedStatement d0 = conn.prepareStatement(sql);
 
                 d0.setInt(1, id);
@@ -262,7 +291,8 @@ public class UserSettingsData {
         conn.commit();
 
         if (debug) {
-            System.out.println("SET: " + name + " = " + value + " - " + StackTracker.currentStack());
+            System.out.println(
+                    "SET: " + name + " = " + value + " - " + StackTracker.currentStack());
         }
     }
 
@@ -277,22 +307,19 @@ public class UserSettingsData {
                 ResultSet rs = ps0.executeQuery();
                 if (rs.next()) {
                     id = rs.getInt(1);
-                    if (debug)
-                        System.err.println("set_kind: " + name + " = " + id);
+                    if (debug) System.err.println("set_kind: " + name + " = " + id);
                     knownSettings.put(name, id);
                 } else {
                     sql = "INSERT INTO " + SET_KINDS + " (set_name) VALUES (?)";
                     PreparedStatement ps = conn.prepareStatement(sql);
                     ps.setString(1, name);
-                    if (debug)
-                        System.err.println("set_kind Trying to add " + name);
+                    if (debug) System.err.println("set_kind Trying to add " + name);
                     ps.executeUpdate();
 
                     ResultSet rs1 = ps0.executeQuery();
                     if (rs1.next()) {
                         id = rs1.getInt(1);
-                        if (debug)
-                            System.err.println("set_kind: NOW " + name + " = " + id);
+                        if (debug) System.err.println("set_kind: NOW " + name + " = " + id);
                         knownSettings.put(name, id);
                     } else {
                         SurveyMain.busted("Could not insert settings kind " + name);
@@ -306,9 +333,7 @@ public class UserSettingsData {
     /**
      * New up a UserSettingsData object.
      *
-     * @param sm
-     *            progress indicator (such as SurveyMain ) - can be null for no
-     *            progress indication.
+     * @param sm progress indicator (such as SurveyMain ) - can be null for no progress indication.
      * @return
      * @throws SQLException
      */
@@ -331,7 +356,6 @@ public class UserSettingsData {
         }
     }
 
-    private Map<Integer, UserSettings> idToSettings = new HashMap<>();
-    private Map<String, Integer> knownSettings = new HashMap<>();
-
+    private final Map<Integer, UserSettings> idToSettings = new HashMap<>();
+    private final Map<String, Integer> knownSettings = new HashMap<>();
 }

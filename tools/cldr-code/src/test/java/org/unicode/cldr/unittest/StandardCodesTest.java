@@ -3,15 +3,8 @@ package org.unicode.cldr.unittest;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.TreeSet;
-
-import org.unicode.cldr.util.CLDRConfig;
-import org.unicode.cldr.util.CLDRLocale;
-import org.unicode.cldr.util.Factory;
-import org.unicode.cldr.util.Level;
-import org.unicode.cldr.util.Organization;
-import org.unicode.cldr.util.StandardCodes;
-
-import com.ibm.icu.dev.test.TestFmwk;
+import org.unicode.cldr.icu.dev.test.TestFmwk;
+import org.unicode.cldr.util.*;
 
 public class StandardCodesTest extends TestFmwk {
     public static void main(String[] args) {
@@ -36,19 +29,25 @@ public class StandardCodesTest extends TestFmwk {
                 continue;
             }
             for (String locale : sc.getLocaleCoverageLocales(org)) {
-                String name = locale.equals("*") ? "ALL" : testInfo
-                    .getEnglish().getName(locale);
-                logln(org + "\t;\t" + locale + "\t;\t"
-                    + sc.getLocaleCoverageLevel(org.toString(), locale)
-                    + "\t;\t" + name);
+                String name =
+                        locale.equals("*")
+                                ? "ALL"
+                                : testInfo.getEnglish().nameGetter().getNameFromIdentifier(locale);
+                logln(
+                        org
+                                + "\t;\t"
+                                + locale
+                                + "\t;\t"
+                                + sc.getLocaleCoverageLevel(org.toString(), locale)
+                                + "\t;\t"
+                                + name);
             }
         }
         for (Organization org : missing) {
             errln("Organization missing Locales.txt information " + org);
         }
         for (Organization org : extraOrgs) {
-            errln("Organization in Locales.txt but not in Organization enum: "
-                + org);
+            errln("Organization in Locales.txt but not in Organization enum: " + org);
         }
     }
 
@@ -58,19 +57,23 @@ public class StandardCodesTest extends TestFmwk {
         for (Organization org : Organization.values()) {
             Set<String> locs;
             try {
-                locs = sc.getLocaleCoverageLocales(org,
-                    EnumSet.of(Level.MODERATE, Level.MODERN));
+                locs = sc.getLocaleCoverageLocales(org, EnumSet.of(Level.MODERATE, Level.MODERN));
                 for (String loc : locs) {
-                    if (loc.equals("*") || loc.equals("mul")) {
+                    if (loc.equals("*") || loc.equals(LocaleNames.MUL)) {
                         // Skip * as wildcard
                         // Skip sandbox locale 'mul'
                         continue;
                     }
                     if (!availableLocales.contains(loc)) {
-                        warnln("Locales.txt:\t" + loc + " ("
-                            + CLDRLocale.getInstance(loc).getDisplayName()
-                            + ")" + " for " + org
-                            + " isn't in CLDR (common/main or seed).");
+                        warnln(
+                                "Locales.txt:\t"
+                                        + loc
+                                        + " ("
+                                        + CLDRLocale.getInstance(loc).getDisplayName()
+                                        + ")"
+                                        + " for "
+                                        + org
+                                        + " isn't in CLDR (common/main or seed).");
                     }
                 }
             } catch (NullPointerException npe) {

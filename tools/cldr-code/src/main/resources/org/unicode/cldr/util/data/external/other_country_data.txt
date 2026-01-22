@@ -1,5 +1,5 @@
 Code;Name;Type;Data;Source
-# the data in the case of gdp-ppp or literacy can be a country code. 
+# the data in the case of gdp-ppp or literacy can be a country code.
 # For literacy, it is copied. For gdp it is scaled.
 # the population MUST be set before gdp occurs!
 
@@ -89,6 +89,9 @@ CC;Cocos (Keeling) Islands;literacy;AU;reason
 CP;Clipperton Island;population;1;reason
 CP;Clipperton Island;gdp-ppp;FR;reason
 CP;Clipperton Island;literacy;FR;reason
+CQ;Sark;population;492;wikipedia
+CQ;Sark;gdp-ppp;21,943,200;wikipedia
+CQ;Sark;literacy;GB;wikipedia
 CX;Christmas Island;gdp-ppp;AU;reason
 CX;Christmas Island;literacy;AU;reason
 DG;Diego Garcia;population;500;reason
@@ -139,3 +142,11 @@ SX;Sint Maarten (Dutch part);literacy;NL;reason
 
 SS;South Sudan;gdp-ppp;$120000000000;worldbank-blog
 YT;Mayotte;population;194000;reason
+
+# These values are missing from the CIA Factbook as of August 2024
+AI;Anguilla;gdp-ppp;$175400000;2009 estimate from older version of CIA Factbook
+EH;Western Sahara;population;652271;July 2020 estimate from older version of CIA Factbook
+EH;Western Sahara;gdp-ppp;$906500000;2007 estimate from older version of CIA Factbook
+MS;Montserrat;gdp-ppp;$167400000;2011 estimate from older version of CIA Factbook
+SH;Saint Helena, Ascension and Tristan da Cunha;gdp-ppp;$31100000;FY09/10 estimate from older version of CIA Factbook
+WF;Wallis and Futuna;gdp-ppp;$60000000;2004 estimate from older version of CIA Factbook

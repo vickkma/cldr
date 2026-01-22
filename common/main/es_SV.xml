@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
-<!-- Copyright © 1991-2022 Unicode, Inc.
+<!-- Copyright © 1991-2025 Unicode, Inc.
 For terms of use, see http://www.unicode.org/copyright.html
-SPDX-License-Identifier: Unicode-DFS-2016
+SPDX-License-Identifier: Unicode-3.0
 CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
 -->
 <ldml>
@@ -59,10 +59,10 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<fields>
 			<field type="day">
 				<relative type="-2">antier</relative>
-				<relative type="-1">ayer</relative>
-				<relative type="0">hoy</relative>
-				<relative type="1">mañana</relative>
-				<relative type="2">pasado mañana</relative>
+				<relative type="-1">↑↑↑</relative>
+				<relative type="0">↑↑↑</relative>
+				<relative type="1">↑↑↑</relative>
+				<relative type="2">↑↑↑</relative>
 			</field>
 			<field type="dayperiod">
 				<displayName draft="contributed">a. m./p. m.</displayName>

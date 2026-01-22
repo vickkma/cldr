@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
-<!-- Copyright © 1991-2022 Unicode, Inc.
+<!-- Copyright © 1991-2025 Unicode, Inc.
 For terms of use, see http://www.unicode.org/copyright.html
-SPDX-License-Identifier: Unicode-DFS-2016
+SPDX-License-Identifier: Unicode-3.0
 CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
 -->
 <ldml>
@@ -77,6 +77,28 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="😃" type="tts">cara risulana cun ogros ispamparriados</annotation>
 		<annotation cp="😄">aberta | buca | buca risulana | cara | cara cun ogros chi rident | cara cun ogros risulanos | cara risulana cun sos ogros chi rident | fatze | iscantzada | iscantzende | risu | risulanu</annotation>
 		<annotation cp="😄" type="tts">cara risulana cun sos ogros chi rident</annotation>
+		<annotation cp="😁">cara | cara alligra cun ogros risulanos | fatze | ogros risulanos | risitu | risu | sorrisu</annotation>
+		<annotation cp="😁" type="tts">cara alligra cun ogros risulanos</annotation>
+		<annotation cp="😆">buca | cara | cara risulana cun ogros serrados | fatze | risu | risulana | risulanu</annotation>
+		<annotation cp="😆" type="tts">cara risulana cun ogros serrados</annotation>
+		<annotation cp="😅">cara | cara risulana cun gùtiu de suore | fatze | risu | risulanu | sorrisu | suore | suore fritu</annotation>
+		<annotation cp="😅" type="tts">cara risulana cun gùtiu de suore</annotation>
+		<annotation cp="🤣">cara | fatze | iscracàllios | riende | riende a iscracàllios | risu</annotation>
+		<annotation cp="🤣" type="tts">riende a iscracàllios</annotation>
+		<annotation cp="😂">cara | cara cun làgrimas dae su risu | cara cun làgrimas de cuntentesa | cuntentesa | fatze | làgrimas | riende | risu</annotation>
+		<annotation cp="😂" type="tts">cara cun làgrimas de cuntentesa</annotation>
+		<annotation cp="🙂">cara | cara cun sorrisu atzinnadu | fatze | risitu | sorrisu | sorrisu atzinnadu</annotation>
+		<annotation cp="🙂" type="tts">cara cun sorrisu atzinnadu</annotation>
+		<annotation cp="🙃">cara | cara a conca a giosso | cara a giosso | conca a giosso | fatze</annotation>
+		<annotation cp="🙃" type="tts">cara a conca a giosso</annotation>
+		<annotation cp="🫠">cara | fatze | isorta | isortu | isorvende·si | lìcuida | lìcuidu</annotation>
+		<annotation cp="🫠" type="tts">cara isorvende·si</annotation>
+		<annotation cp="😉">atzinnare | atzinnu | cara | cara chi faghet s’atzinnu | cara chi faghet s’ogritu | cara chi faghet un’ogritu | fatze | ogritu | tzinnire</annotation>
+		<annotation cp="😉" type="tts">cara chi faghet s’atzinnu</annotation>
+		<annotation cp="😊">arrubiada | arrubiadu | arrubiare | cara | cara risulana cun ogros risulanos | cuntenta | cuntentu | fatze | risulana | risulanu | sorrisu</annotation>
+		<annotation cp="😊" type="tts">cara risulana cun ogros risulanos</annotation>
+		<annotation cp="😇">ànghelu | cara | cara risulana cun chìrchinu | chìrchinu | fantasia | fatze | innotzente | risitu | risu | risulana | risulanu | sorrisu</annotation>
+		<annotation cp="😇" type="tts">cara risulana cun chìrchinu</annotation>
 		<annotation cp="😶‍🌫">cara | cara in is nues | cara in sa nèula | cara in sas nues | conca in sa nèula | conca in sas nues | fatze | fatze in is nues | fatze in sas nues | isagherada | isagheradu | isbeliada | isbeliadu</annotation>
 		<annotation cp="😶‍🌫" type="tts">cara in sas nues</annotation>
 		<annotation cp="🙄">apurada | apuradu | cara | cara cun ogros a chelu | cara cun ogros revessos | fatze | ogros | ogros a chelu | ogros revessos</annotation>
@@ -89,6 +111,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="😠" type="tts">cara arrennegada</annotation>
 		<annotation cp="🤬">arrennegada | arrennegadu | cara cun sìmbulos subra de sa buca | frastimare | frastimos | inchieta | inchietu | irrocare | irrocos</annotation>
 		<annotation cp="🤬" type="tts">cara cun sìmbulos subra de sa buca</annotation>
+		<annotation cp="😈">cara | cara risulana cun corros | corros | diauleddu | diàulu | dimonieddu | dimòniu | fantasia | fatze | iscantzada | risitu | risu | risulana | risulanu | sorrisu</annotation>
+		<annotation cp="😈" type="tts">cara risulana cun corros</annotation>
 		<annotation cp="👿">cara | cara arrennegada cun corros | cara inchieta cun corros | diauleddu | diàulu | dimonieddu | dimòniu | fantasia | fatze</annotation>
 		<annotation cp="👿" type="tts">cara inchieta cun corros</annotation>
 		<annotation cp="💀">cabitza de mortu | calavera | cara | cherbeddera | conca de mortu | concale de mortu | concorròcia | fatze | morte | mostru | paristòria</annotation>
@@ -135,8 +159,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🙉" type="tts">muninca chi no intendet su male</annotation>
 		<annotation cp="🙊">buca | cara | covechende·si sa buca | mala | male | malu | manos in buca | martinica | martinica chi non narat cosa mala | muninca | muninca a manos in buca | muninca chi non narat cosa mala | muninca covechende·si sa buca | non faeddo | non naro</annotation>
 		<annotation cp="🙊" type="tts">muninca chi non narat cosa mala</annotation>
-		<annotation cp="💋">arrubieddu | basu | belletu | lavras | marcu de basu | russetu | sinnu de basu</annotation>
-		<annotation cp="💋" type="tts">sinnu de basu</annotation>
 		<annotation cp="💌">amore | coro | lìtera | lìtera de amore | posta</annotation>
 		<annotation cp="💌" type="tts">lìtera de amore</annotation>
 		<annotation cp="💘">amore | coro | coro cun fritza | cupidu | emotzione | fritza | innamoramentu | istima</annotation>
@@ -165,6 +187,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="❤‍🩹" type="tts">coro sanende</annotation>
 		<annotation cp="❤">arrùbiu | coro | emotzione | ruju</annotation>
 		<annotation cp="❤" type="tts">coro ruju</annotation>
+		<annotation cp="🩷">amore | belledda | belleddu | bellighedda | belligheddu | coro | emotzione | istima | rosa</annotation>
+		<annotation cp="🩷" type="tts">coro rosa</annotation>
 		<annotation cp="🧡">arantzu | coro | emotzione</annotation>
 		<annotation cp="🧡" type="tts">coro arantzu</annotation>
 		<annotation cp="💛">coro | emotzione | grogu</annotation>
@@ -173,20 +197,20 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="💚" type="tts">coro birde</annotation>
 		<annotation cp="💙">asulu | biaitu | coro | emotzione</annotation>
 		<annotation cp="💙" type="tts">coro biaitu</annotation>
-		<annotation cp="💜">coro | emotzione | pùrpura | tanadu</annotation>
-		<annotation cp="💜" type="tts">coro tanadu</annotation>
 		<annotation cp="🩵">asulu | biaitu | birde abba | cianu | coro | emotzione | turchesu</annotation>
 		<annotation cp="🩵" type="tts">coro asulu</annotation>
-		<annotation cp="🩶">bizarra | coro | murru | pedrabbàina | pisarra | prata</annotation>
-		<annotation cp="🩶" type="tts">coro murru</annotation>
-		<annotation cp="🩷">amore | belledda | belleddu | bellighedda | belligheddu | coro | emotzione | istima | rosa</annotation>
-		<annotation cp="🩷" type="tts">coro rosa</annotation>
+		<annotation cp="💜">coro | emotzione | pùrpura | tanadu</annotation>
+		<annotation cp="💜" type="tts">coro tanadu</annotation>
 		<annotation cp="🤎">baju | castàngiu | coro | emotzione</annotation>
 		<annotation cp="🤎" type="tts">coro castàngiu</annotation>
 		<annotation cp="🖤">coro | dolore | nieddu | tristura</annotation>
 		<annotation cp="🖤" type="tts">coro nieddu</annotation>
+		<annotation cp="🩶">bizarra | coro | murru | pedrabbàina | pisarra | prata</annotation>
+		<annotation cp="🩶" type="tts">coro murru</annotation>
 		<annotation cp="🤍">arbu | biancu | coro | emotzione</annotation>
 		<annotation cp="🤍" type="tts">coro biancu</annotation>
+		<annotation cp="💋">arrubieddu | basu | belletu | lavras | marcu de basu | russetu | sinnu de basu</annotation>
+		<annotation cp="💋" type="tts">sinnu de basu</annotation>
 		<annotation cp="💯">100 | puntègiu prenu | puntos</annotation>
 		<annotation cp="💯" type="tts">100 puntos</annotation>
 		<annotation cp="💢">arrennegu | collobbiada | crepe | fele | fumetos | inchietesa | rajolu | renigna | sìmbulu de s’arrennegu</annotation>
@@ -201,8 +225,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="💨" type="tts">fuida lestra</annotation>
 		<annotation cp="🕳">istampu</annotation>
 		<annotation cp="🕳" type="tts">istampu</annotation>
-		<annotation cp="💣">bomba | emotzione | fumetos | fumetu</annotation>
-		<annotation cp="💣" type="tts">bomba</annotation>
 		<annotation cp="💬">diàlogu | fumetos | fumetu | nuedda | nuedda de diàlogu | nuedda de testu | testu</annotation>
 		<annotation cp="💬" type="tts">nuedda</annotation>
 		<annotation cp="👁‍🗨">diàlogu | fumetos | fumetu | nuedda | nuedda de diàlogu | nuedda de testu | ogru | ogru in una nuedda | testimòngia | testimòngiu | testu</annotation>
@@ -213,7 +235,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🗯" type="tts">nuedda de diàlogu inchietu a destra</annotation>
 		<annotation cp="💭">fumetos | fumetu | nuedda | nuedda de pensamentu | pensamentu</annotation>
 		<annotation cp="💭" type="tts">nuedda de pensamentu</annotation>
-		<annotation cp="💤">corroschiare | cosconare | currungiare | forroschiare | fumetos | fumetu | roncare | roschidare | ruschidare | sonnu | sorroscrare | zzz | Zzz</annotation>
+		<annotation cp="💤">corroschiare | cosconare | currungiare | forroschiare | fumetos | fumetu | roncare | roschidare | ruschidare | sonnu | sorroscrare | Zzz</annotation>
 		<annotation cp="💤" type="tts">Zzz</annotation>
 		<annotation cp="🦵">anca | cadrigulada | carche | carcheddu | càrchida | càrchide | càrchidu | fichida de pee | isticada de pee | mermu | peada | pee | punta de pee</annotation>
 		<annotation cp="🦵" type="tts">anca</annotation>
@@ -501,10 +523,12 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🦜" type="tts">papagallu</annotation>
 		<annotation cp="🪽">ala | angèlica | angèlicu | aviatzione | bolu | mitologia | pugione</annotation>
 		<annotation cp="🪽" type="tts">ala</annotation>
-		<annotation cp="🪿">coca | croculare | cròculu | oca | pugione | tontìghine</annotation>
-		<annotation cp="🪿" type="tts">oca</annotation>
 		<annotation cp="🐦‍⬛">carroga | corbu | corranca | corrancra | corronca | nieddu | pugione</annotation>
 		<annotation cp="🐦‍⬛" type="tts">pugione nieddu</annotation>
+		<annotation cp="🪿">coca | croculare | cròculu | oca | pugione | tontìghine</annotation>
+		<annotation cp="🪿" type="tts">oca</annotation>
+		<annotation cp="🐦‍🔥">fantasia | fenitze | pugione | pugione de fogu | reincarnatzione | renàschida | rinàschida</annotation>
+		<annotation cp="🐦‍🔥" type="tts">fenitze</annotation>
 		<annotation cp="🐸">animale | cara | fatze | rana</annotation>
 		<annotation cp="🐸" type="tts">rana</annotation>
 		<annotation cp="🐊">animale | cocodrillu</annotation>
@@ -633,6 +657,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🪹" type="tts">nidu bòidu</annotation>
 		<annotation cp="🪺">nidificatzione | nidu | nidu cun oos</annotation>
 		<annotation cp="🪺" type="tts">nidu cun oos</annotation>
+		<annotation cp="🍄">antunna | buletu | cardulinu | cugumeddu</annotation>
+		<annotation cp="🍄" type="tts">cardulinu</annotation>
 		<annotation cp="🍇">àghina | budrone | frùtora | ua</annotation>
 		<annotation cp="🍇" type="tts">àghina</annotation>
 		<annotation cp="🍈">frùtora | melone</annotation>
@@ -695,8 +721,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🧄" type="tts">àgiu</annotation>
 		<annotation cp="🧅">chibudda | gustu | isaboriare | nuscos | sabore</annotation>
 		<annotation cp="🧅" type="tts">chibudda</annotation>
-		<annotation cp="🍄">antunna | buletu | cardulinu | cugumeddu</annotation>
-		<annotation cp="🍄" type="tts">cardulinu</annotation>
 		<annotation cp="🥜">birdura | màndigu | nutzola americana | nutzolas americanas</annotation>
 		<annotation cp="🥜" type="tts">nutzolas americanas</annotation>
 		<annotation cp="🫘">fasolos | fasolu | legùmenes | màndigu</annotation>
@@ -805,7 +829,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🧱" type="tts">matone</annotation>
 		<annotation cp="🪨">coròngiu | pedra | perda | pesante | preda | roca | sòlida | sòlidu</annotation>
 		<annotation cp="🪨" type="tts">roca</annotation>
-		<annotation cp="🪵">cotighina | cotzighina | cotzigone, cotzinàrgiu | cotzina | linna | linnàmene | mutzigone | mutzu | truncu | tzompa</annotation>
+		<annotation cp="🪵">cotighina | cotzighina | cotzigone | cotzina | cotzinàrgiu | linna | linnàmene | mutzigone | mutzu | truncu | tzompa</annotation>
 		<annotation cp="🪵" type="tts">linna</annotation>
 		<annotation cp="🛖">barraca | domo | iurta | pinneta | pinnetu</annotation>
 		<annotation cp="🛖" type="tts">pinnetu</annotation>
@@ -1313,16 +1337,14 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🪀" type="tts">yo-yo</annotation>
 		<annotation cp="🪁">abbilone | bolare | cometa | pranare</annotation>
 		<annotation cp="🪁" type="tts">abbilone</annotation>
+		<annotation cp="🔫">abba | arma | pistola | pistola a abba | traste | trastu</annotation>
+		<annotation cp="🔫" type="tts">pistola a abba</annotation>
 		<annotation cp="🎱">8 | billiardu | botza | botza de billiardu | botza de billiardu de 8 | giogu | oto</annotation>
 		<annotation cp="🎱" type="tts">botza de billiardu de 8</annotation>
 		<annotation cp="🔮">addeinòngiu | aina | benidore | cristallu | destinu | fantasia | fortuna | isfera | isfera de cristallu | paristòria</annotation>
 		<annotation cp="🔮" type="tts">isfera de cristallu</annotation>
 		<annotation cp="🪄">bachita màgica | brùscia | brùsciu | coga | cogu | maia | majàrgia | majàrgiu</annotation>
 		<annotation cp="🪄" type="tts">bachita màgica</annotation>
-		<annotation cp="🧿">breve | coco | fortile | iscapolàriu | mumughe | nazar | ogru malu | pastagna | pinnadellu | punga | sebeste</annotation>
-		<annotation cp="🧿" type="tts">nazar</annotation>
-		<annotation cp="🪬">amparu | breve | coco | Fàtima | fortile | iscapolàriu | manu | manu de Fàtima | Maria | Miriam | mumughe | pastagna | pinnadellu | punga | sebeste</annotation>
-		<annotation cp="🪬" type="tts">manu de Fàtima</annotation>
 		<annotation cp="🎮">controlladore | giogu | videogiogu</annotation>
 		<annotation cp="🎮" type="tts">videogiogu</annotation>
 		<annotation cp="🕹">giogu | joystick | leva de giogu | videogiogu</annotation>
@@ -1413,8 +1435,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👚" type="tts">bestire de fèmina</annotation>
 		<annotation cp="🪭">afogu | agitare | ballu | bentàlliu | bentulare | birgongiosa | birgongiosu | infriscare | isbentulare | mòere àera | timidesa | ventàlliu</annotation>
 		<annotation cp="🪭" type="tts">ventàlliu</annotation>
-		<annotation cp="🪮">afro | petenare | pètene | pilos</annotation>
-		<annotation cp="🪮" type="tts">pètene</annotation>
 		<annotation cp="👛">bestimenta | bussighedda | bussiotu | dinare | dinari | moneda | monedas | taschinu</annotation>
 		<annotation cp="👛" type="tts">taschinu</annotation>
 		<annotation cp="👜">bestimenta | bursa | bussa | bussedda | bussighedda</annotation>
@@ -1443,6 +1463,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🩰" type="tts">iscarpitas pro ballerinas</annotation>
 		<annotation cp="👢">bestimenta | bota | bota de fèmina | fèmina | iscarpa</annotation>
 		<annotation cp="👢" type="tts">bota de fèmina</annotation>
+		<annotation cp="🪮">afro | petenare | pètene | pilos</annotation>
+		<annotation cp="🪮" type="tts">pètene</annotation>
 		<annotation cp="👑">bestimenta | corona | re | rei | reina</annotation>
 		<annotation cp="👑" type="tts">corona</annotation>
 		<annotation cp="👒">bestimenta | bonete | bonete de fèmina | capeddu | capeddu de fèmina | fèmina</annotation>
@@ -1503,14 +1525,14 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="📻" type="tts">ràdiu</annotation>
 		<annotation cp="🎷">istrumentu | istrumentu musicale | mùsica | sassòfonu</annotation>
 		<annotation cp="🎷" type="tts">sassòfonu</annotation>
+		<annotation cp="🎺">istrumentu | istrumentu musicale | mùsica | trumba</annotation>
+		<annotation cp="🎺" type="tts">trumba</annotation>
 		<annotation cp="🪗">fisarmònica | organeddu | organete | organitu | soneddu | sonetu | sonu</annotation>
 		<annotation cp="🪗" type="tts">organitu</annotation>
 		<annotation cp="🎸">chitarra | chiterra | istrumentu | istrumentu musicale | mùsica</annotation>
 		<annotation cp="🎸" type="tts">chiterra</annotation>
 		<annotation cp="🎹">istrumentu | istrumentu musicale | mùsica | pianoforte | pianu | tastieras | tecladu | tecladu musicale</annotation>
 		<annotation cp="🎹" type="tts">tecladu musicale</annotation>
-		<annotation cp="🎺">istrumentu | istrumentu musicale | mùsica | trumba</annotation>
-		<annotation cp="🎺" type="tts">trumba</annotation>
 		<annotation cp="🎻">istrumentu | istrumentu musicale | mùsica | violinu</annotation>
 		<annotation cp="🎻" type="tts">violinu</annotation>
 		<annotation cp="🪕">banjo | istrumentu | istrumentu a cordas | istrumentu musicale | mùsica</annotation>
@@ -1523,6 +1545,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🪇" type="tts">maracas</annotation>
 		<annotation cp="🪈">flàutu | istrumentu | istrumentu musicale | mùsica | otavinu | pìferu | pimpiriolu | pipajolu | sonedda | sonos de canna | trobedda | truedda</annotation>
 		<annotation cp="🪈" type="tts">flàutu</annotation>
+		<annotation cp="🪉">arpa | cupidu | istrumentu | istrumentu musicale | mùsica | orchestra amore</annotation>
+		<annotation cp="🪉" type="tts">arpa</annotation>
 		<annotation cp="📱">telefoneddu | telèfono | telèfono mòbile | telèfonu | telèfonu mòbile | tzellulare</annotation>
 		<annotation cp="📱" type="tts">telefoneddu</annotation>
 		<annotation cp="📲">fritza | mutida | mutida in intrada | retzende | telefoneddu | telefoneddu cun fritza | telèfono | telèfonu | telèfonu mòbile</annotation>
@@ -1629,10 +1653,10 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🔖" type="tts">sinnalibru</annotation>
 		<annotation cp="🏷">eticheta</annotation>
 		<annotation cp="🏷" type="tts">eticheta</annotation>
-		<annotation cp="💰">dinare | dinari | dòllaru | sacu | sacu de dinare | sacu de dinari</annotation>
-		<annotation cp="💰" type="tts">sacu de dinare</annotation>
 		<annotation cp="🪙">ascusòrgiu | dinare | dinari | metallu | moneda | oro | prata | siddadu</annotation>
 		<annotation cp="🪙" type="tts">moneda</annotation>
+		<annotation cp="💰">dinare | dinari | dòllaru | sacu | sacu de dinare | sacu de dinari</annotation>
+		<annotation cp="💰" type="tts">sacu de dinare</annotation>
 		<annotation cp="💴">banconota | banconota in yen | dinare | dinari | moneda | yen</annotation>
 		<annotation cp="💴" type="tts">banconota in yen</annotation>
 		<annotation cp="💵">banconota | banconota in dòllaros | dinare | dinari | dòllaros | dòllaru | moneda</annotation>
@@ -1761,8 +1785,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🗡" type="tts">istocu</annotation>
 		<annotation cp="⚔">arma | armas | irrugadas | ispadas | rugradas</annotation>
 		<annotation cp="⚔" type="tts">ispadas rugradas</annotation>
-		<annotation cp="🔫">abba | arma | pistola | pistola a abba | traste | trastu</annotation>
-		<annotation cp="🔫" type="tts">pistola a abba</annotation>
+		<annotation cp="💣">bomba | emotzione | fumetos | fumetu</annotation>
+		<annotation cp="💣" type="tts">bomba</annotation>
 		<annotation cp="🪃">austràlia | boomerang | rebbàtida | rebòtiu</annotation>
 		<annotation cp="🪃" type="tts">boomerang</annotation>
 		<annotation cp="🏹">arcu | arcu e fritza | artzeri | fritza | sagitàriu | zodìacu</annotation>
@@ -1787,6 +1811,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🦯" type="tts">bàculu pro tzegos</annotation>
 		<annotation cp="🔗">cadena | duos aneddos | ligàmene</annotation>
 		<annotation cp="🔗" type="tts">ligàmene</annotation>
+		<annotation cp="⛓‍💥">cadena | cadena segada | cadena truncada | libertade | segare | truncare</annotation>
+		<annotation cp="⛓‍💥" type="tts">cadena truncada</annotation>
 		<annotation cp="⛓">cadena | cadenas</annotation>
 		<annotation cp="⛓" type="tts">cadenas</annotation>
 		<annotation cp="🪝">càncaru | carabatu | crocu | gantzu | grocu | rampinu | satzu | unchinu | ùnchinu</annotation>
@@ -1883,6 +1909,10 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🪦" type="tts">losa</annotation>
 		<annotation cp="⚱">chisina | funerale | morte | urna | urna funerària</annotation>
 		<annotation cp="⚱" type="tts">urna funerària</annotation>
+		<annotation cp="🧿">breve | coco | fortile | iscapolàriu | mumughe | nazar | ogru malu | pastagna | pinnadellu | punga | sebeste</annotation>
+		<annotation cp="🧿" type="tts">nazar</annotation>
+		<annotation cp="🪬">amparu | breve | coco | Fàtima | fortile | iscapolàriu | manu | manu de Fàtima | Maria | Miriam | mumughe | pastagna | pinnadellu | punga | sebeste</annotation>
+		<annotation cp="🪬" type="tts">manu de Fàtima</annotation>
 		<annotation cp="🗿">cara | fatze | istàtua | ìsula de Pasca | moai | moai de s’ìsula de Pasca | moyai</annotation>
 		<annotation cp="🗿" type="tts">moai</annotation>
 		<annotation cp="🪧">cartellu | corteu | manifestatzione | pichetu | protesta | signale | sinnale</annotation>
@@ -2079,12 +2109,12 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🔆" type="tts">butone de luminosidade arta</annotation>
 		<annotation cp="📶">barras de signale | barras de sinnale | istangas | istangas de signale | istangas de sinnale | retze | signale | sinnale | telefoneddu | telefoninu | telèfono | telèfonu | tzellulare</annotation>
 		<annotation cp="📶" type="tts">istangas de sinnale</annotation>
+		<annotation cp="🛜">elaboradore | ìnternet | rete | rete chene filos | retza | retza chene filos | retze chene filos | wi-fi | wifi</annotation>
+		<annotation cp="🛜" type="tts">retze chene filos</annotation>
 		<annotation cp="📳">modalidade de vibratzione | telefoneddu | telefoninu | telèfono | telèfonu | tzellulare | vibratzione</annotation>
 		<annotation cp="📳" type="tts">modalidade de vibratzione</annotation>
 		<annotation cp="📴">disativadu | istudadu | mortu | off | telefoneddu | telèfoneddu mortu | telefoninu | telèfono | telèfonu</annotation>
 		<annotation cp="📴" type="tts">telefoneddu istudadu</annotation>
-		<annotation cp="🛜">elaboradore | ìnternet | rete | rete chene filos | retza | retza chene filos | retze chene filos | wi-fi | wifi</annotation>
-		<annotation cp="🛜" type="tts">retze chene filos</annotation>
 		<annotation cp="♀">fèmina | gènere femininu | natura feminina | sìmbulu femininu</annotation>
 		<annotation cp="♀" type="tts">sìmbulu femininu</annotation>
 		<annotation cp="♂">gènere masculinu | natura masculina | òmine | sìmbulu masculinu</annotation>
@@ -2187,7 +2217,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🏳" type="tts">bandera bianca</annotation>
 		<annotation cp="🏳‍🌈">arcu de chelu | bandera de s’arcu de chelu | chirchiola</annotation>
 		<annotation cp="🏳‍🌈" type="tts">bandera de s’arcu de chelu</annotation>
-		<annotation cp="🏳‍⚧">bandera asulu, biancu e rosa | bandera de sos transgèneres | transgènere | transgèneres</annotation>
+		<annotation cp="🏳‍⚧">bandera asulu | bandera de sos transgèneres | biancu e rosa | transgènere | transgèneres</annotation>
 		<annotation cp="🏳‍⚧" type="tts">bandera de sos transgèneres</annotation>
 		<annotation cp="🏴‍☠">ascusòrgiu | bandera de sos piratas | botinu | corsaros | corsaru | Jolly Roger | pirata | piratas | siddadu</annotation>
 		<annotation cp="🏴‍☠" type="tts">bandera de sos piratas</annotation>
@@ -2213,6 +2243,16 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="₽" type="tts">rublu</annotation>
 		<annotation cp="₿">bitcoin | BTC | criptovaluta</annotation>
 		<annotation cp="₿" type="tts">bitcoin</annotation>
+		<annotation cp="0⃣" type="tts">tecla: 0</annotation>
+		<annotation cp="1⃣" type="tts">tecla: 1</annotation>
+		<annotation cp="2⃣" type="tts">tecla: 2</annotation>
+		<annotation cp="3⃣" type="tts">tecla: 3</annotation>
+		<annotation cp="4⃣" type="tts">tecla: 4</annotation>
+		<annotation cp="5⃣" type="tts">tecla: 5</annotation>
+		<annotation cp="6⃣" type="tts">tecla: 6</annotation>
+		<annotation cp="7⃣" type="tts">tecla: 7</annotation>
+		<annotation cp="8⃣" type="tts">tecla: 8</annotation>
+		<annotation cp="9⃣" type="tts">tecla: 9</annotation>
 		<annotation cp="¹">àpitze | nùmeru unu in àpitze | punta | unu</annotation>
 		<annotation cp="¹" type="tts">nùmeru unu in àpitze</annotation>
 		<annotation cp="²">a su cuadradu | àpitze | duos | nùmeru duos in àpitze | punta | valore cuardadu</annotation>

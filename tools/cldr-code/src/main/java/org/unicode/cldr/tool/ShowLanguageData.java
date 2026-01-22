@@ -2,10 +2,10 @@ package org.unicode.cldr.tool;
 
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRPaths;
 import org.unicode.cldr.util.Counter;
+import org.unicode.cldr.util.NameType;
 import org.unicode.cldr.util.SimpleFactory;
 import org.unicode.cldr.util.SupplementalDataInfo;
 import org.unicode.cldr.util.SupplementalDataInfo.OfficialStatus;
@@ -13,7 +13,8 @@ import org.unicode.cldr.util.SupplementalDataInfo.PopulationData;
 
 public class ShowLanguageData {
 
-    static SupplementalDataInfo data = SupplementalDataInfo.getInstance(CLDRPaths.SUPPLEMENTAL_DIRECTORY);
+    static SupplementalDataInfo data =
+            SupplementalDataInfo.getInstance(CLDRPaths.SUPPLEMENTAL_DIRECTORY);
     static CLDRFile english = SimpleFactory.makeFile("en", CLDRPaths.MAIN_DIRECTORY, true);
 
     public static void main(String[] args) {
@@ -29,7 +30,8 @@ public class ShowLanguageData {
                 if (langCounter == null) {
                     map.put(territory, langCounter = new Counter<>());
                 }
-                PopulationData popData = data.getLanguageAndTerritoryPopulationData(language, territory);
+                PopulationData popData =
+                        data.getLanguageAndTerritoryPopulationData(language, territory);
                 OfficialStatus status = popData.getOfficialStatus();
                 if (!status.isMajor()) {
                     continue;
@@ -46,9 +48,17 @@ public class ShowLanguageData {
             }
             for (String language : langCounter.getKeysetSortedByCount(false)) {
                 long litPop = langCounter.getCount(language);
-                System.out.println(language + "\t" + english.getName(language)
-                    + "\t" + territory + "\t" + english.getName(CLDRFile.TERRITORY_NAME, territory)
-                    + "\t" + litPop / (double) total);
+                System.out.println(
+                        language
+                                + "\t"
+                                + english.nameGetter().getNameFromIdentifier(language)
+                                + "\t"
+                                + territory
+                                + "\t"
+                                + english.nameGetter()
+                                        .getNameFromTypeEnumCode(NameType.TERRITORY, territory)
+                                + "\t"
+                                + litPop / (double) total);
             }
         }
     }

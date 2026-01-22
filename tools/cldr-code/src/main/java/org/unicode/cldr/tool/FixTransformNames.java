@@ -1,5 +1,8 @@
 package org.unicode.cldr.tool;
 
+import com.ibm.icu.impl.Relation;
+import com.ibm.icu.lang.UScript;
+import com.ibm.icu.text.Transliterator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
 import org.unicode.cldr.util.CLDRConfig;
 import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRTransforms;
@@ -18,13 +20,10 @@ import org.unicode.cldr.util.CLDRTransforms.Direction;
 import org.unicode.cldr.util.CLDRTransforms.ParsedTransformID;
 import org.unicode.cldr.util.CLDRTransforms.Visibility;
 import org.unicode.cldr.util.LanguageTagParser;
+import org.unicode.cldr.util.NameType;
 import org.unicode.cldr.util.StandardCodes;
 import org.unicode.cldr.util.StandardCodes.CodeType;
 import org.unicode.cldr.util.With;
-
-import com.ibm.icu.impl.Relation;
-import com.ibm.icu.lang.UScript;
-import com.ibm.icu.text.Transliterator;
 
 public class FixTransformNames {
     CLDRConfig testInfo = ToolConfig.getToolInstance();
@@ -43,7 +42,7 @@ public class FixTransformNames {
     private void run(String[] args) {
         CLDRFile file = testInfo.getEnglish();
         for (String lang : StandardCodes.make().getAvailableCodes(CodeType.language)) {
-            String name = file.getName(lang);
+            String name = file.nameGetter().getNameFromIdentifier(lang);
             if (!name.equals(lang)) {
                 fieldToCode.put(name, lang);
                 languageCodes.add(lang);
@@ -67,7 +66,8 @@ public class FixTransformNames {
         addX(fieldToVariant, "-x0-", "", "NFC NFD NFKC NFKD FCC FCD FullWidth Halfwidth");
         addX(fieldToVariant, "-x0-", "", "Null Remove");
         addX(fieldToVariant, "-x0-", "", "Accents Publishing Name");
-        //exceptions.put("Latin-ConjoiningJamo", "und-t-und-Latn-m0-conjamo"); // Conjoining Jamo - internal
+        // exceptions.put("Latin-ConjoiningJamo", "und-t-und-Latn-m0-conjamo"); // Conjoining Jamo -
+        // internal
         /*
             <transformName type="BGN">BGN</transformName>
             <transformName type="Numeric">Numeric</transformName>
@@ -100,8 +100,9 @@ public class FixTransformNames {
 
          */
 
-        //CLDRTransforms transforms = CLDRTransforms.getInstance();
-        Relation<String, String> missing = Relation.of(new TreeMap<String, Set<String>>(), TreeSet.class);
+        // CLDRTransforms transforms = CLDRTransforms.getInstance();
+        Relation<String, String> missing =
+                Relation.of(new TreeMap<String, Set<String>>(), TreeSet.class);
         Set<String> found = new TreeSet<>();
         Map<String, String> allFields = new TreeMap<>();
         Map<String, String> specialFields = new TreeMap<>();
@@ -124,7 +125,7 @@ public class FixTransformNames {
             }
         }
         Set<String> icuOnlyIds = new TreeSet<>();
-        for (Enumeration<String> x = Transliterator.getAvailableIDs(); x.hasMoreElements();) {
+        for (Enumeration<String> x = Transliterator.getAvailableIDs(); x.hasMoreElements(); ) {
             String icuId = x.nextElement();
             if (!cldrIds.contains(icuId)) {
                 icuOnlyIds.add(icuId);
@@ -189,7 +190,16 @@ public class FixTransformNames {
             if (bcp47.contains("?")) {
                 continue;
             }
-            found.add(bcp47 + "\t" + getName(target) + "\t" + getName(source) + "\t" + variant + "\t" + original);
+            found.add(
+                    bcp47
+                            + "\t"
+                            + getName(target)
+                            + "\t"
+                            + getName(source)
+                            + "\t"
+                            + variant
+                            + "\t"
+                            + original);
         }
 
         System.out.println("\nAll Fields");
@@ -214,7 +224,8 @@ public class FixTransformNames {
         }
     }
 
-    private void addX(Map<String, String> oldToNewVariant2, String type, String prefix, String items) {
+    private void addX(
+            Map<String, String> oldToNewVariant2, String type, String prefix, String items) {
         for (String part : items.split("\\s+")) {
             String target = prefix + part.toLowerCase(Locale.ENGLISH);
             if (target.length() > 8) {
@@ -234,25 +245,25 @@ public class FixTransformNames {
         ltp.set(target);
         if (ltp.getLanguage().equals("und")) {
             String result = "";
-            result = add(result, CLDRFile.SCRIPT_NAME, ltp.getScript());
-            result = add(result, CLDRFile.TERRITORY_NAME, ltp.getRegion());
+            result = add(result, NameType.SCRIPT, ltp.getScript());
+            result = add(result, NameType.TERRITORY, ltp.getRegion());
             for (String v : ltp.getVariants()) {
-                result = add(result, CLDRFile.VARIANT_NAME, v);
+                result = add(result, NameType.VARIANT, v);
             }
             return result;
         }
-        return english.getName(target.replace('-', '_'));
+        return english.nameGetter().getNameFromIdentifier(target.replace('-', '_'));
     }
 
-    private String add(String result, int type, String code) {
+    private String add(String result, NameType type, String code) {
         if (code.isEmpty()) {
             return result;
         }
         if (result.length() != 0) {
             result += ", ";
         }
-        String temp = english.getName(type, code);
-        if (type == CLDRFile.SCRIPT_NAME && fieldToCode.containsKey(temp)) {
+        String temp = english.nameGetter().getNameFromTypeEnumCode(type, code);
+        if (type == NameType.SCRIPT && fieldToCode.containsKey(temp)) {
             temp += "*";
         }
         return result + (temp == null ? code : temp);
@@ -272,10 +283,12 @@ public class FixTransformNames {
     private Set<String> getCldrIds(Set<String> internal) {
         Set<String> result = new LinkedHashSet<>();
         for (String s : CLDRTransforms.getAvailableIds()) {
-            //String dir;
+            // String dir;
             ParsedTransformID directionInfo = new ParsedTransformID();
-            //String rules = CLDRTransforms.getIcuRulesFromXmlFile(CLDRTransforms.TRANSFORM_DIR, s, directionInfo);
-            Set<String> store = directionInfo.getVisibility() == Visibility.external ? result : internal;
+            // String rules = CLDRTransforms.getIcuRulesFromXmlFile(CLDRTransforms.TRANSFORM_DIR, s,
+            // directionInfo);
+            Set<String> store =
+                    directionInfo.getVisibility() == Visibility.external ? result : internal;
             if (directionInfo.getDirection() != Direction.backward) {
                 store.add(directionInfo.getId());
             }
@@ -296,9 +309,9 @@ public class FixTransformNames {
             variant = "-fonipa";
         }
         if (field.equals("es_419")
-            || field.equals("ja_Latn")
-            || field.equals("zh_Latn")
-            || field.equals("und-Latn")) {
+                || field.equals("ja_Latn")
+                || field.equals("zh_Latn")
+                || field.equals("und-Latn")) {
             return field.replace("_", "-");
         }
         int source = UScript.getCodeFromName(field);
@@ -317,5 +330,4 @@ public class FixTransformNames {
         }
         return "??" + field;
     }
-
 }

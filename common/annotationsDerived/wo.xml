@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
-<!-- Copyright © 1991-2022 Unicode, Inc.
+<!-- Copyright © 1991-2025 Unicode, Inc.
 For terms of use, see http://www.unicode.org/copyright.html
-SPDX-License-Identifier: Unicode-DFS-2016
+SPDX-License-Identifier: Unicode-3.0
 CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
+
+Derived short names and annotations, using GenerateDerivedAnnotations.java. See warnings in /annotations/ file.
 -->
-<!-- Derived short names and annotations, using GenerateDerivedAnnotations.java. See warnings in /annotations/ file. -->
 <ldml>
 	<identity>
 		<version number="$Revision$"/>
@@ -112,15 +113,25 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👌🏾" type="tts">laxo waaw-kay: xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="👌🏿">laxo waaw-kay | loxo | waaw-kay | xeesaayu der bu ñuul</annotation>
 		<annotation cp="👌🏿" type="tts">laxo waaw-kay: xeesaayu der bu ñuul</annotation>
-		<annotation cp="✌🏻">loxo | ndam | v | xeesaayu der bu woyof</annotation>
+		<annotation cp="🤌🏻">xeesaayu der bu woyof</annotation>
+		<annotation cp="🤌🏻" type="tts">dompat baaraam: xeesaayu der bu woyof</annotation>
+		<annotation cp="🤌🏼">xeesaayu der bu xeereer</annotation>
+		<annotation cp="🤌🏼" type="tts">dompat baaraam: xeesaayu der bu xeereer</annotation>
+		<annotation cp="🤌🏽">xeesaayu der bu yam</annotation>
+		<annotation cp="🤌🏽" type="tts">dompat baaraam: xeesaayu der bu yam</annotation>
+		<annotation cp="🤌🏾">xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🤌🏾" type="tts">dompat baaraam: xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🤌🏿">xeesaayu der bu ñuul</annotation>
+		<annotation cp="🤌🏿" type="tts">dompat baaraam: xeesaayu der bu ñuul</annotation>
+		<annotation cp="✌🏻">jaam | jaam loxo | ndam | v | xeesaayu der bu woyof</annotation>
 		<annotation cp="✌🏻" type="tts">loxo ndam: xeesaayu der bu woyof</annotation>
-		<annotation cp="✌🏼">loxo | ndam | v | xeesaayu der bu xeereer</annotation>
+		<annotation cp="✌🏼">jaam | jaam loxo | ndam | v | xeesaayu der bu xeereer</annotation>
 		<annotation cp="✌🏼" type="tts">loxo ndam: xeesaayu der bu xeereer</annotation>
-		<annotation cp="✌🏽">loxo | ndam | v | xeesaayu der bu yam</annotation>
+		<annotation cp="✌🏽">jaam | jaam loxo | ndam | v | xeesaayu der bu yam</annotation>
 		<annotation cp="✌🏽" type="tts">loxo ndam: xeesaayu der bu yam</annotation>
-		<annotation cp="✌🏾">loxo | ndam | v | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="✌🏾">jaam | jaam loxo | ndam | v | xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="✌🏾" type="tts">loxo ndam: xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="✌🏿">loxo | ndam | v | xeesaayu der bu ñuul</annotation>
+		<annotation cp="✌🏿">jaam | jaam loxo | ndam | v | xeesaayu der bu ñuul</annotation>
 		<annotation cp="✌🏿" type="tts">loxo ndam: xeesaayu der bu ñuul</annotation>
 		<annotation cp="🤞🏻">baaraam | laxasante ñaari baaraam | loxo | wërsëk | xeesaayu der bu woyof</annotation>
 		<annotation cp="🤞🏻" type="tts">laxasante ñaari baaraam: xeesaayu der bu woyof</annotation>
@@ -443,15 +454,15 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👧🏿">ndaw | sojak | Wirgo | xale bu jigéen | xeesaayu der bu ñuul</annotation>
 		<annotation cp="👧🏿" type="tts">xale bu jigéen: xeesaayu der bu ñuul</annotation>
 		<annotation cp="🧑🏻">du góor du jigéen | mag | xeesaayu der bu woyof</annotation>
-		<annotation cp="🧑🏻" type="tts">mag: xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏻" type="tts">nit: xeesaayu der bu woyof</annotation>
 		<annotation cp="🧑🏼">du góor du jigéen | mag | xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏼" type="tts">mag: xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏼" type="tts">nit: xeesaayu der bu xeereer</annotation>
 		<annotation cp="🧑🏽">du góor du jigéen | mag | xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏽" type="tts">mag: xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽" type="tts">nit: xeesaayu der bu yam</annotation>
 		<annotation cp="🧑🏾">du góor du jigéen | mag | xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏾" type="tts">mag: xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏾" type="tts">nit: xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="🧑🏿">du góor du jigéen | mag | xeesaayu der bu ñuul</annotation>
-		<annotation cp="🧑🏿" type="tts">mag: xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏿" type="tts">nit: xeesaayu der bu ñuul</annotation>
 		<annotation cp="👱🏻">karaw gu mboq | nit ku karaw yu weex | xeesaayu der bu woyof</annotation>
 		<annotation cp="👱🏻" type="tts">nit ku karaw yu weex: xeesaayu der bu woyof</annotation>
 		<annotation cp="👱🏼">karaw gu mboq | nit ku karaw yu weex | xeesaayu der bu xeereer</annotation>
@@ -462,86 +473,166 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👱🏾" type="tts">nit ku karaw yu weex: xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="👱🏿">karaw gu mboq | nit ku karaw yu weex | xeesaayu der bu ñuul</annotation>
 		<annotation cp="👱🏿" type="tts">nit ku karaw yu weex: xeesaayu der bu ñuul</annotation>
-		<annotation cp="🧑🏻‍❤‍💋‍🧑🏼">fóon | góor ak jigéen | mag | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏻‍❤‍💋‍🧑🏼" type="tts">fóon: mag, mag, xeesaayu der bu woyof, xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏻‍❤‍💋‍🧑🏽">fóon | góor ak jigéen | mag | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏻‍❤‍💋‍🧑🏽" type="tts">fóon: mag, mag, xeesaayu der bu woyof, xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏻‍❤‍💋‍🧑🏾">fóon | góor ak jigéen | mag | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏻‍❤‍💋‍🧑🏾" type="tts">fóon: mag, mag, xeesaayu der bu woyof, xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏻‍❤‍💋‍🧑🏿">fóon | góor ak jigéen | mag | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
-		<annotation cp="🧑🏻‍❤‍💋‍🧑🏿" type="tts">fóon: mag, mag, xeesaayu der bu woyof, xeesaayu der bu ñuul</annotation>
-		<annotation cp="🧑🏼‍❤‍💋‍🧑🏻">fóon | góor ak jigéen | mag | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏼‍❤‍💋‍🧑🏻" type="tts">fóon: mag, mag, xeesaayu der bu xeereer, xeesaayu der bu woyof</annotation>
-		<annotation cp="🧑🏼‍❤‍💋‍🧑🏽">fóon | góor ak jigéen | mag | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏼‍❤‍💋‍🧑🏽" type="tts">fóon: mag, mag, xeesaayu der bu xeereer, xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏼‍❤‍💋‍🧑🏾">fóon | góor ak jigéen | mag | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏼‍❤‍💋‍🧑🏾" type="tts">fóon: mag, mag, xeesaayu der bu xeereer, xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏼‍❤‍💋‍🧑🏿">fóon | góor ak jigéen | mag | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏼‍❤‍💋‍🧑🏿" type="tts">fóon: mag, mag, xeesaayu der bu xeereer, xeesaayu der bu ñuul</annotation>
-		<annotation cp="🧑🏽‍❤‍💋‍🧑🏻">fóon | góor ak jigéen | mag | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏽‍❤‍💋‍🧑🏻" type="tts">fóon: mag, mag, xeesaayu der bu yam, xeesaayu der bu woyof</annotation>
-		<annotation cp="🧑🏽‍❤‍💋‍🧑🏼">fóon | góor ak jigéen | mag | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏽‍❤‍💋‍🧑🏼" type="tts">fóon: mag, mag, xeesaayu der bu yam, xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏽‍❤‍💋‍🧑🏾">fóon | góor ak jigéen | mag | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏽‍❤‍💋‍🧑🏾" type="tts">fóon: mag, mag, xeesaayu der bu yam, xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏽‍❤‍💋‍🧑🏿">fóon | góor ak jigéen | mag | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏽‍❤‍💋‍🧑🏿" type="tts">fóon: mag, mag, xeesaayu der bu yam, xeesaayu der bu ñuul</annotation>
-		<annotation cp="🧑🏾‍❤‍💋‍🧑🏻">fóon | góor ak jigéen | mag | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏾‍❤‍💋‍🧑🏻" type="tts">fóon: mag, mag, xeesaayu der bu xawa ñuul, xeesaayu der bu woyof</annotation>
-		<annotation cp="🧑🏾‍❤‍💋‍🧑🏼">fóon | góor ak jigéen | mag | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏾‍❤‍💋‍🧑🏼" type="tts">fóon: mag, mag, xeesaayu der bu xawa ñuul, xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏾‍❤‍💋‍🧑🏽">fóon | góor ak jigéen | mag | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏾‍❤‍💋‍🧑🏽" type="tts">fóon: mag, mag, xeesaayu der bu xawa ñuul, xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏾‍❤‍💋‍🧑🏿">fóon | góor ak jigéen | mag | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏾‍❤‍💋‍🧑🏿" type="tts">fóon: mag, mag, xeesaayu der bu xawa ñuul, xeesaayu der bu ñuul</annotation>
-		<annotation cp="🧑🏿‍❤‍💋‍🧑🏻">fóon | góor ak jigéen | mag | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
-		<annotation cp="🧑🏿‍❤‍💋‍🧑🏻" type="tts">fóon: mag, mag, xeesaayu der bu ñuul, xeesaayu der bu woyof</annotation>
-		<annotation cp="🧑🏿‍❤‍💋‍🧑🏼">fóon | góor ak jigéen | mag | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏿‍❤‍💋‍🧑🏼" type="tts">fóon: mag, mag, xeesaayu der bu ñuul, xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏿‍❤‍💋‍🧑🏽">fóon | góor ak jigéen | mag | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏿‍❤‍💋‍🧑🏽" type="tts">fóon: mag, mag, xeesaayu der bu ñuul, xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏿‍❤‍💋‍🧑🏾">fóon | góor ak jigéen | mag | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏿‍❤‍💋‍🧑🏾" type="tts">fóon: mag, mag, xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏻‍❤‍🧑🏼">góor ak jigéen | mag | mbëggeel | xeesaayu der bu woyof | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏻‍❤‍🧑🏼" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu woyof, xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏻‍❤‍🧑🏽">góor ak jigéen | mag | mbëggeel | xeesaayu der bu woyof | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏻‍❤‍🧑🏽" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu woyof, xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏻‍❤‍🧑🏾">góor ak jigéen | mag | mbëggeel | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏻‍❤‍🧑🏾" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu woyof, xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏻‍❤‍🧑🏿">góor ak jigéen | mag | mbëggeel | xeesaayu der bu ñuul | xeesaayu der bu woyof | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏻‍❤‍🧑🏿" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu woyof, xeesaayu der bu ñuul</annotation>
-		<annotation cp="🧑🏼‍❤‍🧑🏻">góor ak jigéen | mag | mbëggeel | xeesaayu der bu woyof | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏼‍❤‍🧑🏻" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu xeereer, xeesaayu der bu woyof</annotation>
-		<annotation cp="🧑🏼‍❤‍🧑🏽">góor ak jigéen | mag | mbëggeel | xeesaayu der bu xeereer | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏼‍❤‍🧑🏽" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu xeereer, xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏼‍❤‍🧑🏾">góor ak jigéen | mag | mbëggeel | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏼‍❤‍🧑🏾" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu xeereer, xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏼‍❤‍🧑🏿">góor ak jigéen | mag | mbëggeel | xeesaayu der bu ñuul | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏼‍❤‍🧑🏿" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu xeereer, xeesaayu der bu ñuul</annotation>
-		<annotation cp="🧑🏽‍❤‍🧑🏻">góor ak jigéen | mag | mbëggeel | xeesaayu der bu woyof | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏽‍❤‍🧑🏻" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu yam, xeesaayu der bu woyof</annotation>
-		<annotation cp="🧑🏽‍❤‍🧑🏼">góor ak jigéen | mag | mbëggeel | xeesaayu der bu xeereer | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏽‍❤‍🧑🏼" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu yam, xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏽‍❤‍🧑🏾">góor ak jigéen | mag | mbëggeel | xeesaayu der bu xawa ñuul | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏽‍❤‍🧑🏾" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu yam, xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🧑🏽‍❤‍🧑🏿">góor ak jigéen | mag | mbëggeel | xeesaayu der bu ñuul | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏽‍❤‍🧑🏿" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu yam, xeesaayu der bu ñuul</annotation>
-		<annotation cp="🧑🏾‍❤‍🧑🏻">góor ak jigéen | mag | mbëggeel | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏾‍❤‍🧑🏻" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu xawa ñuul, xeesaayu der bu woyof</annotation>
-		<annotation cp="🧑🏾‍❤‍🧑🏼">góor ak jigéen | mag | mbëggeel | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏾‍❤‍🧑🏼" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu xawa ñuul, xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏾‍❤‍🧑🏽">góor ak jigéen | mag | mbëggeel | xeesaayu der bu xawa ñuul | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏾‍❤‍🧑🏽" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu xawa ñuul, xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏾‍❤‍🧑🏿">góor ak jigéen | mag | mbëggeel | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏾‍❤‍🧑🏿" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu xawa ñuul, xeesaayu der bu ñuul</annotation>
-		<annotation cp="🧑🏿‍❤‍🧑🏻">góor ak jigéen | mag | mbëggeel | xeesaayu der bu ñuul | xeesaayu der bu woyof | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏿‍❤‍🧑🏻" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu ñuul, xeesaayu der bu woyof</annotation>
-		<annotation cp="🧑🏿‍❤‍🧑🏼">góor ak jigéen | mag | mbëggeel | xeesaayu der bu ñuul | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏿‍❤‍🧑🏼" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu ñuul, xeesaayu der bu xeereer</annotation>
-		<annotation cp="🧑🏿‍❤‍🧑🏽">góor ak jigéen | mag | mbëggeel | xeesaayu der bu ñuul | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏿‍❤‍🧑🏽" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu ñuul, xeesaayu der bu yam</annotation>
-		<annotation cp="🧑🏿‍❤‍🧑🏾">góor ak jigéen | mag | mbëggeel | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul | xol ak ñaar ñu bëggante</annotation>
-		<annotation cp="🧑🏿‍❤‍🧑🏾" type="tts">xol ak ñaar ñu bëggante: mag, mag, xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏼">bëre | bërekat | nit ñuy bëre | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏼" type="tts">nit ñuy bëre: xeesaayu der bu woyof, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏽">bëre | bërekat | nit ñuy bëre | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏽" type="tts">nit ñuy bëre: xeesaayu der bu woyof, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏾">bëre | bërekat | nit ñuy bëre | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏾" type="tts">nit ñuy bëre: xeesaayu der bu woyof, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏿">bëre | bërekat | nit ñuy bëre | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏿" type="tts">nit ñuy bëre: xeesaayu der bu woyof, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏻">bëre | bërekat | nit ñuy bëre | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏻" type="tts">nit ñuy bëre: xeesaayu der bu xeereer, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏽">bëre | bërekat | nit ñuy bëre | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏽" type="tts">nit ñuy bëre: xeesaayu der bu xeereer, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏾">bëre | bërekat | nit ñuy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏾" type="tts">nit ñuy bëre: xeesaayu der bu xeereer, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏿">bëre | bërekat | nit ñuy bëre | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏿" type="tts">nit ñuy bëre: xeesaayu der bu xeereer, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏻">bëre | bërekat | nit ñuy bëre | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏻" type="tts">nit ñuy bëre: xeesaayu der bu yam, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏼">bëre | bërekat | nit ñuy bëre | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏼" type="tts">nit ñuy bëre: xeesaayu der bu yam, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏾">bëre | bërekat | nit ñuy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏾" type="tts">nit ñuy bëre: xeesaayu der bu yam, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏿">bëre | bërekat | nit ñuy bëre | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏿" type="tts">nit ñuy bëre: xeesaayu der bu yam, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏻">bëre | bërekat | nit ñuy bëre | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏻" type="tts">nit ñuy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏼">bëre | bërekat | nit ñuy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏼" type="tts">nit ñuy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏽">bëre | bërekat | nit ñuy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏽" type="tts">nit ñuy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏿">bëre | bërekat | nit ñuy bëre | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏿" type="tts">nit ñuy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏻">bëre | bërekat | nit ñuy bëre | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏻" type="tts">nit ñuy bëre: xeesaayu der bu ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏼">bëre | bërekat | nit ñuy bëre | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏼" type="tts">nit ñuy bëre: xeesaayu der bu ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏽">bëre | bërekat | nit ñuy bëre | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏽" type="tts">nit ñuy bëre: xeesaayu der bu ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏾">bëre | bërekat | nit ñuy bëre | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏾" type="tts">nit ñuy bëre: xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏻‍❤‍💋‍🧑🏼">fóon | góor ak jigéen | nit | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏻‍❤‍💋‍🧑🏼" type="tts">fóon: nit, nit, xeesaayu der bu woyof, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏻‍❤‍💋‍🧑🏽">fóon | góor ak jigéen | nit | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏻‍❤‍💋‍🧑🏽" type="tts">fóon: nit, nit, xeesaayu der bu woyof, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏻‍❤‍💋‍🧑🏾">fóon | góor ak jigéen | nit | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏻‍❤‍💋‍🧑🏾" type="tts">fóon: nit, nit, xeesaayu der bu woyof, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏻‍❤‍💋‍🧑🏿">fóon | góor ak jigéen | nit | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏻‍❤‍💋‍🧑🏿" type="tts">fóon: nit, nit, xeesaayu der bu woyof, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏼‍❤‍💋‍🧑🏻">fóon | góor ak jigéen | nit | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏼‍❤‍💋‍🧑🏻" type="tts">fóon: nit, nit, xeesaayu der bu xeereer, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏼‍❤‍💋‍🧑🏽">fóon | góor ak jigéen | nit | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏼‍❤‍💋‍🧑🏽" type="tts">fóon: nit, nit, xeesaayu der bu xeereer, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏼‍❤‍💋‍🧑🏾">fóon | góor ak jigéen | nit | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏼‍❤‍💋‍🧑🏾" type="tts">fóon: nit, nit, xeesaayu der bu xeereer, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏼‍❤‍💋‍🧑🏿">fóon | góor ak jigéen | nit | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏼‍❤‍💋‍🧑🏿" type="tts">fóon: nit, nit, xeesaayu der bu xeereer, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏽‍❤‍💋‍🧑🏻">fóon | góor ak jigéen | nit | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍❤‍💋‍🧑🏻" type="tts">fóon: nit, nit, xeesaayu der bu yam, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏽‍❤‍💋‍🧑🏼">fóon | góor ak jigéen | nit | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍❤‍💋‍🧑🏼" type="tts">fóon: nit, nit, xeesaayu der bu yam, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏽‍❤‍💋‍🧑🏾">fóon | góor ak jigéen | nit | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍❤‍💋‍🧑🏾" type="tts">fóon: nit, nit, xeesaayu der bu yam, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏽‍❤‍💋‍🧑🏿">fóon | góor ak jigéen | nit | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍❤‍💋‍🧑🏿" type="tts">fóon: nit, nit, xeesaayu der bu yam, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏾‍❤‍💋‍🧑🏻">fóon | góor ak jigéen | nit | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏾‍❤‍💋‍🧑🏻" type="tts">fóon: nit, nit, xeesaayu der bu xawa ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏾‍❤‍💋‍🧑🏼">fóon | góor ak jigéen | nit | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏾‍❤‍💋‍🧑🏼" type="tts">fóon: nit, nit, xeesaayu der bu xawa ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏾‍❤‍💋‍🧑🏽">fóon | góor ak jigéen | nit | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏾‍❤‍💋‍🧑🏽" type="tts">fóon: nit, nit, xeesaayu der bu xawa ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏾‍❤‍💋‍🧑🏿">fóon | góor ak jigéen | nit | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏾‍❤‍💋‍🧑🏿" type="tts">fóon: nit, nit, xeesaayu der bu xawa ñuul, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏿‍❤‍💋‍🧑🏻">fóon | góor ak jigéen | nit | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏿‍❤‍💋‍🧑🏻" type="tts">fóon: nit, nit, xeesaayu der bu ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏿‍❤‍💋‍🧑🏼">fóon | góor ak jigéen | nit | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏿‍❤‍💋‍🧑🏼" type="tts">fóon: nit, nit, xeesaayu der bu ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏿‍❤‍💋‍🧑🏽">fóon | góor ak jigéen | nit | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏿‍❤‍💋‍🧑🏽" type="tts">fóon: nit, nit, xeesaayu der bu ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏿‍❤‍💋‍🧑🏾">fóon | góor ak jigéen | nit | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏿‍❤‍💋‍🧑🏾" type="tts">fóon: nit, nit, xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏻‍❤‍🧑🏼">góor ak jigéen | mbëggeel | nit | xeesaayu der bu woyof | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏻‍❤‍🧑🏼" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu woyof, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏻‍❤‍🧑🏽">góor ak jigéen | mbëggeel | nit | xeesaayu der bu woyof | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏻‍❤‍🧑🏽" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu woyof, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏻‍❤‍🧑🏾">góor ak jigéen | mbëggeel | nit | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏻‍❤‍🧑🏾" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu woyof, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏻‍❤‍🧑🏿">góor ak jigéen | mbëggeel | nit | xeesaayu der bu ñuul | xeesaayu der bu woyof | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏻‍❤‍🧑🏿" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu woyof, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏼‍❤‍🧑🏻">góor ak jigéen | mbëggeel | nit | xeesaayu der bu woyof | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏼‍❤‍🧑🏻" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu xeereer, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏼‍❤‍🧑🏽">góor ak jigéen | mbëggeel | nit | xeesaayu der bu xeereer | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏼‍❤‍🧑🏽" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu xeereer, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏼‍❤‍🧑🏾">góor ak jigéen | mbëggeel | nit | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏼‍❤‍🧑🏾" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu xeereer, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏼‍❤‍🧑🏿">góor ak jigéen | mbëggeel | nit | xeesaayu der bu ñuul | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏼‍❤‍🧑🏿" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu xeereer, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏽‍❤‍🧑🏻">góor ak jigéen | mbëggeel | nit | xeesaayu der bu woyof | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏽‍❤‍🧑🏻" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu yam, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏽‍❤‍🧑🏼">góor ak jigéen | mbëggeel | nit | xeesaayu der bu xeereer | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏽‍❤‍🧑🏼" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu yam, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏽‍❤‍🧑🏾">góor ak jigéen | mbëggeel | nit | xeesaayu der bu xawa ñuul | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏽‍❤‍🧑🏾" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu yam, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏽‍❤‍🧑🏿">góor ak jigéen | mbëggeel | nit | xeesaayu der bu ñuul | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏽‍❤‍🧑🏿" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu yam, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏾‍❤‍🧑🏻">góor ak jigéen | mbëggeel | nit | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏾‍❤‍🧑🏻" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu xawa ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏾‍❤‍🧑🏼">góor ak jigéen | mbëggeel | nit | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏾‍❤‍🧑🏼" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu xawa ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏾‍❤‍🧑🏽">góor ak jigéen | mbëggeel | nit | xeesaayu der bu xawa ñuul | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏾‍❤‍🧑🏽" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu xawa ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏾‍❤‍🧑🏿">góor ak jigéen | mbëggeel | nit | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏾‍❤‍🧑🏿" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu xawa ñuul, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏿‍❤‍🧑🏻">góor ak jigéen | mbëggeel | nit | xeesaayu der bu ñuul | xeesaayu der bu woyof | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏿‍❤‍🧑🏻" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏿‍❤‍🧑🏼">góor ak jigéen | mbëggeel | nit | xeesaayu der bu ñuul | xeesaayu der bu xeereer | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏿‍❤‍🧑🏼" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏿‍❤‍🧑🏽">góor ak jigéen | mbëggeel | nit | xeesaayu der bu ñuul | xeesaayu der bu yam | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏿‍❤‍🧑🏽" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏿‍❤‍🧑🏾">góor ak jigéen | mbëggeel | nit | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul | xol ak ñaar ñu bëggante</annotation>
+		<annotation cp="🧑🏿‍❤‍🧑🏾" type="tts">xol ak ñaar ñu bëggante: nit, nit, xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏼">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏼" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu woyof, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏽">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏽" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu woyof, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏾">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏾" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu woyof, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏿">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏿" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu woyof, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏻">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏻" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu xeereer, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏽">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏽" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu xeereer, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏾">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏾" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu xeereer, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏿">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏿" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu xeereer, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏻">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏻" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu yam, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏼">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏼" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu yam, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏾">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏾" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu yam, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏿">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏿" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu yam, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏻">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏻" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu xawa ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏼">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏼" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu xawa ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏽">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏽" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu xawa ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏿">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏿" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu xawa ñuul, xeesaayu der bu ñuul</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏻">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏻" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏼">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏼" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏽">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏽" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏾">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏾" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="👨🏻">góor | xeesaayu der bu woyof</annotation>
 		<annotation cp="👨🏻" type="tts">góor: xeesaayu der bu woyof</annotation>
 		<annotation cp="👨🏼">góor | xeesaayu der bu xeereer</annotation>
@@ -572,6 +663,46 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👱🏾‍♂" type="tts">góor gu am karaw gu mboq: xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="👱🏿‍♂">góor | góor gu am karaw gu mboq | karaw gu mboq | xeesaayu der bu ñuul</annotation>
 		<annotation cp="👱🏿‍♂" type="tts">góor gu am karaw gu mboq: xeesaayu der bu ñuul</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏼">bëre | góor | góor guy bëre | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏼" type="tts">góor guy bëre: xeesaayu der bu woyof, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏽">bëre | góor | góor guy bëre | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏽" type="tts">góor guy bëre: xeesaayu der bu woyof, xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏾">bëre | góor | góor guy bëre | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏾" type="tts">góor guy bëre: xeesaayu der bu woyof, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏿">bëre | góor | góor guy bëre | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏿" type="tts">góor guy bëre: xeesaayu der bu woyof, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏻">bëre | góor | góor guy bëre | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏻" type="tts">góor guy bëre: xeesaayu der bu xeereer, xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏽">bëre | góor | góor guy bëre | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏽" type="tts">góor guy bëre: xeesaayu der bu xeereer, xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏾">bëre | góor | góor guy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏾" type="tts">góor guy bëre: xeesaayu der bu xeereer, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏿">bëre | góor | góor guy bëre | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏿" type="tts">góor guy bëre: xeesaayu der bu xeereer, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏻">bëre | góor | góor guy bëre | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏻" type="tts">góor guy bëre: xeesaayu der bu yam, xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏼">bëre | góor | góor guy bëre | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏼" type="tts">góor guy bëre: xeesaayu der bu yam, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏾">bëre | góor | góor guy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏾" type="tts">góor guy bëre: xeesaayu der bu yam, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏿">bëre | góor | góor guy bëre | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏿" type="tts">góor guy bëre: xeesaayu der bu yam, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏻">bëre | góor | góor guy bëre | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏻" type="tts">góor guy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏼">bëre | góor | góor guy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏼" type="tts">góor guy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏽">bëre | góor | góor guy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏽" type="tts">góor guy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏿">bëre | góor | góor guy bëre | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏿" type="tts">góor guy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏻">bëre | góor | góor guy bëre | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏻" type="tts">góor guy bëre: xeesaayu der bu ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏼">bëre | góor | góor guy bëre | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏼" type="tts">góor guy bëre: xeesaayu der bu ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏽">bëre | góor | góor guy bëre | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏽" type="tts">góor guy bëre: xeesaayu der bu ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏾">bëre | góor | góor guy bëre | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏾" type="tts">góor guy bëre: xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="👨🏻‍❤‍💋‍👨🏻">fóon | góor | góor ak jigéen | xeesaayu der bu woyof</annotation>
 		<annotation cp="👨🏻‍❤‍💋‍👨🏻" type="tts">fóon: góor, góor, xeesaayu der bu woyof</annotation>
 		<annotation cp="👨🏻‍❤‍💋‍👨🏼">fóon | góor | góor ak jigéen | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
@@ -672,6 +803,46 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👨🏿‍❤‍👨🏾" type="tts">xol ak ñaar ñu bëggante: góor, góor, xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="👨🏿‍❤‍👨🏿">góor | góor ak jigéen | mbëggeel | xeesaayu der bu ñuul | xol ak ñaar ñu bëggante</annotation>
 		<annotation cp="👨🏿‍❤‍👨🏿" type="tts">xol ak ñaar ñu bëggante: góor, góor, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏼">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏼" type="tts">góorak noppi lëks suwaare: xeesaayu der bu woyof, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏽">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏽" type="tts">góorak noppi lëks suwaare: xeesaayu der bu woyof, xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏾">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏾" type="tts">góorak noppi lëks suwaare: xeesaayu der bu woyof, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏿">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏿" type="tts">góorak noppi lëks suwaare: xeesaayu der bu woyof, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏻">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏻" type="tts">góorak noppi lëks suwaare: xeesaayu der bu xeereer, xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏽">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏽" type="tts">góorak noppi lëks suwaare: xeesaayu der bu xeereer, xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏾">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏾" type="tts">góorak noppi lëks suwaare: xeesaayu der bu xeereer, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏿">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏿" type="tts">góorak noppi lëks suwaare: xeesaayu der bu xeereer, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏻">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏻" type="tts">góorak noppi lëks suwaare: xeesaayu der bu yam, xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏼">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏼" type="tts">góorak noppi lëks suwaare: xeesaayu der bu yam, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏾">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏾" type="tts">góorak noppi lëks suwaare: xeesaayu der bu yam, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏿">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏿" type="tts">góorak noppi lëks suwaare: xeesaayu der bu yam, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏻">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏻" type="tts">góorak noppi lëks suwaare: xeesaayu der bu xawa ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏼">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏼" type="tts">góorak noppi lëks suwaare: xeesaayu der bu xawa ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏽">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏽" type="tts">góorak noppi lëks suwaare: xeesaayu der bu xawa ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏿">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏿" type="tts">góorak noppi lëks suwaare: xeesaayu der bu xawa ñuul, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏻">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏻" type="tts">góorak noppi lëks suwaare: xeesaayu der bu ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏼">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏼" type="tts">góorak noppi lëks suwaare: xeesaayu der bu ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏽">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏽" type="tts">góorak noppi lëks suwaare: xeesaayu der bu ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏾">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏾" type="tts">góorak noppi lëks suwaare: xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="👩🏻">jigéen | xeesaayu der bu woyof</annotation>
 		<annotation cp="👩🏻" type="tts">jigéen: xeesaayu der bu woyof</annotation>
 		<annotation cp="👩🏼">jigéen | xeesaayu der bu xeereer</annotation>
@@ -692,6 +863,46 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👱🏾‍♀" type="tts">karaw gu am kawar gu mboq jigéen: xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="👱🏿‍♀">jigéen | karaw gu am kawar gu mboq jigéen | karaw gu mboq | xeesaayu der bu ñuul</annotation>
 		<annotation cp="👱🏿‍♀" type="tts">karaw gu am kawar gu mboq jigéen: xeesaayu der bu ñuul</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏼">bëre | jigéen | jigéen juy bëre | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏼" type="tts">jigéen juy bëre: xeesaayu der bu woyof, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏽">bëre | jigéen | jigéen juy bëre | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏽" type="tts">jigéen juy bëre: xeesaayu der bu woyof, xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏾">bëre | jigéen | jigéen juy bëre | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏾" type="tts">jigéen juy bëre: xeesaayu der bu woyof, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏿">bëre | jigéen | jigéen juy bëre | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏿" type="tts">jigéen juy bëre: xeesaayu der bu woyof, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏻">bëre | jigéen | jigéen juy bëre | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏻" type="tts">jigéen juy bëre: xeesaayu der bu xeereer, xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏽">bëre | jigéen | jigéen juy bëre | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏽" type="tts">jigéen juy bëre: xeesaayu der bu xeereer, xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏾">bëre | jigéen | jigéen juy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏾" type="tts">jigéen juy bëre: xeesaayu der bu xeereer, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏿">bëre | jigéen | jigéen juy bëre | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏿" type="tts">jigéen juy bëre: xeesaayu der bu xeereer, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏻">bëre | jigéen | jigéen juy bëre | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏻" type="tts">jigéen juy bëre: xeesaayu der bu yam, xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏼">bëre | jigéen | jigéen juy bëre | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏼" type="tts">jigéen juy bëre: xeesaayu der bu yam, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏾">bëre | jigéen | jigéen juy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏾" type="tts">jigéen juy bëre: xeesaayu der bu yam, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏿">bëre | jigéen | jigéen juy bëre | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏿" type="tts">jigéen juy bëre: xeesaayu der bu yam, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏻">bëre | jigéen | jigéen juy bëre | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏻" type="tts">jigéen juy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏼">bëre | jigéen | jigéen juy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏼" type="tts">jigéen juy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏽">bëre | jigéen | jigéen juy bëre | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏽" type="tts">jigéen juy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏿">bëre | jigéen | jigéen juy bëre | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏿" type="tts">jigéen juy bëre: xeesaayu der bu xawa ñuul, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏻">bëre | jigéen | jigéen juy bëre | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏻" type="tts">jigéen juy bëre: xeesaayu der bu ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏼">bëre | jigéen | jigéen juy bëre | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏼" type="tts">jigéen juy bëre: xeesaayu der bu ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏽">bëre | jigéen | jigéen juy bëre | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏽" type="tts">jigéen juy bëre: xeesaayu der bu ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏾">bëre | jigéen | jigéen juy bëre | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏾" type="tts">jigéen juy bëre: xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="👩🏻‍❤‍💋‍👨🏻">fóon | góor | góor ak jigéen | jigéen | xeesaayu der bu woyof</annotation>
 		<annotation cp="👩🏻‍❤‍💋‍👨🏻" type="tts">fóon: jigéen, góor, xeesaayu der bu woyof</annotation>
 		<annotation cp="👩🏻‍❤‍💋‍👨🏼">fóon | góor | góor ak jigéen | jigéen | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
@@ -892,6 +1103,46 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👩🏿‍❤‍👩🏾" type="tts">xol ak ñaar ñu bëggante: jigéen, jigéen, xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="👩🏿‍❤‍👩🏿">góor ak jigéen | jigéen | mbëggeel | xeesaayu der bu ñuul | xol ak ñaar ñu bëggante</annotation>
 		<annotation cp="👩🏿‍❤‍👩🏿" type="tts">xol ak ñaar ñu bëggante: jigéen, jigéen, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏼">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏼" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu woyof, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏽">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏽" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu woyof, xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏾">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏾" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu woyof, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏿">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏿" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu woyof, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏻">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏻" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu xeereer, xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏽">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏽" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu xeereer, xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏾">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏾" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu xeereer, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏿">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏿" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu xeereer, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏻">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏻" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu yam, xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏼">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xeereer | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏼" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu yam, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏾">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏾" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu yam, xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏿">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏿" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu yam, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏻">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏻" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu xawa ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏼">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏼" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu xawa ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏽">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xawa ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏽" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu xawa ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏿">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏿" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu xawa ñuul, xeesaayu der bu ñuul</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏻">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏻" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu ñuul, xeesaayu der bu woyof</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏼">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏼" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu ñuul, xeesaayu der bu xeereer</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏽">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏽" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu ñuul, xeesaayu der bu yam</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏾">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏾" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu ñuul, xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="🧓🏻">du góor du jigéen | mag mu gën a màgget | màgget | xeesaayu der bu woyof</annotation>
 		<annotation cp="🧓🏻" type="tts">mag mu gën a màgget: xeesaayu der bu woyof</annotation>
 		<annotation cp="🧓🏼">du góor du jigéen | mag mu gën a màgget | màgget | xeesaayu der bu xeereer</annotation>
@@ -1752,15 +2003,15 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👼🏾" type="tts">liiru malaaka: xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="👼🏿">feem | kanam | léebu fee | liir | liiru malaaka | malaaka | xeesaayu der bu ñuul</annotation>
 		<annotation cp="👼🏿" type="tts">liiru malaaka: xeesaayu der bu ñuul</annotation>
-		<annotation cp="🎅🏻">màggal | nowel | papa | pere | Pere nowel | xeesaayu der bu woyof</annotation>
+		<annotation cp="🎅🏻">màggal | nowel | papa | pere | xeesaayu der bu woyof</annotation>
 		<annotation cp="🎅🏻" type="tts">Pere nowel: xeesaayu der bu woyof</annotation>
-		<annotation cp="🎅🏼">màggal | nowel | papa | pere | Pere nowel | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🎅🏼">màggal | nowel | papa | pere | xeesaayu der bu xeereer</annotation>
 		<annotation cp="🎅🏼" type="tts">Pere nowel: xeesaayu der bu xeereer</annotation>
-		<annotation cp="🎅🏽">màggal | nowel | papa | pere | Pere nowel | xeesaayu der bu yam</annotation>
+		<annotation cp="🎅🏽">màggal | nowel | papa | pere | xeesaayu der bu yam</annotation>
 		<annotation cp="🎅🏽" type="tts">Pere nowel: xeesaayu der bu yam</annotation>
-		<annotation cp="🎅🏾">màggal | nowel | papa | pere | Pere nowel | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🎅🏾">màggal | nowel | papa | pere | xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="🎅🏾" type="tts">Pere nowel: xeesaayu der bu xawa ñuul</annotation>
-		<annotation cp="🎅🏿">màggal | nowel | papa | pere | Pere nowel | xeesaayu der bu ñuul</annotation>
+		<annotation cp="🎅🏿">màggal | nowel | papa | pere | xeesaayu der bu ñuul</annotation>
 		<annotation cp="🎅🏿" type="tts">Pere nowel: xeesaayu der bu ñuul</annotation>
 		<annotation cp="🤶🏻">màggal | meer | nowel | xeesaayu der bu woyof | yaay</annotation>
 		<annotation cp="🤶🏻" type="tts">meer nowel: xeesaayu der bu woyof</annotation>
@@ -2072,6 +2323,36 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🕴🏾" type="tts">góor ci bisnes kostim lewitasiyoŋ: xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="🕴🏿">bisnes | góor | góor ci bisnes kostim lewitasiyoŋ | kostim | xeesaayu der bu ñuul</annotation>
 		<annotation cp="🕴🏿" type="tts">góor ci bisnes kostim lewitasiyoŋ: xeesaayu der bu ñuul</annotation>
+		<annotation cp="👯🏻">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu woyof</annotation>
+		<annotation cp="👯🏻" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu woyof</annotation>
+		<annotation cp="👯🏼">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👯🏼" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu xeereer</annotation>
+		<annotation cp="👯🏽">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu yam</annotation>
+		<annotation cp="👯🏽" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu yam</annotation>
+		<annotation cp="👯🏾">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👯🏾" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👯🏿">ak noppi lëk | fecckat | nit ñuy fecc | nit ñuy fecc, ak noppi lëk | noppi lëk | suwaare | xeesaayu der bu ñuul</annotation>
+		<annotation cp="👯🏿" type="tts">nit ñuy fecc, ak noppi lëk: xeesaayu der bu ñuul</annotation>
+		<annotation cp="👯🏻‍♀">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof</annotation>
+		<annotation cp="👯🏻‍♀" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu woyof</annotation>
+		<annotation cp="👯🏼‍♀">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👯🏼‍♀" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu xeereer</annotation>
+		<annotation cp="👯🏽‍♀">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu yam</annotation>
+		<annotation cp="👯🏽‍♀" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu yam</annotation>
+		<annotation cp="👯🏾‍♀">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👯🏾‍♀" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👯🏿‍♀">fecckat | jigéen | jigéen ak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul</annotation>
+		<annotation cp="👯🏿‍♀" type="tts">jigéen ak noppi lëks suwaare: xeesaayu der bu ñuul</annotation>
+		<annotation cp="👯🏻‍♂">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu woyof</annotation>
+		<annotation cp="👯🏻‍♂" type="tts">góorak noppi lëks suwaare: xeesaayu der bu woyof</annotation>
+		<annotation cp="👯🏼‍♂">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xeereer</annotation>
+		<annotation cp="👯🏼‍♂" type="tts">góorak noppi lëks suwaare: xeesaayu der bu xeereer</annotation>
+		<annotation cp="👯🏽‍♂">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu yam</annotation>
+		<annotation cp="👯🏽‍♂" type="tts">góorak noppi lëks suwaare: xeesaayu der bu yam</annotation>
+		<annotation cp="👯🏾‍♂">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👯🏾‍♂" type="tts">góorak noppi lëks suwaare: xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="👯🏿‍♂">fecckat | góor | góorak noppi lëks suwaare | noppi lëk | suwaare | xeesaayu der bu ñuul</annotation>
+		<annotation cp="👯🏿‍♂" type="tts">góorak noppi lëks suwaare: xeesaayu der bu ñuul</annotation>
 		<annotation cp="🧖🏻">néego wapër | nit ci néegu wapër | souna | xeesaayu der bu woyof</annotation>
 		<annotation cp="🧖🏻" type="tts">nit ci néegu wapër: xeesaayu der bu woyof</annotation>
 		<annotation cp="🧖🏼">néego wapër | nit ci néegu wapër | souna | xeesaayu der bu xeereer</annotation>
@@ -2422,6 +2703,36 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🤸🏾‍♀" type="tts">jigéen juy pëno-sareet: xeesaayu der bu xawa ñuul</annotation>
 		<annotation cp="🤸🏿‍♀">jigéen | jigéen juy pëno-sareet | jimnastik | pëno-sareet | xeesaayu der bu ñuul</annotation>
 		<annotation cp="🤸🏿‍♀" type="tts">jigéen juy pëno-sareet: xeesaayu der bu ñuul</annotation>
+		<annotation cp="🤼🏻">bëre | bërekat | nit ñuy bëre | xeesaayu der bu woyof</annotation>
+		<annotation cp="🤼🏻" type="tts">nit ñuy bëre: xeesaayu der bu woyof</annotation>
+		<annotation cp="🤼🏼">bëre | bërekat | nit ñuy bëre | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🤼🏼" type="tts">nit ñuy bëre: xeesaayu der bu xeereer</annotation>
+		<annotation cp="🤼🏽">bëre | bërekat | nit ñuy bëre | xeesaayu der bu yam</annotation>
+		<annotation cp="🤼🏽" type="tts">nit ñuy bëre: xeesaayu der bu yam</annotation>
+		<annotation cp="🤼🏾">bëre | bërekat | nit ñuy bëre | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🤼🏾" type="tts">nit ñuy bëre: xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🤼🏿">bëre | bërekat | nit ñuy bëre | xeesaayu der bu ñuul</annotation>
+		<annotation cp="🤼🏿" type="tts">nit ñuy bëre: xeesaayu der bu ñuul</annotation>
+		<annotation cp="🤼🏻‍♀">bëre | jigéen | jigéen juy bëre | xeesaayu der bu woyof</annotation>
+		<annotation cp="🤼🏻‍♀" type="tts">jigéen juy bëre: xeesaayu der bu woyof</annotation>
+		<annotation cp="🤼🏼‍♀">bëre | jigéen | jigéen juy bëre | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🤼🏼‍♀" type="tts">jigéen juy bëre: xeesaayu der bu xeereer</annotation>
+		<annotation cp="🤼🏽‍♀">bëre | jigéen | jigéen juy bëre | xeesaayu der bu yam</annotation>
+		<annotation cp="🤼🏽‍♀" type="tts">jigéen juy bëre: xeesaayu der bu yam</annotation>
+		<annotation cp="🤼🏾‍♀">bëre | jigéen | jigéen juy bëre | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🤼🏾‍♀" type="tts">jigéen juy bëre: xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🤼🏿‍♀">bëre | jigéen | jigéen juy bëre | xeesaayu der bu ñuul</annotation>
+		<annotation cp="🤼🏿‍♀" type="tts">jigéen juy bëre: xeesaayu der bu ñuul</annotation>
+		<annotation cp="🤼🏻‍♂">bëre | góor | góor guy bëre | xeesaayu der bu woyof</annotation>
+		<annotation cp="🤼🏻‍♂" type="tts">góor guy bëre: xeesaayu der bu woyof</annotation>
+		<annotation cp="🤼🏼‍♂">bëre | góor | góor guy bëre | xeesaayu der bu xeereer</annotation>
+		<annotation cp="🤼🏼‍♂" type="tts">góor guy bëre: xeesaayu der bu xeereer</annotation>
+		<annotation cp="🤼🏽‍♂">bëre | góor | góor guy bëre | xeesaayu der bu yam</annotation>
+		<annotation cp="🤼🏽‍♂" type="tts">góor guy bëre: xeesaayu der bu yam</annotation>
+		<annotation cp="🤼🏾‍♂">bëre | góor | góor guy bëre | xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🤼🏾‍♂" type="tts">góor guy bëre: xeesaayu der bu xawa ñuul</annotation>
+		<annotation cp="🤼🏿‍♂">bëre | góor | góor guy bëre | xeesaayu der bu ñuul</annotation>
+		<annotation cp="🤼🏿‍♂" type="tts">góor guy bëre: xeesaayu der bu ñuul</annotation>
 		<annotation cp="🤽🏻">ndox | nit kuy polo ci ndox | polo | xeesaayu der bu woyof</annotation>
 		<annotation cp="🤽🏻" type="tts">nit kuy polo ci ndox: xeesaayu der bu woyof</annotation>
 		<annotation cp="🤽🏼">ndox | nit kuy polo ci ndox | polo | xeesaayu der bu xeereer</annotation>
@@ -2795,5 +3106,23 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👩‍👧‍👧">bokk famiy | jigéen | xale bu jigéen</annotation>
 		<annotation cp="👩‍👧‍👧" type="tts">bokk famiy: jigéen, xale bu jigéen, xale bu jigéen</annotation>
 		<annotation cp="¤" type="tts">Xaalis buñ Xamul</annotation>
+		<annotation cp="֏" type="tts">Armenian Dram</annotation>
+		<annotation cp="؋" type="tts">Afghan Afghani</annotation>
+		<annotation cp="৳" type="tts">Bangladeshi Taka</annotation>
+		<annotation cp="฿" type="tts">Thai Baht</annotation>
+		<annotation cp="៛" type="tts">Cambodian Riel</annotation>
+		<annotation cp="₡" type="tts">Costa Rican Colón</annotation>
+		<annotation cp="₦" type="tts">Nigerian Naira</annotation>
+		<annotation cp="₪" type="tts">Israeli New Shekel</annotation>
+		<annotation cp="₫" type="tts">Vietnamese Dong</annotation>
+		<annotation cp="₭" type="tts">Laotian Kip</annotation>
+		<annotation cp="₮" type="tts">Mongolian Tugrik</annotation>
+		<annotation cp="₲" type="tts">Paraguayan Guaranis</annotation>
+		<annotation cp="₴" type="tts">UAHS</annotation>
+		<annotation cp="₵" type="tts">Ghanaian Cedi</annotation>
+		<annotation cp="₸" type="tts">Kazakhstani Tenge</annotation>
+		<annotation cp="₺" type="tts">Turkish Lira</annotation>
+		<annotation cp="₼" type="tts">Azerbaijani Manat</annotation>
+		<annotation cp="₾" type="tts">Georgian Lari</annotation>
 	</annotations>
 </ldml>

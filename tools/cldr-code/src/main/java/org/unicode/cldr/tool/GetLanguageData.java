@@ -1,21 +1,19 @@
 package org.unicode.cldr.tool;
 
 import java.util.Set;
-
 import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRPaths;
 import org.unicode.cldr.util.Counter;
 import org.unicode.cldr.util.Factory;
+import org.unicode.cldr.util.NameType;
 import org.unicode.cldr.util.Pair;
 import org.unicode.cldr.util.SupplementalDataInfo;
 import org.unicode.cldr.util.SupplementalDataInfo.OfficialStatus;
 import org.unicode.cldr.util.SupplementalDataInfo.PopulationData;
 
 public class GetLanguageData {
-    SupplementalDataInfo sdata = SupplementalDataInfo
-        .getInstance(CLDRPaths.SUPPLEMENTAL_DIRECTORY);
-    Factory cldrFactory = Factory
-        .make(CLDRPaths.MAIN_DIRECTORY, ".*");
+    SupplementalDataInfo sdata = SupplementalDataInfo.getInstance(CLDRPaths.SUPPLEMENTAL_DIRECTORY);
+    Factory cldrFactory = Factory.make(CLDRPaths.MAIN_DIRECTORY, ".*");
     CLDRFile english = cldrFactory.make("en", true);
     Set<String> euCountries = sdata.getContained("EU");
     Counter<String> languageToGdp = new Counter<>();
@@ -30,14 +28,20 @@ public class GetLanguageData {
         System.out.println("Code\tLang\tLpop\tApprox. Gdp");
         for (String language : sdata.getLanguages()) {
             final long pop = languageToPop.getCount(language);
-            System.out.print(language + "\t" + english.getName(language));
+            System.out.print(
+                    language + "\t" + english.nameGetter().getNameFromIdentifier(language));
             if (pop > 0) {
                 Pair<OfficialStatus, String> status = isOfficialLanguageOfEUCountry(language);
-                System.out.print("\t" + pop //
-                    + "\t" + languageToGdp.getCount(language) //
-                    + "\t" + (status.getFirst().isOfficial() ? status.getFirst() : "") //
-                    + "\t" + status.getSecond() //
-                );
+                System.out.print(
+                        "\t"
+                                + pop //
+                                + "\t"
+                                + languageToGdp.getCount(language) //
+                                + "\t"
+                                + (status.getFirst().isOfficial() ? status.getFirst() : "") //
+                                + "\t"
+                                + status.getSecond() //
+                        );
             }
             System.out.println();
         }
@@ -47,8 +51,8 @@ public class GetLanguageData {
         Set<String> territories = sdata.getTerritoriesWithPopulationData();
         for (String territory : territories) {
             double scale = 1.0;
-            final PopulationData populationDataForTerritory = sdata
-                .getPopulationDataForTerritory(territory);
+            final PopulationData populationDataForTerritory =
+                    sdata.getPopulationDataForTerritory(territory);
             final double gdp = populationDataForTerritory.getGdp();
             double territoryPop = populationDataForTerritory.getPopulation();
             double langPop = 0;
@@ -56,7 +60,8 @@ public class GetLanguageData {
             Set<String> languages = sdata.getLanguagesForTerritoryWithPopulationData(territory);
             for (String language : languages) {
                 if (language.equals("tl")) continue;
-                PopulationData pop2 = sdata.getLanguageAndTerritoryPopulationData(language, territory);
+                PopulationData pop2 =
+                        sdata.getLanguageAndTerritoryPopulationData(language, territory);
                 langPop += pop2.getPopulation();
                 if (pop2.getOfficialStatus().isOfficial()) {
                     officialLangPop += pop2.getPopulation();
@@ -64,12 +69,18 @@ public class GetLanguageData {
             }
             final double missing = 0.75 * territoryPop - langPop;
             if (missing > 0) {
-                System.out.println(territory //
-                    + "\t" + english.getName("territory", territory) //
-                    + "\t" + territoryPop //
-                    + "\t" + langPop //
-                    + "\t" + gdp //
-                );
+                System.out.println(
+                        territory //
+                                + "\t"
+                                + english.nameGetter()
+                                        .getNameFromTypeEnumCode(NameType.TERRITORY, territory) //
+                                + "\t"
+                                + territoryPop //
+                                + "\t"
+                                + langPop //
+                                + "\t"
+                                + gdp //
+                        );
                 scale = 1 + missing / officialLangPop;
                 // scale up the official so that
                 // official + non-official = 70% of total
@@ -79,7 +90,8 @@ public class GetLanguageData {
             long langUnknown = (long) territoryPop;
             for (String language : languages) {
                 if (language.equals("tl")) continue;
-                PopulationData pop2 = sdata.getLanguageAndTerritoryPopulationData(language, territory);
+                PopulationData pop2 =
+                        sdata.getLanguageAndTerritoryPopulationData(language, territory);
                 double langPop2 = pop2.getPopulation();
                 if (pop2.getOfficialStatus().isOfficial()) {
                     langPop2 *= scale;

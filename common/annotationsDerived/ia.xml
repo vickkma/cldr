@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
-<!-- Copyright © 1991-2022 Unicode, Inc.
+<!-- Copyright © 1991-2025 Unicode, Inc.
 For terms of use, see http://www.unicode.org/copyright.html
-SPDX-License-Identifier: Unicode-DFS-2016
+SPDX-License-Identifier: Unicode-3.0
 CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
+
+Derived short names and annotations, using GenerateDerivedAnnotations.java. See warnings in /annotations/ file.
 -->
-<!-- Derived short names and annotations, using GenerateDerivedAnnotations.java. See warnings in /annotations/ file. -->
 <ldml>
 	<identity>
 		<version number="$Revision$"/>
@@ -200,6 +201,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇨🇴" type="tts">bandiera: Colombia</annotation>
 		<annotation cp="🇨🇵">bandiera</annotation>
 		<annotation cp="🇨🇵" type="tts">bandiera: Insula Clipperton</annotation>
+		<annotation cp="🇨🇶">bandiera</annotation>
+		<annotation cp="🇨🇶" type="tts">bandiera: Sark</annotation>
 		<annotation cp="🇨🇷">bandiera</annotation>
 		<annotation cp="🇨🇷" type="tts">bandiera: Costa Rica</annotation>
 		<annotation cp="🇨🇺">bandiera</annotation>
@@ -615,30 +618,23 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇿🇼">bandiera</annotation>
 		<annotation cp="🇿🇼" type="tts">bandiera: Zimbabwe</annotation>
 		<annotation cp="¤" type="tts">moneta incognite</annotation>
+		<annotation cp="֏" type="tts">dram armenie</annotation>
+		<annotation cp="؋" type="tts">afghani</annotation>
+		<annotation cp="৳" type="tts">taka bengalese</annotation>
+		<annotation cp="฿" type="tts">baht thailandese</annotation>
+		<annotation cp="៛" type="tts">riel cambodgian</annotation>
 		<annotation cp="₡" type="tts">colon costarican</annotation>
 		<annotation cp="₦" type="tts">naira nigerian</annotation>
+		<annotation cp="₪" type="tts">nove shekel israeli</annotation>
+		<annotation cp="₫" type="tts">dong vietnamese</annotation>
+		<annotation cp="₭" type="tts">kip laotian</annotation>
+		<annotation cp="₮" type="tts">tugrik mongol</annotation>
 		<annotation cp="₲" type="tts">guarani paraguayan</annotation>
 		<annotation cp="₴" type="tts">hryvnia ukrainian</annotation>
 		<annotation cp="₵" type="tts">cedi ghanese</annotation>
-		<annotation cp="0⃣">clave</annotation>
-		<annotation cp="0⃣" type="tts">clave: 0</annotation>
-		<annotation cp="1⃣">clave</annotation>
-		<annotation cp="1⃣" type="tts">clave: 1</annotation>
-		<annotation cp="2⃣">clave</annotation>
-		<annotation cp="2⃣" type="tts">clave: 2</annotation>
-		<annotation cp="3⃣">clave</annotation>
-		<annotation cp="3⃣" type="tts">clave: 3</annotation>
-		<annotation cp="4⃣">clave</annotation>
-		<annotation cp="4⃣" type="tts">clave: 4</annotation>
-		<annotation cp="5⃣">clave</annotation>
-		<annotation cp="5⃣" type="tts">clave: 5</annotation>
-		<annotation cp="6⃣">clave</annotation>
-		<annotation cp="6⃣" type="tts">clave: 6</annotation>
-		<annotation cp="7⃣">clave</annotation>
-		<annotation cp="7⃣" type="tts">clave: 7</annotation>
-		<annotation cp="8⃣">clave</annotation>
-		<annotation cp="8⃣" type="tts">clave: 8</annotation>
-		<annotation cp="9⃣">clave</annotation>
-		<annotation cp="9⃣" type="tts">clave: 9</annotation>
+		<annotation cp="₸" type="tts">tenge kazakh</annotation>
+		<annotation cp="₺" type="tts">lira turc</annotation>
+		<annotation cp="₼" type="tts">manat azeri</annotation>
+		<annotation cp="₾" type="tts">lari georgian</annotation>
 	</annotations>
 </ldml>

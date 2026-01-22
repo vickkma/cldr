@@ -1,15 +1,14 @@
 package org.unicode.cldr.util;
 
+import com.google.common.collect.ImmutableSet;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.ImmutableSet;
-
 /**
- * This list needs updating as a new organizations are added; that's by design
- * so that we know when new ones show up.
+ * This list needs updating as a new organizations are added; that's by design so that we know when
+ * new ones show up.
  */
 public enum Organization {
     // Please update Locales.txt for default coverage when adding an organization here.
@@ -18,29 +17,50 @@ public enum Organization {
     afghan_csa("Afghan CSA"),
     afghan_mcit("Afghan MCIT"),
     afrigen("Afrigen"),
+    airbnb("Airbnb"),
+    anii("Anii Research Group"),
     apple("Apple"),
     bangladesh("Bangladesh", "Bangladesh Computer Council"),
     bangor_univ("Bangor Univ."),
     bhutan("Bhutan DDC"),
     breton("Office of Breton Lang"),
     cherokee("Cherokee Nation"),
+    choctaw("Choctaw Nation"),
+    chuvash_sih(
+            "Chuvash SIH",
+            "Chuvash State Institute of Humanities",
+            "Чăваш патшалăх гуманитарии ăслăлăхсен институчĕ"),
+    cihan_uni("Cihan University-Erbil"),
     cldr("Cldr"),
     gaeilge("Foras na Gaeilge"),
     georgia_isi("Georgia ISI"),
     gnome("Gnome Foundation"),
     google("Google"),
-    guest("Guest (Unicode)"),
     ibm("IBM"),
+    ihll_ufrc(
+            "IHLL UFRC",
+            "Institute of History, Language and Literature at Ufa Federal Research Center"),
     india("India MIT"),
     iran_hci("Iran HCI"),
+    kazakh_tbi(
+            "Kazakh TBI",
+            "The Institute of Linguistics named after Akhmet Baitursunuly",
+            "Ахмет Байтұрсынұлы атындағы Тіл білімі институты"),
     kendra("Kendra (Nepal)"),
     kotoistus("Kotoistus (Finnish IT Ctr)"),
-    kunsill_malti("Il-Kunsill Nazzjonali tal-Ilsien Malti", "National Council for the Maltese Language", "malta", "malti"),
+    kunsill_malti(
+            "Il-Kunsill Nazzjonali tal-Ilsien Malti",
+            "National Council for the Maltese Language",
+            "malta",
+            "malti"),
     lakota_lc("Lakota LC"),
-    lao_dpt("Lao Posts/Telecom??"),
-    longnow("The Long Now Foundation", "Long Now", "PanLex", "Utilka Foundation"),
+    lao_dpt("Lao Posts/Telecom"),
+    longnow("The Long Now Foundation", "Long Now", "PanLex", "Utilika", "Utilka Foundation"),
+    mayan_lpp("Mayan LPP", "Mayan Languages Preservation Project"),
     meta("Meta", "Facebook"),
     microsoft("Microsoft"),
+    mikmaw_kinamatnewey("Mi'kmaw Kina'matnewey"),
+    motorola("Motorola"),
     mozilla("Mozilla"),
     netflix("Netflix"),
     nyiakeng_puachue_hmong("Nyiakeng Puachue Hmong"),
@@ -52,22 +72,34 @@ public enum Organization {
     rohingyazuban("Rohingya Language Council", "RLC", "Rohingya Zuban"),
     rumantscha("Lia Rumantscha"),
     sardware("Sardware", "Sardware"),
+    shan_iit("Shan IIT", "Shan Institute of Information Technology"),
+    sicilian_cademia("Cademia Siciliana", "Sicilian Academy"),
     sil("SIL", "SIL International"),
-    special("High Coverage and Generated"),
+    silicon("Stanford SILICON"),
+    sitelen_pona("Sitelen Pona", "Sitelen Pona Publishers and Typographers Association"),
     srilanka("Sri Lanka ICTA", "Sri Lanka"),
+    sunuwar_ws("Sunuwar Sewa Samaj", "Sunuwar Welfare Society"),
     surveytool("Survey Tool"),
+    unaffiliated("Unaffiliated", "Guest"),
+    unibz(
+            "Free University of Bozen-Bolzano",
+            "Libera Università di Bolzano",
+            "Freie Universität Bozen"),
     venetian("VeC - Lengua Veneta"),
     welsh_lc("Welsh LC"),
     wikimedia("Wikimedia Foundation"),
     wod_nko("WOD N’ko", "World Organization for the Development of N’ko", "WODN"),
+    wsci_wg("WSC+I WG", "Western Swampy Cree+Internet Working Group"),
     yahoo("Yahoo"),
     ;
 
-    private final static Set<Organization> TC_ORGS = ImmutableSet.copyOf(EnumSet.of(google, apple, microsoft));
+    private static final Set<Organization> TC_ORGS =
+            ImmutableSet.copyOf(EnumSet.of(apple, google, meta, microsoft));
 
     /**
      * Get a list of the TC Organizations
-     * @return
+     *
+     * @return the set
      */
     public static Set<Organization> getTCOrgs() {
         return TC_ORGS;
@@ -75,13 +107,14 @@ public enum Organization {
 
     /**
      * Is this organization a TC Org?
-     * @return
+     *
+     * @return true if it is TC
      */
     public boolean isTCOrg() {
         return getTCOrgs().contains(this);
     }
 
-    public final String displayName;
+    private final String displayName;
     private final String[] names;
 
     public static Organization fromString(String name) {
@@ -102,19 +135,20 @@ public enum Organization {
             return Organization.longnow;
         }
         name = name.toLowerCase().replace('-', '_').replace('.', '_');
-        Organization org = OrganizationNameMap.get(name);
-        return org;
+        return OrganizationNameMap.get(name);
     }
 
     public String getDisplayName() {
         return displayName;
     }
 
-    static Map<String, Organization> OrganizationNameMap;
+    static final Map<String, Organization> OrganizationNameMap;
+
     static {
         OrganizationNameMap = new HashMap<>();
         for (Organization x : values()) {
-            OrganizationNameMap.put(x.displayName.toLowerCase().replace('-', '_').replace('.', '_'), x);
+            OrganizationNameMap.put(
+                    x.displayName.toLowerCase().replace('-', '_').replace('.', '_'), x);
             for (String name : x.names) {
                 OrganizationNameMap.put(name.toLowerCase().replace('-', '_').replace('.', '_'), x);
             }
@@ -126,7 +160,7 @@ public enum Organization {
      * @param displayName Preferred display name for the organization
      * @param names Alternate aliases for this organization
      */
-    private Organization(String displayName, String... names) {
+    Organization(String displayName, String... names) {
         this.displayName = displayName;
         this.names = names;
     }

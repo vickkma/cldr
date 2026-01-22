@@ -1,6 +1,10 @@
-#### _Important Note_
+# CLDR Keyboards
 
-> The CLDR [Keyboard Workgroup](https://cldr.unicode.org/index/keyboard-workgroup) is currently
-> developing major changes to the CLDR keyboard specification. These changes are targeted for
-> CLDR version 41. Please see [CLDR-15034](https://unicode-org.atlassian.net/browse/CLDR-15034) for
-> the latest information.
+For general information, see the main [README.md](../README.md).
+
+The `keyboards` folder contains data for CLDR Keyboards. References:
+
+- [LDML Part 7: Keyboards](https://www.unicode.org/reports/tr35/tr35-74/tr35-keyboards.html)
+- [Keyboard Work Group](https://sites.google.com/unicode.org/cldr/index/keyboard-workgroup)
+
+For copyright, terms of use, and further details, see the top [README](../README.md).

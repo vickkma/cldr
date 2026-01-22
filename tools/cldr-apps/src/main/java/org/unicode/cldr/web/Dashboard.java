@@ -1,5 +1,9 @@
 package org.unicode.cldr.web;
 
+import com.ibm.icu.impl.Relation;
+import com.ibm.icu.impl.Row;
+import com.ibm.icu.impl.Row.R2;
+import com.ibm.icu.impl.Row.R4;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -8,32 +12,17 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.unicode.cldr.test.CheckCLDR;
-import org.unicode.cldr.util.CLDRFile;
-import org.unicode.cldr.util.CLDRLocale;
-import org.unicode.cldr.util.Level;
-import org.unicode.cldr.util.Organization;
+import org.unicode.cldr.util.*;
 import org.unicode.cldr.util.PathHeader.PageId;
 import org.unicode.cldr.util.PathHeader.SectionId;
-import org.unicode.cldr.util.VettingViewer;
-import org.unicode.cldr.util.NotificationCategory;
-import org.unicode.cldr.util.VettingParameters;
 import org.unicode.cldr.util.VoterReportStatus.ReportId;
 import org.unicode.cldr.util.VoterReportStatus.ReportStatus;
-import org.unicode.cldr.util.VoterProgress;
-
-import com.ibm.icu.impl.Relation;
-import com.ibm.icu.impl.Row;
-import com.ibm.icu.impl.Row.R2;
-import com.ibm.icu.impl.Row.R4;
 
 public class Dashboard {
 
-    /**
-     * ReviewOutput defines the complete json sent to the front end
-     */
+    /** ReviewOutput defines the complete json sent to the front end */
     @Schema(description = "Output of Dashboard")
     public static final class ReviewOutput {
         @Schema(description = "list of notifications")
@@ -49,8 +38,10 @@ public class Dashboard {
 
         /**
          * Add this notification, unless the name is an exact match
+         *
          * @param category category of the next notification (e.g. English_Changed)
-         * @param unlessMatches if this notification is already the same as notificationName, just return it.
+         * @param unlessMatches if this notification is already the same as notificationName, just
+         *     return it.
          * @return
          */
         public ReviewNotification add(String category, ReviewNotification unlessMatches) {
@@ -70,8 +61,8 @@ public class Dashboard {
         private HiddenNotifications hidden = null;
 
         /**
-         * Get a map from each subtype (String from CheckCLDR.CheckStatus.Subtype)
-         * to an array of path-value pairs
+         * Get a map from each subtype (String from CheckCLDR.CheckStatus.Subtype) to an array of
+         * path-value pairs
          *
          * @return the map
          */
@@ -84,8 +75,14 @@ public class Dashboard {
 
         public VoterProgress voterProgress = null;
 
+        public LocaleCompletionData localeCompletionData = null;
+
+        @Schema(description = "Coverage level for this dashboard")
+        public String coverageLevel = null;
+
         /**
          * Add Report status
+         *
          * @param userId
          * @param localeId
          */
@@ -93,20 +90,25 @@ public class Dashboard {
             final CLDRLocale locale = CLDRLocale.getInstance(localeId);
             ReportStatus reportStatus = ReportsDB.getInstance().getReportStatus(userId, locale);
             EnumSet<ReportId> incomplete = EnumSet.complementOf(reportStatus.completed);
+            incomplete.retainAll(
+                    VoterReportStatus.ReportId
+                            .getReportsAvailable()); // remove reports not actually available
             if (!incomplete.isEmpty()) {
                 ReviewNotificationGroup rng = new ReviewNotificationGroup("Reports", "", "");
                 incomplete.forEach(r -> rng.add(r.name()));
                 add("Reports").add(rng);
             }
             // update counts. Completed are both voted and votable.
-            reportStatus.completed.forEach(r -> {
-                voterProgress.incrementVotedPathCount();
-                voterProgress.incrementVotablePathCount();
-            });
+            reportStatus.completed.forEach(
+                    r -> {
+                        voterProgress.incrementVotedPathCount(VoteType.DIRECT);
+                        voterProgress.incrementVotablePathCount();
+                    });
             // Incomplete are votable but not voted.
-            incomplete.forEach(r -> {
-                voterProgress.incrementVotablePathCount();
-            });
+            incomplete.forEach(
+                    r -> {
+                        voterProgress.incrementVotablePathCount();
+                    });
         }
     }
 
@@ -140,8 +142,10 @@ public class Dashboard {
 
         @Schema(description = "SurveyTool section", example = "Units")
         public String section;
-        @Schema(description = "SurveyTool page", example = "Volume")
+
+        @Schema(description = "SurveyTool page", example = "Area")
         public String page;
+
         @Schema(description = "SurveyTool header", example = "dessert-spoon-imperial")
         public String header;
 
@@ -181,16 +185,21 @@ public class Dashboard {
         @Schema(description = "English text", example = "{0}dsp-Imp")
         public String english;
 
-        @Schema(description = "Previous English value, for EnglishChanged", example = "{0} dstspn Imp")
+        @Schema(
+                description = "Previous English value, for EnglishChanged",
+                example = "{0} dstspn Imp")
         public String previousEnglish;
 
         @Schema(description = "Baseline value", example = "{0} dstspn Imp")
-        public String old; /* Not currently (2022-04-08) used by front end; should be renamed "baseline" */
+        public String
+                old; /* Not currently (2022-04-08) used by front end; should be renamed "baseline" */
 
         @Schema(description = "Winning value in this locale", example = "{0} dstspn Imp")
         public String winning;
 
-        @Schema(description = "html comment on the error", example = "&lt;value too wide&gt; Too wide by about 100% (with common fonts).")
+        @Schema(
+                description = "html comment on the error",
+                example = "&lt;value too wide&gt; Too wide by about 100% (with common fonts).")
         public String comment;
 
         @Schema(description = "Subtype of the error", example = "largerDifferences")
@@ -198,6 +207,7 @@ public class Dashboard {
 
         /**
          * Create a new ReviewEntry
+         *
          * @param code item code
          * @param xpath xpath string
          */
@@ -221,15 +231,33 @@ public class Dashboard {
      * @param xpath like "//ldml/..."; only check the given xpath; if xpath is null, check all paths
      * @return the ReviewOutput
      */
-    public ReviewOutput get(CLDRLocale locale, UserRegistry.User user, Level coverageLevel, String xpath) {
+    public ReviewOutput get(
+            CLDRLocale locale,
+            UserRegistry.User user,
+            Level coverageLevel,
+            String xpath,
+            boolean includeOther) {
         final SurveyMain sm = CookieSession.sm;
-        Organization usersOrg = Organization.fromString(user.voterOrg());
+        Organization usersOrg = Organization.unaffiliated;
+        if (user != null) {
+            usersOrg = Organization.fromString(user.voterOrg());
+        }
         STFactory sourceFactory = sm.getSTFactory();
-        VettingViewer<Organization> vv = new VettingViewer<>(sm.getSupplementalDataInfo(), sourceFactory,
-            new STUsersChoice(sm));
-        EnumSet<NotificationCategory> choiceSet = VettingViewer.getDashboardNotificationCategories(usersOrg);
+        VettingViewer<Organization> vv =
+                new VettingViewer<>(
+                        sm.getSupplementalDataInfo(), sourceFactory, new STUsersChoice(sm));
+        EnumSet<NotificationCategory> choiceSet =
+                VettingViewer.getDashboardNotificationCategories(usersOrg);
+        if (includeOther) {
+            // user requested all categories
+            choiceSet.add(NotificationCategory.other);
+        }
         VettingParameters args = new VettingParameters(choiceSet, locale, coverageLevel);
-        args.setUserAndOrganization(user.id, usersOrg);
+        if (user != null) {
+            args.setUserAndOrganization(user.id, usersOrg);
+        } else {
+            args.setUserAndOrganization(UserRegistry.NO_USER, usersOrg);
+        }
         args.setFiles(locale, sourceFactory, sm.getDiskFactory());
         if (xpath != null) {
             args.setXpath(xpath);
@@ -250,62 +278,100 @@ public class Dashboard {
             reviewOutput.hidden = new ReviewHide(args.getUserId(), localeId).get();
             reviewOutput.voterProgress = dd.voterProgress;
             reviewOutput.addReports(args.getUserId(), localeId);
+            reviewOutput.localeCompletionData = dd.localeCompletionData;
         }
         return reviewOutput;
     }
 
-    private void addNotificationEntries(VettingParameters args,
-                                        Relation<R2<SectionId, PageId>, VettingViewer<Organization>.WritingInfo> sorted,
-                                        ReviewOutput reviewOutput) {
-        Relation<Row.R4<NotificationCategory, SectionId, PageId, String>, VettingViewer<Organization>.WritingInfo> notificationsList = getNotificationsList(sorted);
+    private void addNotificationEntries(
+            VettingParameters args,
+            Relation<R2<SectionId, PageId>, VettingViewer<Organization>.WritingInfo> sorted,
+            ReviewOutput reviewOutput) {
+        Relation<
+                        Row.R4<NotificationCategory, SectionId, PageId, String>,
+                        VettingViewer<Organization>.WritingInfo>
+                notificationsList = getNotificationsList(sorted);
 
         ReviewNotification notification = null;
 
         SurveyMain sm = CookieSession.sm;
         CLDRFile englishFile = sm.getEnglishFile();
 
-        for (Entry<R4<NotificationCategory, SectionId, PageId, String>, Set<VettingViewer<Organization>.WritingInfo>> entry : notificationsList.keyValuesSet()) {
+        for (Entry<
+                        R4<NotificationCategory, SectionId, PageId, String>,
+                        Set<VettingViewer<Organization>.WritingInfo>>
+                entry : notificationsList.keyValuesSet()) {
 
             notification = getNextNotification(reviewOutput, notification, entry);
 
+            if (notification.category.equals("Abstained")
+                    && args.getUserId() == UserRegistry.NO_USER) {
+                continue; // don't show abstained when the user can't vote.
+            }
             addNotificationGroup(args, notification, englishFile, entry);
         }
     }
 
-    private Relation<Row.R4<NotificationCategory, SectionId, PageId, String>, VettingViewer<Organization>.WritingInfo> getNotificationsList(
-        Relation<R2<SectionId, PageId>, VettingViewer<Organization>.WritingInfo> sorted) {
-        Relation<Row.R4<NotificationCategory, SectionId, PageId, String>, VettingViewer<Organization>.WritingInfo> notificationsList = Relation
-            .of(new TreeMap<Row.R4<NotificationCategory, SectionId, PageId, String>, Set<VettingViewer<Organization>.WritingInfo>>(), TreeSet.class);
+    private Relation<
+                    Row.R4<NotificationCategory, SectionId, PageId, String>,
+                    VettingViewer<Organization>.WritingInfo>
+            getNotificationsList(
+                    Relation<R2<SectionId, PageId>, VettingViewer<Organization>.WritingInfo>
+                            sorted) {
+        Relation<
+                        Row.R4<NotificationCategory, SectionId, PageId, String>,
+                        VettingViewer<Organization>.WritingInfo>
+                notificationsList =
+                        Relation.of(
+                                new TreeMap<
+                                        Row.R4<NotificationCategory, SectionId, PageId, String>,
+                                        Set<VettingViewer<Organization>.WritingInfo>>(),
+                                TreeSet.class);
 
-        for (Entry<R2<SectionId, PageId>, Set<VettingViewer<Organization>.WritingInfo>> entry0 : sorted.keyValuesSet()) {
+        for (Entry<R2<SectionId, PageId>, Set<VettingViewer<Organization>.WritingInfo>> entry0 :
+                sorted.keyValuesSet()) {
             final Set<VettingViewer<Organization>.WritingInfo> rows = entry0.getValue();
             for (VettingViewer<Organization>.WritingInfo pathInfo : rows) {
                 Set<NotificationCategory> choicesForPath = pathInfo.problems;
                 SectionId section = entry0.getKey().get0();
                 PageId subsection = entry0.getKey().get1();
                 for (NotificationCategory choice : choicesForPath) {
-                    notificationsList.put(Row.of(choice, section, subsection, pathInfo.codeOutput.getHeader()), pathInfo);
+                    notificationsList.put(
+                            Row.of(choice, section, subsection, pathInfo.codeOutput.getHeader()),
+                            pathInfo);
                 }
             }
         }
         return notificationsList;
     }
 
-    private ReviewNotification getNextNotification(ReviewOutput reviewOutput, ReviewNotification notification,
-        Entry<R4<NotificationCategory, SectionId, PageId, String>, Set<VettingViewer<Organization>.WritingInfo>> entry) {
+    private ReviewNotification getNextNotification(
+            ReviewOutput reviewOutput,
+            ReviewNotification notification,
+            Entry<
+                            R4<NotificationCategory, SectionId, PageId, String>,
+                            Set<VettingViewer<Organization>.WritingInfo>>
+                    entry) {
         String notificationName = entry.getKey().get0().jsonLabel;
 
         notification = reviewOutput.add(notificationName, notification);
         return notification;
     }
 
-    private void addNotificationGroup(VettingParameters args, ReviewNotification notification, CLDRFile englishFile,
-                                      Entry<R4<NotificationCategory, SectionId, PageId, String>, Set<VettingViewer<Organization>.WritingInfo>> entry) {
+    private void addNotificationGroup(
+            VettingParameters args,
+            ReviewNotification notification,
+            CLDRFile englishFile,
+            Entry<
+                            R4<NotificationCategory, SectionId, PageId, String>,
+                            Set<VettingViewer<Organization>.WritingInfo>>
+                    entry) {
         String sectionName = entry.getKey().get1().name();
         String pageName = entry.getKey().get2().name();
         String headerName = entry.getKey().get3();
 
-        ReviewNotificationGroup header = notification.add(new ReviewNotificationGroup(sectionName, pageName, headerName));
+        ReviewNotificationGroup header =
+                notification.add(new ReviewNotificationGroup(sectionName, pageName, headerName));
 
         for (VettingViewer<Organization>.WritingInfo info : entry.getValue()) {
             String code = info.codeOutput.getCode();

@@ -1,25 +1,31 @@
 package org.unicode.cldr.web.api;
 
+import com.ibm.icu.lang.UCharacter;
+import com.ibm.icu.util.Calendar;
+import com.ibm.icu.util.TimeZone;
+import com.ibm.icu.util.ULocale;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
@@ -28,57 +34,44 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.json.JSONException;
-import org.unicode.cldr.util.CLDRConfig;
-import org.unicode.cldr.util.CLDRLocale;
-import org.unicode.cldr.util.Level;
-import org.unicode.cldr.util.Organization;
-import org.unicode.cldr.util.VettingViewer;
+import org.unicode.cldr.util.*;
 import org.unicode.cldr.web.*;
 import org.unicode.cldr.web.Dashboard.ReviewOutput;
 import org.unicode.cldr.web.VettingViewerQueue.LoadingPolicy;
-
-import com.ibm.icu.util.Calendar;
-import com.ibm.icu.util.TimeZone;
+import org.unicode.cldr.web.util.JSONException;
 
 @ApplicationScoped
 @Path("/summary")
 @Tag(name = "voting", description = "APIs for voting")
 public class Summary {
 
-    /**
-     * When to start a daily automatic snapshot
-     */
-    private static final int AUTO_SNAP_HOUR_OF_DAY = 1;
-    private static final int AUTO_SNAP_MINUTE_OF_HOUR = 11; // 1:11 am
+    /** When to start a daily automatic snapshot */
+    private static final int AUTO_SNAP_HOUR_OF_DAY = 8;
+
+    private static final int AUTO_SNAP_MINUTE_OF_HOUR = 0; // 8:00 am
     private static final int AUTO_SNAP_MINIMUM_START_MINUTES = 3;
     private static final String AUTO_SNAP_TIME_ZONE = "America/Los_Angeles";
     private static ScheduledFuture<?> autoSnapshotFuture = null;
 
     /**
-     * While an automatic snapshot is in progress, which may take several minutes,
-     * make repeated requests with this delay in between. The log may show the progress
-     * as a percentage. A few times per minute is similar to the frequency of http requests
-     * for manual summaries, and may be convenient for debugging.
+     * While an automatic snapshot is in progress, which may take several minutes, make repeated
+     * requests with this delay in between. The log may show the progress as a percentage. A few
+     * times per minute is similar to the frequency of http requests for manual summaries, and may
+     * be convenient for debugging.
      */
     private static final long AUTO_SNAP_SLEEP_SECONDS = 20;
 
-    /**
-     * An automatic snapshot should not take this long; bail out if it does.
-     */
+    /** An automatic snapshot should not take this long; bail out if it does. */
     private static final long AUTO_SNAP_MAX_DURATION_MINUTES = 30;
 
-    /**
-     * jsonb enables converting an object to a json string,
-     * used for creating snapshots
-     */
+    /** jsonb enables converting an object to a json string, used for creating snapshots */
     private static final Jsonb jsonb = JsonbBuilder.create();
 
     /**
      * For saving and retrieving "snapshots" of Summary responses
      *
-     * Note: for debugging/testing without using db, new SurveySnapshotDb() can be
-     * changed here to new SurveySnapshotMap()
+     * <p>Note: for debugging/testing without using db, new SurveySnapshotDb() can be changed here
+     * to new SurveySnapshotMap()
      */
     private static final SurveySnapshot snap = new SurveySnapshotDb();
 
@@ -88,19 +81,21 @@ public class Summary {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Operation(
-        summary = "Get Priority Items Summary",
-        description = "Also known as Vetting Summary, this like a Dashboard for multiple locales.")
+            summary = "Get Priority Items Summary",
+            description =
+                    "Also known as Vetting Summary, this like a Dashboard for multiple locales.")
     @APIResponses(
-        value = {
-            @APIResponse(
-                responseCode = "200",
-                description = "Results of Summary operation",
-                content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = SummaryResponse.class)))
-        })
+            value = {
+                @APIResponse(
+                        responseCode = "200",
+                        description = "Results of Summary operation",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema = @Schema(implementation = SummaryResponse.class)))
+            })
     public Response doVettingSummary(
-        SummaryRequest request,
-        @HeaderParam(Auth.SESSION_HEADER) String sessionString) {
+            SummaryRequest request, @HeaderParam(Auth.SESSION_HEADER) String sessionString) {
         try {
             CookieSession cs = Auth.getSession(sessionString);
             if (cs == null) {
@@ -110,7 +105,7 @@ public class Summary {
                 return Response.status(Status.FORBIDDEN).build();
             }
             if (SurveySnapshot.SNAP_CREATE.equals(request.snapshotPolicy)
-                && !UserRegistry.userCanCreateSummarySnapshot(cs.user)) {
+                    && !UserRegistry.userCanCreateSummarySnapshot(cs.user)) {
                 return Response.status(Status.FORBIDDEN).build();
             }
             return getPriorityItemsSummary(cs, request);
@@ -122,21 +117,21 @@ public class Summary {
     /**
      * Get the response for Priority Items Summary (possibly a snapshot)
      *
-     * Each request specifies a loading policy: START, NOSTART, or FORCESTOP.
-     * Typically, the client makes a request with START, then makes repeated requests with NOSTART
-     * while the responses have status PROCESSING (or WAITING), until there is a response with status READY.
+     * <p>Each request specifies a loading policy: START, NOSTART, or FORCESTOP. Typically, the
+     * client makes a request with START, then makes repeated requests with NOSTART while the
+     * responses have status PROCESSING (or WAITING), until there is a response with status READY.
      * The response with status READY contains the actual requested Priority Items Summary data.
      *
-     * Each request specifies a snapshot policy: SNAP_NONE, SNAP_CREATE, or SNAP_SHOW.
+     * <p>Each request specifies a snapshot policy: SNAP_NONE, SNAP_CREATE, or SNAP_SHOW.
      *
      * @param cs the CookieSession identifying the user
      * @param request the SummaryRequest
      * @return the Response
-     *
      * @throws IOException
      * @throws JSONException
      */
-    private Response getPriorityItemsSummary(CookieSession cs, SummaryRequest request) throws IOException, JSONException {
+    private Response getPriorityItemsSummary(CookieSession cs, SummaryRequest request)
+            throws IOException, JSONException {
         cs.userDidAction();
         if (SurveySnapshot.SNAP_SHOW.equals(request.snapshotPolicy)) {
             return showSnapshot(request.snapshotId);
@@ -147,7 +142,7 @@ public class Summary {
         QueueMemberId qmi = new QueueMemberId(cs);
         SummaryResponse sr = getSummaryResponse(vvq, qmi, usersOrg, request.loadingPolicy);
         if (SurveySnapshot.SNAP_CREATE.equals(request.snapshotPolicy)
-            && sr.status == VettingViewerQueue.Status.READY) {
+                && sr.status == VettingViewerQueue.Status.READY) {
             saveSnapshot(sr);
         }
         return Response.ok(sr, MediaType.APPLICATION_JSON).build();
@@ -161,12 +156,15 @@ public class Summary {
      * @param usersOrg the user's organization
      * @param loadingPolicy the LoadingPolicy
      * @return the SummaryResponse
-     *
      * @throws IOException
      * @throws JSONException
      */
-    private SummaryResponse getSummaryResponse(VettingViewerQueue vvq, QueueMemberId qmi,
-            Organization usersOrg, LoadingPolicy loadingPolicy) throws IOException, JSONException {
+    private SummaryResponse getSummaryResponse(
+            VettingViewerQueue vvq,
+            QueueMemberId qmi,
+            Organization usersOrg,
+            LoadingPolicy loadingPolicy)
+            throws IOException, JSONException {
         SummaryResponse sr = new SummaryResponse();
         VettingViewerQueue.Args args = vvq.new Args(qmi, usersOrg, loadingPolicy);
         VettingViewerQueue.Results results = vvq.new Results();
@@ -208,18 +206,22 @@ public class Summary {
     @Path("/snapshots")
     @Produces(MediaType.APPLICATION_JSON)
     @Operation(
-        summary = "List All Snapshots",
-        description = "Get a list of all available snapshots of the Priority Items Summary")
+            summary = "List All Snapshots",
+            description = "Get a list of all available snapshots of the Priority Items Summary")
     @APIResponses(
-        value = {
-            @APIResponse(
-                responseCode = "200",
-                description = "Snapshot List",
-                content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = SnapshotListResponse.class)))
-        })
-    public Response listSnapshots(
-        @HeaderParam(Auth.SESSION_HEADER) String sessionString) {
+            value = {
+                @APIResponse(
+                        responseCode = "200",
+                        description = "Snapshot List",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema =
+                                                @Schema(
+                                                        implementation =
+                                                                SnapshotListResponse.class)))
+            })
+    public Response listSnapshots(@HeaderParam(Auth.SESSION_HEADER) String sessionString) {
         CookieSession cs = Auth.getSession(sessionString);
         if (cs == null) {
             return Auth.noSessionResponse();
@@ -243,9 +245,7 @@ public class Summary {
         }
     }
 
-    /**
-     * Schedule automatic snapshots, if enabled; this gets called when Survey Tool starts up
-     */
+    /** Schedule automatic snapshots, if enabled; this gets called when Survey Tool starts up */
     public static void scheduleAutomaticSnapshots() {
         if (!autoSnapshotsAreEnabled()) {
             return;
@@ -253,13 +253,18 @@ public class Summary {
         final Calendar when = getNextSnap();
         final long initialDelayMinutes = getMinutesUntil(when);
         final long repeatPeriodMinutes = TimeUnit.MINUTES.convert(1L, TimeUnit.DAYS);
-        log("Automatic Summary Snapshots are scheduled daily starting in " +
-                initialDelayMinutes + " minutes, at " + when.getTime());
+        log(
+                "Automatic Summary Snapshots are scheduled daily starting in "
+                        + initialDelayMinutes
+                        + " minutes, at "
+                        + when.getTime());
         final ScheduledExecutorService exServ = SurveyThreadManager.getScheduledExecutorService();
         try {
             Summary summary = new Summary();
             Runnable r = summary.new AutoSnapper();
-            autoSnapshotFuture = exServ.scheduleAtFixedRate(r, initialDelayMinutes, repeatPeriodMinutes, TimeUnit.MINUTES);
+            autoSnapshotFuture =
+                    exServ.scheduleAtFixedRate(
+                            r, initialDelayMinutes, repeatPeriodMinutes, TimeUnit.MINUTES);
         } catch (Throwable t) {
             SurveyLog.logException(logger, t, "Exception while scheduling automatic snapshots");
             t.printStackTrace();
@@ -302,7 +307,8 @@ public class Summary {
         when.set(Calendar.MINUTE, AUTO_SNAP_MINUTE_OF_HOUR);
         when.set(Calendar.SECOND, 0);
         when.set(Calendar.MILLISECOND, 0);
-        // Make sure the server has at least a few minutes to finish starting up before starting a snapshot
+        // Make sure the server has at least a few minutes to finish starting up before starting a
+        // snapshot
         if (getMinutesUntil(when) < AUTO_SNAP_MINIMUM_START_MINUTES) {
             when.add(Calendar.MINUTE, AUTO_SNAP_MINIMUM_START_MINUTES);
         }
@@ -333,8 +339,9 @@ public class Summary {
     private void makeAutoPriorityItemsSnapshot() throws IOException, JSONException {
         boolean summarizeAllLocales = false;
         if (ENABLE_ALL_LOCALE_SUMMARY) {
-            final SurveyMain.Phase phase = SurveyMain.phase();
-            summarizeAllLocales = (phase == SurveyMain.Phase.VETTING || phase == SurveyMain.Phase.VETTING_CLOSED);
+            final SurveyMain.Phase phase = SurveyMain.getOverallSurveyPhase();
+            summarizeAllLocales =
+                    (phase == SurveyMain.Phase.VETTING || phase == SurveyMain.Phase.VETTING_CLOSED);
         }
         final VettingViewerQueue vvq = VettingViewerQueue.getInstance();
         vvq.setSummarizeAllLocales(summarizeAllLocales);
@@ -353,7 +360,7 @@ public class Summary {
             ++count;
             log("Automatic Summary Snapshot, got response " + count + "; percent = " + sr.percent);
             if (sr.status == VettingViewerQueue.Status.WAITING
-                || sr.status == VettingViewerQueue.Status.PROCESSING) {
+                    || sr.status == VettingViewerQueue.Status.PROCESSING) {
                 finished = autoSnapTooLong(startMillis) || autoSnapSleepCatchInterruption();
             } else {
                 finished = true;
@@ -385,9 +392,7 @@ public class Summary {
         return false;
     }
 
-    /**
-     * When Survey Tool is shutting down, cancel any scheduled/running automatic snapshot
-     */
+    /** When Survey Tool is shutting down, cancel any scheduled/running automatic snapshot */
     public static void shutdown() {
         try {
             if (autoSnapshotFuture != null && !autoSnapshotFuture.isCancelled()) {
@@ -400,41 +405,245 @@ public class Summary {
         }
     }
 
+    public static final class CoverageStatusResponse {
+        public String[] levelNames = new String[Level.values().length];
+        public CalculateLocaleCoverage.CoverageResult[] results;
+
+        public CoverageStatusResponse(Collection<CalculateLocaleCoverage.CoverageResult> results) {
+            this.results = results.toArray(new CalculateLocaleCoverage.CoverageResult[0]);
+            for (final Level l : Level.values()) {
+                levelNames[l.ordinal()] = UCharacter.toTitleCase(ULocale.ENGLISH, l.name(), null);
+            }
+        }
+    }
+
     @GET
-    @Path("/dashboard/{locale}/{level}")
+    @Path("/dashboard/coverageStatus")
     @Produces(MediaType.APPLICATION_JSON)
-    @Operation(
-        summary = "Fetch the Dashboard for a locale",
-        description = "Given a locale, get the summary information, aka Dashboard")
-    @Counted(name = "getDashboardCount", absolute = true, description = "Number of dashboards computed")
-    @Timed(absolute = true, name = "getDashboardTime", description = "Time to fetch the Dashboard")
     @APIResponses(
-        value = {
-            @APIResponse(
-                responseCode = "200",
-                description = "Dashboard results",
-                content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ReviewOutput.class))) // TODO: SummaryResults.class
-        })
-    public Response getDashboard(
-        @PathParam("locale") @Schema(required = true, description = "Locale ID") String locale,
-        @PathParam("level") @Schema(required = true, description = "Coverage Level") String level,
-        @HeaderParam(Auth.SESSION_HEADER) String sessionString) {
-        CLDRLocale loc = CLDRLocale.getInstance(locale);
+            value = {
+                @APIResponse(
+                        responseCode = "200",
+                        description = "Dashboard results",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema =
+                                                @Schema(
+                                                        implementation =
+                                                                CoverageStatusResponse.class)))
+            })
+    public Response getCoverageStatus(@HeaderParam(Auth.SESSION_HEADER) String sessionString) {
         CookieSession cs = Auth.getSession(sessionString);
         if (cs == null) {
             return Auth.noSessionResponse();
         }
-        if (!UserRegistry.userCanModifyLocale(cs.user, loc)) {
-            return Response.status(403, "Forbidden").build();
+        if (cs.user == null || !cs.user.getLevel().canCreateSummarySnapshot()) {
+            return Response.status(Status.UNAUTHORIZED).build();
         }
         cs.userDidAction();
+        return Response.ok()
+                .entity(
+                        new CoverageStatusResponse(
+                                CalculateLocaleCoverage.getCoverage(
+                                        CookieSession.sm.getSTFactory())))
+                .build();
+    }
 
+    @GET
+    @Path("/dashboard/{locale}/{level}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(
+            summary = "Fetch the user's Dashboard for a locale",
+            description = "Given a locale, get the summary information, aka Dashboard")
+    @Counted(
+            name = "getDashboardCount",
+            absolute = true,
+            description = "Number of dashboards computed")
+    @Timed(absolute = true, name = "getDashboardTime", description = "Time to fetch the Dashboard")
+    @APIResponses(
+            value = {
+                @APIResponse(
+                        responseCode = "200",
+                        description = "Dashboard results",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema =
+                                                @Schema(
+                                                        implementation =
+                                                                ReviewOutput.class))) // TODO:
+                // SummaryResults.class
+            })
+    public Response getDashboard(
+            @PathParam("locale") @Schema(required = true, description = "Locale ID")
+                    String localeId,
+            @PathParam("level") @Schema(required = true, description = "Coverage Level")
+                    String level,
+            @QueryParam("includeOther")
+                    @DefaultValue("false")
+                    @Schema(
+                            required = false,
+                            description = "Include all rows ('Other' category)",
+                            example = "true")
+                    boolean includeOther,
+            @HeaderParam(Auth.SESSION_HEADER) String sessionString) {
+        CookieSession cs = Auth.getSession(sessionString);
+        if (cs == null) {
+            return Auth.noSessionResponse();
+        }
+        cs.userDidAction();
+        CLDRLocale loc = CLDRLocale.getInstance(localeId);
+        if (loc == null || !SurveyMain.getLocalesSet().contains(loc)) {
+            return STError.badLocale(localeId);
+        }
         // *Beware*  org.unicode.cldr.util.Level (coverage) ≠ VoteResolver.Level (user)
         Level coverageLevel = org.unicode.cldr.util.Level.fromString(level);
-        ReviewOutput ret = new Dashboard().get(loc, cs.user, coverageLevel, null /* xpath */);
+        ReviewOutput ret =
+                new Dashboard().get(loc, cs.user, coverageLevel, null /* xpath */, includeOther);
+        ret.coverageLevel = coverageLevel.name();
 
         return Response.ok().entity(ret).build();
+    }
+
+    private static final int CLDR_SUMMARY_PARTICIPATION_THREADS =
+            CLDRConfig.getInstance().getProperty("CLDR_SUMMARY_PARTICIPATION_THREADS", 2);
+    private static final int CLDR_SUMMARY_PARTICIPATION_TIMEOUT_MINUTES =
+            CLDRConfig.getInstance().getProperty("CLDR_SUMMARY_PARTICIPATION_TIMEOUT_MINUTES", 10);
+    private static final Semaphore participationResultsConcurrency =
+            new Semaphore(CLDR_SUMMARY_PARTICIPATION_THREADS, true);
+
+    @GET
+    @Path("/participation/for/{user}/{locale}/{level}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Operation(
+            summary = "Fetch another user's participation for a locale. Manager only.",
+            description = "Given a locale, get the participation information, for another user")
+    @Counted(name = "getUserCount", absolute = true, description = "Number of users computed")
+    @Timed(
+            absolute = true,
+            name = "getParticipationTime",
+            description = "Time to fetch the information")
+    @APIResponses(
+            value = {
+                @APIResponse(
+                        responseCode = "200",
+                        description = "Participation results",
+                        content =
+                                @Content(
+                                        mediaType = "application/json",
+                                        schema =
+                                                @Schema(
+                                                        implementation =
+                                                                ParticipationResults.class)))
+            })
+    public Response getParticipationFor(
+            @PathParam("user") @Schema(required = true, description = "User ID") Integer user,
+            @PathParam("locale") @Schema(required = true, description = "Locale ID") String locale,
+            @PathParam("level") @Schema(required = true, description = "Coverage Level or 'org'")
+                    String level,
+            @HeaderParam(Auth.SESSION_HEADER) String sessionString) {
+
+        boolean didAcquire = false;
+
+        try {
+            try {
+                logger.info(
+                        "Vetting Participation Try-with-timeout-in-minutes: "
+                                + CLDR_SUMMARY_PARTICIPATION_TIMEOUT_MINUTES);
+                didAcquire =
+                        participationResultsConcurrency.tryAcquire(
+                                CLDR_SUMMARY_PARTICIPATION_TIMEOUT_MINUTES,
+                                TimeUnit.MINUTES); // CLDR_SUMMARY_PARTICIPATION_TIMEOUT_MINUTES
+                if (!didAcquire) {
+                    logger.warning(
+                            "Participation timeout for " + user + "/" + locale + "/" + level);
+                    return Response.status(503).build();
+                } else {
+                    logger.warning("Participation aq for " + user + "/" + locale + "/" + level);
+                }
+            } catch (InterruptedException ie) {
+                logger.warning("Participation interrupt for " + user + "/" + locale + "/" + level);
+                return Response.status(503).build();
+            }
+
+            CLDRLocale loc = CLDRLocale.getInstance(locale);
+            CookieSession cs = Auth.getSession(sessionString);
+            if (cs == null) {
+                return Auth.noSessionResponse();
+            }
+            if (!UserRegistry.userIsManagerOrStronger(cs.user)) {
+                // exit early if user is not a manager.
+                return Response.status(403, "Forbidden").build();
+            }
+            UserRegistry.User target = CookieSession.sm.reg.getInfo(user);
+            if (target == null) {
+                // Could not find userid
+                return Response.status(404).build(); // user not found
+            }
+            if (!cs.user.isSameOrg(target) && !cs.user.getLevel().isAdmin()) {
+                // not manager for target's org OR superadmin
+                return Response.status(403, "Forbidden").build();
+            }
+            if (!cs.user.getOrganization().isTCOrg() && !cs.user.getLevel().isAdmin()) {
+                SurveyLog.warnOnce(
+                        logger,
+                        "CLDR-18868 denying Vetting Particip for "
+                                + cs.user.getOrganization().toString());
+                return Response.status(403, "Forbidden Temporarily").build(); // TODO CLDR-18868
+            }
+            cs.userDidAction();
+
+            // *Beware*  org.unicode.cldr.util.Level (coverage) ≠ VoteResolver.Level (user)
+            Level coverageLevel = null;
+            if (level.equals("org")) {
+                coverageLevel =
+                        StandardCodes.make()
+                                .getLocaleCoverageLevel(target.getOrganization(), locale);
+            } else {
+                coverageLevel = org.unicode.cldr.util.Level.fromString(level);
+            }
+            ReviewOutput reviewOutput =
+                    new Dashboard()
+                            .get(
+                                    loc,
+                                    target,
+                                    coverageLevel,
+                                    null /* xpath */,
+                                    false /* includeOther */);
+            reviewOutput.coverageLevel = coverageLevel.name();
+
+            ParticipationResults participationResults =
+                    new ParticipationResults(
+                            reviewOutput.voterProgress,
+                            reviewOutput.coverageLevel,
+                            reviewOutput.localeCompletionData);
+            return Response.ok().entity(participationResults).build();
+        } finally {
+            if (didAcquire) {
+                logger.info("Participation release for " + user + "/" + locale + "/" + level);
+                participationResultsConcurrency.release();
+            } else {
+                logger.info("No release for " + user + "/" + locale + "/" + level);
+            }
+        }
+    }
+
+    public class ParticipationResults {
+        public VoterProgress voterProgress;
+        public String coverageLevel;
+        public int errorCount, missingCount, provisionalCount;
+
+        public ParticipationResults(
+                VoterProgress voterProgress,
+                String coverageLevel,
+                LocaleCompletionData localeCompletionData) {
+            this.voterProgress = voterProgress;
+            this.coverageLevel = coverageLevel;
+            this.errorCount = localeCompletionData.errorCount();
+            this.missingCount = localeCompletionData.missingCount();
+            this.provisionalCount = localeCompletionData.provisionalCount();
+        }
     }
 
     private static void log(String message) {

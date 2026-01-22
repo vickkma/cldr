@@ -1,5 +1,6 @@
 package org.unicode.cldr.web;
 
+import com.ibm.icu.impl.Relation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,10 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.unicode.cldr.util.CLDRConfig;
 import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRLocale;
@@ -21,22 +18,21 @@ import org.unicode.cldr.util.PathHeader.Factory;
 import org.unicode.cldr.util.PathHeader.PageId;
 import org.unicode.cldr.util.PathHeader.SectionId;
 import org.unicode.cldr.util.PathHeader.SurveyToolStatus;
-import org.unicode.cldr.util.SupplementalDataInfo;
 import org.unicode.cldr.web.SurveyMenus.Section.Page;
-
-import com.ibm.icu.impl.Relation;
+import org.unicode.cldr.web.util.JSONArray;
+import org.unicode.cldr.web.util.JSONException;
+import org.unicode.cldr.web.util.JSONObject;
 
 public class SurveyMenus implements Iterable<SurveyMenus.Section> {
     PathHeader.Factory phf;
     STFactory fac;
     List<Section> sections = new ArrayList<>();
-    SupplementalDataInfo sdi = SupplementalDataInfo.getInstance();
 
     public SurveyMenus(STFactory stFactory, PathHeader.Factory phf) {
         fac = stFactory;
         this.phf = phf;
 
-        CLDRFile b = stFactory.sm.getTranslationHintsFile();
+        CLDRFile b = stFactory.sm.getEnglishFile();
         phf = PathHeader.getFactory(b);
         for (String xp : b) {
             phf.fromPath(xp);
@@ -68,8 +64,8 @@ public class SurveyMenus implements Iterable<SurveyMenus.Section> {
     }
 
     public class Section implements Iterable<Section.Page> {
-        private SectionId sectionKey;
-        private List<Page> subitems = new ArrayList<>();
+        private final SectionId sectionKey;
+        private final List<Page> subitems = new ArrayList<>();
         SurveyToolStatus status = SurveyToolStatus.HIDE;
 
         public SurveyToolStatus getStatus() {
@@ -101,7 +97,7 @@ public class SurveyMenus implements Iterable<SurveyMenus.Section> {
         }
 
         public class Page {
-            private PageId pageKey;
+            private final PageId pageKey;
             private SurveyToolStatus pageStatus = SurveyToolStatus.READ_WRITE;
 
             public SurveyToolStatus getPageStatus() {
@@ -111,17 +107,18 @@ public class SurveyMenus implements Iterable<SurveyMenus.Section> {
             private Page(final PageId p) {
                 pageKey = p;
 
-                PathHeader ph = null;
+                PathHeader ph;
                 // check visibility
                 Iterable<String> iter = getPagePaths();
                 if (iter != null)
                     for (String xp : iter) {
-                    ph = phf.fromPath(xp);
-                    SurveyToolStatus xStatus = ph.getSurveyToolStatus();
-                    if (xStatus == SurveyToolStatus.HIDE || xStatus == SurveyToolStatus.DEPRECATED) {
-                    pageStatus = SurveyToolStatus.HIDE;
-                    }
-                    break;
+                        ph = phf.fromPath(xp);
+                        SurveyToolStatus xStatus = ph.getSurveyToolStatus();
+                        if (xStatus == SurveyToolStatus.HIDE
+                                || xStatus == SurveyToolStatus.DEPRECATED) {
+                            pageStatus = SurveyToolStatus.HIDE;
+                        }
+                        break;
                     }
             }
 
@@ -137,8 +134,6 @@ public class SurveyMenus implements Iterable<SurveyMenus.Section> {
             public synchronized int getCoverageLevel(CLDRLocale loc) {
                 Integer ret = levs.get(loc);
                 if (ret == null) {
-                    // ElapsedTimer et = new ElapsedTimer("Cov for " + loc +
-                    // " "+displayName + ":"+pageDisplayName);
                     int min = Level.OPTIONAL.getLevel();
                     Iterable<String> iter = getPagePaths();
                     if (iter != null) {
@@ -152,7 +147,6 @@ public class SurveyMenus implements Iterable<SurveyMenus.Section> {
                     }
                     ret = min;
                     levs.put(loc, ret);
-                    // System.err.println("Calc " + et);
                 }
                 return ret;
             }
@@ -162,7 +156,6 @@ public class SurveyMenus implements Iterable<SurveyMenus.Section> {
             }
 
             Map<CLDRLocale, Integer> levs = new HashMap<>();
-
         }
 
         @Override
@@ -175,20 +168,26 @@ public class SurveyMenus implements Iterable<SurveyMenus.Section> {
         JSONArray sectionsJ = new JSONArray();
 
         for (Section s : sections) {
-            JSONObject sectionJ = new JSONObject()
-                .put("id", s.getSection().name())
-                .put("name", s.getSection().toString())
-                .put("status", s.getStatus());
+            JSONObject sectionJ =
+                    new JSONObject()
+                            .put("id", s.getSection().name())
+                            .put("name", s.getSection().toString())
+                            .put("status", s.getStatus());
 
             JSONArray pagesJ = new JSONArray();
 
             for (Page p : s) {
-                JSONObject pageJ = new JSONObject()
-                    .put("id", p.getKey().name())
-                    .put("name", p.getKey().toString());
+                JSONObject pageJ =
+                        new JSONObject()
+                                .put("id", p.getKey().name())
+                                .put("name", p.getKey().toString());
                 if (forLoc != null) {
-                    pageJ.put("levs", new JSONObject().put(forLoc.getBaseName(),
-                        Integer.toString(p.getCoverageLevel(forLoc))));
+                    pageJ.put(
+                            "levs",
+                            new JSONObject()
+                                    .put(
+                                            forLoc.getBaseName(),
+                                            Integer.toString(p.getCoverageLevel(forLoc))));
                 }
                 pagesJ.put(pageJ);
             }
@@ -198,9 +197,7 @@ public class SurveyMenus implements Iterable<SurveyMenus.Section> {
             sectionsJ.put(sectionJ);
         }
 
-        JSONObject ret = new JSONObject()
-            .put("sections", sectionsJ)
-            .put("levels", levelsJSON());
+        JSONObject ret = new JSONObject().put("sections", sectionsJ).put("levels", levelsJSON());
         if (forLoc != null) {
             ret.put("loc", forLoc.getBaseName());
         }
@@ -209,15 +206,19 @@ public class SurveyMenus implements Iterable<SurveyMenus.Section> {
 
     /**
      * TODO: move this into Level, once JSON libs are integrated into core
+     *
      * @return
      * @throws JSONException
      */
     private static JSONObject levelsJSON() throws JSONException {
         JSONObject levels = new JSONObject();
         for (Level l : Level.values()) {
-            levels.put(l.name(), new JSONObject().put("name", l.toString()).put("level", Integer.toString(l.getLevel())));
+            levels.put(
+                    l.name(),
+                    new JSONObject()
+                            .put("name", l.toString())
+                            .put("level", Integer.toString(l.getLevel())));
         }
         return levels;
     }
-
 }

@@ -5,19 +5,22 @@
     <p class="special_general" v-if="specialGeneral" v-html="specialGeneral" />
     <button
       @click="insertDashboard"
-      class="cldr-nav-btn btn-primary open-dash general-open-dash"
+      class="cldr-nav-btn btn-primary open-dash"
       type="button"
+      v-if="dashButtonShouldBeVisible()"
     >
       Open Dashboard
     </button>
+
+    <!-- <cldr-overall-errors /> -->
   </div>
 </template>
 
 <script>
-import * as cldrGui from "../esm/cldrGui.js";
-import * as cldrLoad from "../esm/cldrLoad.js";
-import * as cldrStatus from "../esm/cldrStatus.js";
-import * as cldrText from "../esm/cldrText.js";
+import * as cldrDashContext from "../esm/cldrDashContext.mjs";
+import * as cldrLoad from "../esm/cldrLoad.mjs";
+import * as cldrStatus from "../esm/cldrStatus.mjs";
+import * as cldrText from "../esm/cldrText.mjs";
 
 export default {
   data() {
@@ -27,6 +30,7 @@ export default {
       specialGeneral: null,
     };
   },
+
   mounted() {
     const locmap = cldrLoad.getTheLocaleMap();
     const bund = locmap.getLocaleInfo(cldrStatus.getCurrentLocale());
@@ -49,20 +53,33 @@ export default {
       this.betaNote = null;
     }
 
-    // setup specialGeneral
-    this.specialGeneral = cldrText.get("special_general");
+    this.specialGeneral = cldrText.get("generalSpecialGuidance");
+
+    if (cldrDashContext.shouldBeShown()) {
+      cldrDashContext.insert();
+    }
   },
+
   methods: {
+    dashButtonShouldBeVisible() {
+      return !cldrDashContext.isVisible();
+    },
+
     insertDashboard() {
-      cldrGui.insertDashboard();
+      cldrDashContext.insert();
     },
   },
 };
 </script>
 
 <style>
-button.general-open-dash {
-  /* We only want THIS button to float, not all Open Dashboard buttons. */
+button.open-dash {
   float: right;
+}
+
+p.special_general {
+  margin: 1em;
+  padding: 1em;
+  border: 2px solid gray;
 }
 </style>

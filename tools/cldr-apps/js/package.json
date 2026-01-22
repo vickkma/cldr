@@ -5,12 +5,16 @@
   "main": "index.js",
   "scripts": {
     "build-test": "webpack --config webpack-test.config.js",
+    "watch-test": "npm run build-test -- --watch",
     "test": "npm run nonbrowser-test && npm run browser-test",
-    "nonbrowser-test": "mocha --require esm --reporter spec test/nonbrowser/test-*.js",
-    "browser-test": "npm run build-test && mocha-chrome test/Test.html --chrome-launcher.connectionPollInterval=2000 --chrome-launcher.maxConnectionRetries=300",
+    "nonbrowser-test": "mocha --reporter spec test/nonbrowser/test-*.mjs",
+    "browser-test": "npm run build-test && mocha-headless-chrome -f test/Test.html",
+    "client-test": "mocha --reporter spec test/client/test-*.mjs",
     "lint": "exit 0",
-    "build": "webpack",
-    "watch": "webpack watch"
+    "build": "webpack --mode=production",
+    "build-dev": "webpack --mode=development",
+    "watch": "webpack --mode=development --watch",
+    "watch-production": "webpack --mode=production--watch"
   },
   "repository": {
     "type": "git",
@@ -20,28 +24,35 @@
     "ui"
   ],
   "author": "Steven R. Loomis <srl295@gmail.com>",
-  "license": "Unicode-DFS-2016",
+  "license": "Unicode-3.0",
   "bugs": {
     "url": "https://github.com/unicode-org/cldr/issues"
   },
   "homepage": "https://github.com/unicode-org/cldr#readme",
   "devDependencies": {
-    "@vue/compiler-sfc": "^3.0.7",
-    "chai": "^4.3.6",
-    "css-loader": "^5.1.1",
+    "chai": "^5.1.1",
+    "css-loader": "^6.8.1",
     "esm": "^3.2.25",
-    "mocha": "^8.4.0",
-    "mocha-chrome": "^2.2.0",
-    "style-loader": "^2.0.0",
-    "vue-loader": "^16.1.2",
-    "webpack": "^5.24.3",
-    "webpack-cli": "^4.5.0"
+    "mocha": "^10.8.2",
+    "mocha-headless-chrome": "^4.0.0",
+    "style-loader": "^3.3.3",
+    "vue-loader": "^17.0.1",
+    "webpack": "^5.102.1",
+    "webpack-cli": "^5.0.1"
   },
   "private": true,
   "dependencies": {
-    "ant-design-vue": "^2.0.1",
-    "swagger-client": "^3.18.5",
-    "vue": "^3.0.7",
-    "xlsx": "^0.18.5"
+    "@datadog/browser-logs": "^5.4.0",
+    "@datadog/browser-rum": "^5.4.0",
+    "@fontsource/noto-serif-np-hmong": "^5.2.5",
+    "ant-design-vue": "^3.2.16",
+    "browser-fs-access": "^0.35.0",
+    "glyphicons-only-bootstrap": "^1.0.1",
+    "marked": "^4.3.0",
+    "swagger-client": "^3.26.7",
+    "unicode-name": "^1.1.0",
+    "vue": "^3.2.47",
+    "vue-virtual-scroller": "^2.0.0-beta.8",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   }
 }

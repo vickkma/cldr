@@ -2,12 +2,18 @@
   <ul>
     <template v-if="loggedIn">
       <li v-if="isAdmin"><a href="#admin///">Admin Panel</a></li>
+      <li v-if="canGenerateVxml">
+        <a href="#generate_vxml///">Generate VXML</a>
+      </li>
       <!-- My Account only has border-top (section-header) if Admin Panel is shown -->
       <li v-if="isAdmin" class="section-header">My Account</li>
       <li v-else>My Account</li>
       <li>
         <ul>
           <li><a href="#account///">Account Settings</a></li>
+          <li v-if="showClaMenu">
+            <a href="#cla///">CLA (Contributor License Agreement) Status</a>
+          </li>
         </ul>
       </li>
       <li v-if="!isAdmin && !accountLocked">
@@ -31,11 +37,23 @@
       <li>
         <ul>
           <li>
-            <a v-bind:href="uploadXmlUrl" target="_blank">Upload XML </a>
+            <a href="#upload">Upload (Bulk Import)</a>
           </li>
         </ul>
       </li>
-      <li class="section-header">My Organization ({{ org }})</li>
+      <li
+        class="section-header"
+        v-if="
+          canUseVettingSummary ||
+          canListUsers ||
+          canMonitorForum ||
+          canMonitorVetting ||
+          accountLocked ||
+          isAdmin
+        "
+      >
+        My Organization ({{ org }})
+      </li>
       <li v-if="canUseVettingSummary">
         <ul>
           <li><a href="#vsummary///">Priority Items Summary</a></li>
@@ -61,9 +79,20 @@
       <li v-if="accountLocked" class="emphatic">
         LOCKED: Note: your account is currently locked
       </li>
+      <li v-if="isAdmin">
+        <ul>
+          <li>
+            <a href="#downgraded///">Votes for Downgraded Paths</a>
+          </li>
+          <li>
+            <a href="#bad_locales///">Invalid Locale IDs</a>
+          </li>
+        </ul>
+      </li>
       <li class="section-header">Forum</li>
       <li>
         <ul>
+          <li><a href="#announcements///">Announcements</a></li>
           <li>
             <a href="#flagged///"
               ><img
@@ -76,9 +105,11 @@
           </li>
         </ul>
       </li>
-      <li>
+      <li v-if="canSeeUnofficialEmail">
         <ul>
-          <li><a href="#mail///">Notifications (SMOKETEST ONLY)</a></li>
+          <li>
+            <a href="#mail///">Simulate Email Notifications (SMOKETEST ONLY)</a>
+          </li>
         </ul>
       </li>
       <li v-if="isAdmin">
@@ -112,12 +143,13 @@
 </template>
 
 <script>
-import * as cldrStatus from "../esm/cldrStatus.js";
+import * as cldrStatus from "../esm/cldrStatus.mjs";
 
 export default {
   data() {
     return {
       accountLocked: false,
+      canGenerateVxml: false,
       canImportOldVotes: false,
       canListUsers: false,
       canMonitorVetting: false,
@@ -125,11 +157,13 @@ export default {
       canUseVettingSummary: false,
       isAdmin: false,
       isTC: false,
+      canSeeUnofficialEmail: false,
       loggedIn: false,
       org: null,
       recentActivityUrl: null,
       uploadXmlUrl: null,
       userId: 0,
+      showClaMenu: true,
     };
   },
 
@@ -140,18 +174,21 @@ export default {
   methods: {
     initializeData() {
       const perm = cldrStatus.getPermissions();
-      this.accountLocked = perm && perm.userIsLocked;
-      this.canImportOldVotes = perm && perm.userCanImportOldVotes;
-      this.canListUsers = this.canMonitorVetting =
-        perm && (perm.userIsTC || perm.userIsVetter);
-      this.canMonitorForum = perm && perm.userCanMonitorForum;
+      this.accountLocked = Boolean(perm?.userIsLocked);
+      this.canGenerateVxml = Boolean(perm?.userCanGenerateVxml);
+      this.canImportOldVotes = Boolean(perm?.userCanImportOldVotes);
+      this.canListUsers = Boolean(perm?.userCanListUsers);
+      this.canMonitorVetting = Boolean(perm?.userCanUseVettingParticipation);
+      this.canMonitorForum = Boolean(perm?.userCanMonitorForum);
       // this.canSeeStatistics will be false until there is a new implementation
-      this.canUseVettingSummary = perm && perm.userCanUseVettingSummary;
-      this.isAdmin = perm && perm.userIsAdmin;
-      this.isTC = perm && perm.userIsTC;
+      this.canUseVettingSummary = Boolean(perm?.userCanUseVettingSummary);
+      this.isAdmin = Boolean(perm?.userIsAdmin);
+      this.canSeeUnofficialEmail =
+        cldrStatus.getIsUnofficial() && Boolean(perm?.userIsManager);
+      this.isTC = Boolean(perm?.userIsTC);
 
       const user = cldrStatus.getSurveyUser();
-      this.loggedIn = !!user;
+      this.loggedIn = Boolean(user);
       this.userId = user ? user.id : 0;
 
       this.org = cldrStatus.getOrganizationName();

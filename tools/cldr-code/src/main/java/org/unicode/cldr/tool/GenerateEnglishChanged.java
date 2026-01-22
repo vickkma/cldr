@@ -1,5 +1,9 @@
 package org.unicode.cldr.tool;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+import com.ibm.icu.text.UnicodeSet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,7 +14,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.unicode.cldr.test.SubmissionLocales;
 import org.unicode.cldr.util.CLDRConfig;
 import org.unicode.cldr.util.CLDRFile;
@@ -19,31 +22,32 @@ import org.unicode.cldr.util.Factory;
 import org.unicode.cldr.util.PathStarrer;
 import org.unicode.cldr.util.SimpleFactory;
 import org.unicode.cldr.util.With;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
-import com.ibm.icu.text.UnicodeSet;
+import org.unicode.cldr.util.XPathParts;
 
 public class GenerateEnglishChanged {
     private static final CLDRConfig CLDR_CONFIG = CLDRConfig.getInstance();
     private static final File TRUNK_DIRECTORY = new File(CLDRPaths.BASE_DIRECTORY);
-// TODO
-    private static final File RELEASE_DIRECTORY = new File(CLDRPaths.ARCHIVE_DIRECTORY + "cldr-" + ToolConstants.LAST_RELEASE_VERSION + ".0" + "/");
-private static final boolean TRIAL = false;
+    // TODO
+    private static final File RELEASE_DIRECTORY =
+            new File(
+                    CLDRPaths.ARCHIVE_DIRECTORY
+                            + "cldr-"
+                            + ToolConstants.LAST_RELEASE_VERSION
+                            + "/");
+    private static final boolean TRIAL = false;
 
     public static void main(String[] args) {
-        String[] base = { "common" };
-        File[] addStandardSubdirectories = CLDR_CONFIG.addStandardSubdirectories(
-            CLDR_CONFIG.fileArrayFromStringArray(
-                TRUNK_DIRECTORY, base));
+        String[] base = {"common"};
+        File[] addStandardSubdirectories =
+                CLDR_CONFIG.addStandardSubdirectories(
+                        CLDRConfig.fileArrayFromStringArray(TRUNK_DIRECTORY, base));
 
         Factory factoryTrunk = SimpleFactory.make(addStandardSubdirectories, ".*");
         CLDRFile englishTrunk = factoryTrunk.make("en", true);
 
-        addStandardSubdirectories = CLDR_CONFIG.addStandardSubdirectories(
-            CLDR_CONFIG.fileArrayFromStringArray(
-                RELEASE_DIRECTORY, base));
+        addStandardSubdirectories =
+                CLDR_CONFIG.addStandardSubdirectories(
+                        CLDRConfig.fileArrayFromStringArray(RELEASE_DIRECTORY, base));
 
         Factory factoryLastRelease = SimpleFactory.make(addStandardSubdirectories, ".*");
         CLDRFile englishLastRelease = factoryLastRelease.make("en", true);
@@ -51,12 +55,10 @@ private static final boolean TRIAL = false;
         Set<String> paths = new TreeSet<>();
         With.in(englishTrunk).toCollection(paths);
         With.in(englishLastRelease).toCollection(paths);
-        PathStarrer starrer = new PathStarrer();
         final String placeholder = "×";
-        starrer.setSubstitutionPattern(placeholder);
 
         Set<String> abbreviatedPaths = new LinkedHashSet<>();
-        Multimap<String,List<String>> pathsDiffer = LinkedHashMultimap.create();
+        Multimap<String, List<String>> pathsDiffer = LinkedHashMultimap.create();
         for (String path : paths) {
             String valueTrunk = englishTrunk.getStringValue(path);
             if (valueTrunk == null) { // new, handled otherwise
@@ -72,9 +74,12 @@ private static final boolean TRIAL = false;
                     continue;
                 }
                 abbreviatedPaths.add(abbrPath);
-                String starred = starrer.set(abbrPath);
-                pathsDiffer.put(starred, ImmutableList.copyOf(starrer.getAttributes()));
-                //System.out.println(path + " => " + abbrPath);
+                String starred = PathStarrer.getWithPattern(abbrPath, placeholder);
+                pathsDiffer.put(
+                        starred,
+                        ImmutableList.copyOf(
+                                XPathParts.getFrozenInstance(abbrPath).getAttributeValues()));
+                // System.out.println(path + " => " + abbrPath);
             }
         }
 
@@ -88,7 +93,6 @@ private static final boolean TRIAL = false;
         System.out.println("Errors: " + errorCount);
 
         if (TRIAL) {
-            String multipath = "(";
 
             for (Entry<String, Collection<List<String>>> entry : pathsDiffer.asMap().entrySet()) {
                 String path = entry.getKey();
@@ -98,7 +102,7 @@ private static final boolean TRIAL = false;
                     if (store == null) {
                         store = new ArrayList<>();
                         for (int i = 0; i < list.size(); ++i) {
-                            store.add(new LinkedHashSet<String>());
+                            store.add(new LinkedHashSet<>());
                         }
                     }
                     for (int i = 0; i < list.size(); ++i) {
@@ -107,38 +111,38 @@ private static final boolean TRIAL = false;
                 }
                 System.out.println(path + "\t" + store);
                 path = path.replace("[", "\\[");
-
-                for (int i = 0; i < store.size(); ++i) {
-                    Set<String> attrValues = store.get(i);
-                    UnicodeSet alphabet = new UnicodeSet();
-                    for (String attrValue : attrValues) {
-                        alphabet.addAll(attrValue);
+                if (store != null) {
+                    for (Set<String> attrValues : store) {
+                        UnicodeSet alphabet = new UnicodeSet();
+                        for (String attrValue : attrValues) {
+                            alphabet.addAll(attrValue);
+                        }
+                        // System.out.println(alphabet.toPattern(false));
+                        String compressed =
+                                MinimizeRegex.compressWith(
+                                        attrValues, alphabet); // (attrValues, alphabet);
+                        // String compressed = MinimizeRegex.simplePattern(attrValues);//
+                        // (attrValues,
+                        // alphabet);
+                        path = path.replaceFirst(placeholder, "(" + compressed + ")");
                     }
-                    //System.out.println(alphabet.toPattern(false));
-                    String compressed = MinimizeRegex.compressWith(attrValues, alphabet);// (attrValues, alphabet);
-                    //String compressed = MinimizeRegex.simplePattern(attrValues);// (attrValues, alphabet);
-                    path = path.replaceFirst(placeholder, "(" + compressed + ")");
                 }
-                multipath += "|" + path;
-
-
                 System.out.println(path);
             }
-            multipath += ")";
-            Pattern pathPattern = Pattern.compile(multipath);
         }
-        //System.out.println(compressed);
     }
 
-    static Matcher partToRemove = Pattern.compile("("
-        + "\\[@type=\"tts\"]"
-        + "|/listPatternPart\\[@type=\"[^\"]*\"]"
-        + "|/displayName"
-        + "|/unitPattern\\[@count=\"[^\"]*\"]"
-        + ")$").matcher("");
+    static Matcher partToRemove =
+            Pattern.compile(
+                            "("
+                                    + "\\[@type=\"tts\"]"
+                                    + "|/listPatternPart\\[@type=\"[^\"]*\"]"
+                                    + "|/displayName"
+                                    + "|/unitPattern\\[@count=\"[^\"]*\"]"
+                                    + ")$")
+                    .matcher("");
 
     private static String abbreviatePath(String path) {
-        String result = partToRemove.reset(path).replaceAll("");
-        return result;
+        return partToRemove.reset(path).replaceAll("");
     }
 }

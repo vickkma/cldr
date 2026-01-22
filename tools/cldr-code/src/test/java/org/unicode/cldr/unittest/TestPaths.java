@@ -1,18 +1,19 @@
 package org.unicode.cldr.unittest;
 
+import com.google.common.collect.ImmutableSet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeSet;
-
+import org.unicode.cldr.icu.util.MatchElementAttribute;
 import org.unicode.cldr.util.CLDRConfig;
 import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRFile.Status;
@@ -21,10 +22,13 @@ import org.unicode.cldr.util.ChainedMap;
 import org.unicode.cldr.util.ChainedMap.M3;
 import org.unicode.cldr.util.ChainedMap.M4;
 import org.unicode.cldr.util.ChainedMap.M5;
+import org.unicode.cldr.util.CldrUtility;
 import org.unicode.cldr.util.DtdData;
 import org.unicode.cldr.util.DtdData.Attribute;
+import org.unicode.cldr.util.DtdData.DtdGuide.DtdVisitor;
 import org.unicode.cldr.util.DtdData.Element;
 import org.unicode.cldr.util.DtdData.ElementType;
+import org.unicode.cldr.util.DtdData.ValueStatus;
 import org.unicode.cldr.util.DtdType;
 import org.unicode.cldr.util.Pair;
 import org.unicode.cldr.util.PathHeader;
@@ -32,13 +36,15 @@ import org.unicode.cldr.util.PathHeader.Factory;
 import org.unicode.cldr.util.PathHeader.PageId;
 import org.unicode.cldr.util.PathHeader.SectionId;
 import org.unicode.cldr.util.PathStarrer;
+import org.unicode.cldr.util.StandardCodes;
+import org.unicode.cldr.util.SupplementalDataInfo;
 import org.unicode.cldr.util.XMLFileReader;
 import org.unicode.cldr.util.XPathParts;
 
-import com.google.common.collect.ImmutableSet;
-
 public class TestPaths extends TestFmwkPlus {
-    static CLDRConfig testInfo = CLDRConfig.getInstance();
+    static final CLDRConfig testInfo = CLDRConfig.getInstance();
+    static final SupplementalDataInfo SDI =
+            testInfo.getSupplementalDataInfo(); // Load first, before XPartPaths is called
 
     public static void main(String[] args) {
         new TestPaths().run(args);
@@ -57,50 +63,52 @@ public class TestPaths extends TestFmwkPlus {
         Status status = new Status();
         Set<PathHeader> suspiciousPaths = new TreeSet<>();
         Set<PathHeader> errorPaths = new TreeSet<>();
-        ImmutableSet<String> SKIP_VARIANT = ImmutableSet.of(
-            "ps-variant", "ug-variant", "ky-variant", "az-short",
-            "Arab-variant", "am-variant", "pm-variant");
+        ImmutableSet<String> SKIP_VARIANT =
+                ImmutableSet.of(
+                        "ps-variant",
+                        "ug-variant",
+                        "ky-variant",
+                        "az-short",
+                        "Arab-variant",
+                        "am-variant",
+                        "pm-variant");
         for (String path : englishPaths) {
             // skip aliases, other counts
-            if (!status.pathWhereFound.equals(path)
-                || path.contains("[@count=\"one\"]")) {
+            if (!status.pathWhereFound.equals(path) || path.contains("[@count=\"one\"]")) {
                 continue;
             }
             PathHeader ph = phf.fromPath(path);
-            if (ph.getSectionId() == SectionId.Special
-                || ph.getCode().endsWith("-name-other")) {
+            if (ph.getSectionId() == SectionId.Special || ph.getCode().endsWith("-name-other")) {
                 continue;
             }
-            if (path.contains("@alt") && !SKIP_VARIANT.contains(ph.getCode())
-                && ph.getPageId() != PageId.Alphabetic_Information) {
+            if (path.contains("@alt")
+                    && !SKIP_VARIANT.contains(ph.getCode())
+                    && ph.getPageId() != PageId.Alphabetic_Information) {
                 errorPaths.add(ph);
             } else {
                 suspiciousPaths.add(ph);
             }
         }
         if (errorPaths.size() != 0) {
-            errln("Error: paths in English but not root:"
-                + getPaths(errorPaths));
+            errln("Error: paths in English but not root:" + getPaths(errorPaths));
         }
-        logln("Suspicious: paths in English but not root:"
-            + getPaths(suspiciousPaths));
+        logln("Suspicious: paths in English but not root:" + getPaths(suspiciousPaths));
     }
 
     private String getPaths(Set<PathHeader> altPaths) {
         StringBuilder b = new StringBuilder();
         for (PathHeader path : altPaths) {
             b.append("\n\t\t")
-            .append(path)
-            .append(":\t")
-            .append(testInfo.getEnglish().getStringValue(
-                path.getOriginalPath()));
+                    .append(path)
+                    .append(":\t")
+                    .append(testInfo.getEnglish().getStringValue(path.getOriginalPath()));
         }
         return b.toString();
     }
 
     /**
-     * For each locale to test, loop through all the paths, including "extra" paths,
-     * checking for each path: checkFullpathValue; checkPrettyPaths
+     * For each locale to test, loop through all the paths, including "extra" paths, checking for
+     * each path: checkFullpathValue; checkPrettyPaths
      */
     public void TestPathHeadersAndValues() {
         /*
@@ -113,23 +121,30 @@ public class TestPaths extends TestFmwkPlus {
         CLDRFile englishFile = testInfo.getCldrFactory().make("en", true);
         PathHeader.Factory phf = PathHeader.getFactory(englishFile);
         Status status = new Status();
+        final String exemptLocale = "sv";
+        final String exemptPathIfLocale =
+                "//ldml/dates/calendars/calendar[@type=\"dangi\"]/dateTimeFormats/availableFormats/dateFormatItem[@id=\"yMd\"]";
+
         for (String locale : getLocalesToTest()) {
+            boolean isExemptLocale = locale.equals(exemptLocale);
+
+            if (!StandardCodes.isLocaleAtLeastBasic(locale)) {
+                continue;
+            }
             CLDRFile file = testInfo.getCLDRFile(locale, true);
             logln("Testing path headers and values for locale => " + locale);
             final Collection<String> extraPaths = file.getExtraPaths();
-            for (Iterator<String> it = file.iterator(); it.hasNext();) {
-                String path = it.next();
-                if (extraPaths.contains(path)) {
+
+            for (String path : file) {
+                if (isExemptLocale && path.equals(exemptPathIfLocale)) {
+                    logKnownIssue("CLDR-17849", "Can't reproduce locally");
                     continue;
                 }
-                checkFullpathValue(path, file, locale, status, false /* not extra path */);
-                if (!pathsSeen.contains(path)) {
-                    pathsSeen.add(path);
-                    checkPrettyPaths(path, phf);
+                if (extraPaths.contains(path)) {
+                    checkFullpathValue(path, file, locale, status, true /* extra path */);
+                } else {
+                    checkFullpathValue(path, file, locale, status, false /* not extra path */);
                 }
-            }
-            for (String path : extraPaths) {
-                checkFullpathValue(path, file, locale, status, true /* extra path */);
                 if (!pathsSeen.contains(path)) {
                     pathsSeen.add(path);
                     checkPrettyPaths(path, phf);
@@ -141,7 +156,7 @@ public class TestPaths extends TestFmwkPlus {
     /**
      * For the given path and CLDRFile, check that fullPath, value, and source are all non-null.
      *
-     * Allow null value for some exceptional extra paths.
+     * <p>Allow null value for some exceptional extra paths.
      *
      * @param path the path, such as '//ldml/dates/fields/field[@type="tue"]/relative[@type="1"]'
      * @param file the CLDRFile
@@ -149,7 +164,8 @@ public class TestPaths extends TestFmwkPlus {
      * @param status the Status to be used/set by getSourceLocaleID
      * @param isExtraPath true if the path is an "extra" path, else false
      */
-    private void checkFullpathValue(String path, CLDRFile file, String locale, Status status, boolean isExtraPath) {
+    private void checkFullpathValue(
+            String path, CLDRFile file, String locale, Status status, boolean isExtraPath) {
         String fullPath = file.getFullXPath(path);
         String value = file.getStringValue(path);
         String source = file.getSourceLocaleID(path, status);
@@ -159,14 +175,34 @@ public class TestPaths extends TestFmwkPlus {
         if (fullPath == null) {
             errln("Locale: " + locale + ",\t Null FullPath: " + path);
         } else if (!path.equals(fullPath)) {
-            assertEquals("CanonicalOrder (FP)", XPathParts.getFrozenInstance(fullPath).toString(), fullPath);
+            assertEquals(
+                    "CanonicalOrder (FP)",
+                    XPathParts.getFrozenInstance(fullPath).toString(),
+                    fullPath);
         }
 
         if (value == null) {
             if (allowsExtraPath(path, isExtraPath)) {
                 return;
             }
-            errln("Locale: " + locale + ",\t Value=null, \tPath: " + path + ",\t IsExtraPath: " + isExtraPath);
+            if (CldrUtility.INHERITANCE_MARKER.equals(
+                    file.getUnresolved().getStringValue(fullPath))) {
+                logKnownIssue(
+                        "cldrbug:16209", "Remove this clause (and any paths that still fail)");
+                // When that ticket is resolved, then comment this clause out.
+                // But leave that comment for future guidance where someone wants to move paths from
+                // root to extraPaths.
+                return;
+            }
+            errln(
+                    "Locale: "
+                            + locale
+                            + ",\t Value=null, \tPath: "
+                            + path
+                            + ",\t Source: "
+                            + source
+                            + ",\t IsExtraPath: "
+                            + isExtraPath);
         }
 
         if (source == null) {
@@ -178,18 +214,13 @@ public class TestPaths extends TestFmwkPlus {
         }
     }
 
-    final ImmutableSet<String> ALLOWED_NULL = ImmutableSet.of(
-        "//ldml/dates/timeZoneNames/zone[@type=\"Australia/Currie\"]/exemplarCity",
-        "//ldml/dates/timeZoneNames/zone[@type=\"Pacific/Enderbury\"]/exemplarCity"
-        );
+    final ImmutableSet<String> ALLOWED_NULL =
+            ImmutableSet.of(
+                    "//ldml/dates/timeZoneNames/zone[@type=\"Pacific/Enderbury\"]/exemplarCity");
 
-    /**
-     * Is the path allowed to have a null value?
-     */
+    /** Is the path allowed to have a null value? */
     public boolean allowsExtraPath(String path, boolean isExtraPath) {
-        return (isExtraPath
-            && extraPathAllowsNullValue(path))
-            || ALLOWED_NULL.contains(path);
+        return (isExtraPath && extraPathAllowsNullValue(path)) || ALLOWED_NULL.contains(path);
     }
 
     /**
@@ -197,45 +228,46 @@ public class TestPaths extends TestFmwkPlus {
      *
      * @param path the extra path
      * @return true if null value is allowed for path, else false
-     *
-     * As of 2019-08-09, null values are found for many "metazone" paths like:
-     * //ldml/dates/timeZoneNames/metazone[@type="Galapagos"]/long/standard
-     * for many locales. Also for some "zone" paths like:
-     * //ldml/dates/timeZoneNames/zone[@type="Pacific/Honolulu"]/short/generic
-     * for locales including root, ja, and ar. Also for some "dayPeriods" paths like
-     * //ldml/dates/calendars/calendar[@type="gregorian"]/dayPeriods/dayPeriodContext[@type="stand-alone"]/dayPeriodWidth[@type="wide"]/dayPeriod[@type="midnight"]
-     * only for these six locales: bs_Cyrl, bs_Cyrl_BA, pa_Arab, pa_Arab_PK, uz_Arab, uz_Arab_AF.
-     *
-     * This function is nearly identical to the JavaScript function with the same name.
-     * Keep the two functions consistent with each other. It would be more ideal if this
-     * knowledge were encapsulated on the server and the client didn't need to know about it.
-     * The server could send the client special fallback values instead of null.
-     *
-     * Extra paths are generated by CLDRFile.getRawExtraPathsPrivate; this function may need
-     * updating (to allow null for other paths) if that function changes.
-     *
-     * Reference: https://unicode-org.atlassian.net/browse/CLDR-11238
+     *     <p>As of 2019-08-09, null values are found for many "metazone" paths like:
+     *     //ldml/dates/timeZoneNames/metazone[@type="Galapagos"]/long/standard for many locales.
+     *     Also for some "zone" paths like:
+     *     //ldml/dates/timeZoneNames/zone[@type="Pacific/Honolulu"]/short/generic for locales
+     *     including root, ja, and ar. Also for some "dayPeriods" paths like
+     *     //ldml/dates/calendars/calendar[@type="gregorian"]/dayPeriods/dayPeriodContext[@type="stand-alone"]/dayPeriodWidth[@type="wide"]/dayPeriod[@type="midnight"]
+     *     only for these six locales: bs_Cyrl, bs_Cyrl_BA, pa_Arab, pa_Arab_PK, uz_Arab,
+     *     uz_Arab_AF.
+     *     <p>This function is nearly identical to the JavaScript function with the same name. Keep
+     *     the two functions consistent with each other. It would be more ideal if this knowledge
+     *     were encapsulated on the server and the client didn't need to know about it. The server
+     *     could send the client special fallback values instead of null.
+     *     <p>Extra paths are generated by CLDRFile.getRawExtraPathsPrivate; this function may need
+     *     updating (to allow null for other paths) if that function changes.
+     *     <p>Reference: https://unicode-org.atlassian.net/browse/CLDR-11238
      */
-    private boolean extraPathAllowsNullValue(String path) {
+    public static boolean extraPathAllowsNullValue(String path) {
         if (path.contains("/timeZoneNames/metazone")
-            || path.contains("/timeZoneNames/zone")
-            || path.contains("/dayPeriods/dayPeriodContext")
-            || path.contains("/unitPattern")
-            || path.contains("/gender")
-            || path.contains("/caseMinimalPairs")
-            || path.contains("/genderMinimalPairs")
-//            || path.equals("//ldml/dates/timeZoneNames/zone[@type=\"Australia/Currie\"]/exemplarCity")
-//            || path.equals("//ldml/dates/timeZoneNames/zone[@type=\"Pacific/Enderbury\"]/exemplarCity")
-            //+
-            ) {
+                || path.contains("/timeZoneNames/zone")
+                || path.contains("/dayPeriods/dayPeriodContext")
+                || path.contains("/unitPattern")
+                || path.contains("/gender")
+                || path.contains("/caseMinimalPairs")
+                || path.contains("/genderMinimalPairs")
+                || path.contains("/sampleName")
+                || path.contains("/localeDisplayNames/territories/territory")
+        //            ||
+        // path.equals("//ldml/dates/timeZoneNames/zone[@type=\"Australia/Currie\"]/exemplarCity")
+        //            ||
+        // path.equals("//ldml/dates/timeZoneNames/zone[@type=\"Pacific/Enderbury\"]/exemplarCity")
+        // +
+        ) {
             return true;
         }
         return false;
     }
 
     /**
-     * Check that the given path and PathHeader.Factory undergo correct
-     * roundtrip conversion between original and pretty paths.
+     * Check that the given path and PathHeader.Factory undergo correct roundtrip conversion between
+     * original and pretty paths.
      *
      * @param path the path string
      * @param phf the PathHeader.Factory
@@ -248,51 +280,58 @@ public class TestPaths extends TestFmwkPlus {
         String prettied = phf.fromPath(path).toString();
         String unprettied = phf.fromPath(path).getOriginalPath();
         if (!path.equals(unprettied)) {
-            errln("Path Header doesn't roundtrip:\t" + path + "\t" + prettied
-                + "\t" + unprettied);
+            errln("Path Header doesn't roundtrip:\t" + path + "\t" + prettied + "\t" + unprettied);
         } else {
             logln(prettied + "\t" + path);
         }
     }
 
     private Collection<String> getLocalesToTest() {
-        return params.inclusion <= 5 ? Arrays.asList("root", "en", "ja", "ar", "de", "ru")
-            : params.inclusion < 10 ? testInfo.getCldrFactory().getAvailableLanguages()
-                : testInfo.getCldrFactory().getAvailable();
+        return params.inclusion <= 5
+                ? Arrays.asList("root", "en", "ja", "ar", "de", "ru")
+                : params.inclusion < 10
+                        ? testInfo.getCldrFactory().getAvailableLanguages()
+                        : testInfo.getCldrFactory().getAvailable();
     }
 
     /**
-     * find all the items that are deprecated, but appear in paths
-     * and the items that aren't deprecated, but don't appear in paths
+     * find all the items that are deprecated, but appear in paths and the items that aren't
+     * deprecated, but don't appear in paths
      */
-
     static final class CheckDeprecated {
-        M5<DtdType, String, String, String, Boolean> data = ChainedMap.of(
-            new HashMap<DtdType, Object>(),
-            new HashMap<String, Object>(),
-            new HashMap<String, Object>(),
-            new HashMap<String, Object>(),
-            Boolean.class);
+        M5<DtdType, String, String, String, Boolean> data =
+                ChainedMap.of(
+                        new HashMap<DtdType, Object>(),
+                        new HashMap<String, Object>(),
+                        new HashMap<String, Object>(),
+                        new HashMap<String, Object>(),
+                        Boolean.class);
         private TestPaths testPaths;
 
         public CheckDeprecated(TestPaths testPaths) {
             this.testPaths = testPaths;
         }
 
-        static final Set<String> ALLOWED = new HashSet<>(Arrays.asList("postalCodeData", "postCodeRegex"));
-        static final Set<String> OK_IF_MISSING = new HashSet<>(Arrays.asList("alt", "draft", "references"));
+        static final Set<String> ALLOWED =
+                new HashSet<>(Arrays.asList("postalCodeData", "postCodeRegex"));
+        static final Set<String> OK_IF_MISSING =
+                new HashSet<>(Arrays.asList("alt", "draft", "references"));
 
-        public boolean check(DtdData dtdData, XPathParts parts, String fullName) {
+        public boolean check(XPathParts parts, String fullName) {
+            DtdData dtdData = parts.getDtdData();
             for (int i = 0; i < parts.size(); ++i) {
                 String elementName = parts.getElement(i);
                 if (dtdData.isDeprecated(elementName, "*", "*")) {
                     if (ALLOWED.contains(elementName)) {
                         return false;
                     }
-                    testPaths.errln("Deprecated element in data: "
-                        + dtdData.dtdType
-                        + ":" + elementName
-                        + " \t;" + fullName);
+                    testPaths.errln(
+                            "Deprecated element in data: "
+                                    + dtdData.dtdType
+                                    + ":"
+                                    + elementName
+                                    + " \t;"
+                                    + fullName);
                     return true;
                 }
                 data.put(dtdData.dtdType, elementName, "*", "*", true);
@@ -300,29 +339,42 @@ public class TestPaths extends TestFmwkPlus {
                     String attributeName = attributeNValue.getKey();
                     if (dtdData.isDeprecated(elementName, attributeName, "*")) {
                         if (attributeName.equals("draft")) {
-                            testPaths.errln("Deprecated attribute in data: "
+                            testPaths.errln(
+                                    "Deprecated attribute in data: "
                                             + dtdData.dtdType
-                                            + ":" + elementName
-                                            + ":" + attributeName
-                                            + " \t;" + fullName +
-                                            " - consider adding to DtdData.DRAFT_ON_NON_LEAF_ALLOWED if you are sure this is ok.");
+                                            + ":"
+                                            + elementName
+                                            + ":"
+                                            + attributeName
+                                            + " \t;"
+                                            + fullName
+                                            + " - consider adding to DtdData.DRAFT_ON_NON_LEAF_ALLOWED if you are sure this is ok.");
                         } else {
-                            testPaths.errln("Deprecated attribute in data: "
+                            testPaths.errln(
+                                    "Deprecated attribute in data: "
                                             + dtdData.dtdType
-                                            + ":" + elementName
-                                            + ":" + attributeName
-                                            + " \t;" + fullName);
+                                            + ":"
+                                            + elementName
+                                            + ":"
+                                            + attributeName
+                                            + " \t;"
+                                            + fullName);
                         }
                         return true;
                     }
                     String attributeValue = attributeNValue.getValue();
                     if (dtdData.isDeprecated(elementName, attributeName, attributeValue)) {
-                        testPaths.errln("Deprecated attribute value in data: "
-                            + dtdData.dtdType
-                            + ":" + elementName
-                            + ":" + attributeName
-                            + ":" + attributeValue
-                            + " \t;" + fullName);
+                        testPaths.errln(
+                                "Deprecated attribute value in data: "
+                                        + dtdData.dtdType
+                                        + ":"
+                                        + elementName
+                                        + ":"
+                                        + attributeName
+                                        + ":"
+                                        + attributeValue
+                                        + " \t;"
+                                        + fullName);
                         return true;
                     }
                     data.put(dtdData.dtdType, elementName, attributeName, "*", true);
@@ -334,26 +386,27 @@ public class TestPaths extends TestFmwkPlus {
 
         public void show(int inclusion) {
             for (DtdType dtdType : DtdType.values()) {
-                if (dtdType == DtdType.ldmlICU ||
-                    (inclusion <= 5 && dtdType == DtdType.platform)) { // keyboards/*/_platform.xml won't be in the list for non-exhaustive runs
+                if (dtdType.getStatus() != DtdType.DtdStatus.active) {
+                    continue;
+                }
+                if (dtdType == DtdType.ldmlICU) {
                     continue;
                 }
                 M4<String, String, String, Boolean> infoEAV = data.get(dtdType);
                 if (infoEAV == null) {
-                    testPaths.warnln("Data doesn't contain: "
-                        + dtdType);
+                    testPaths.warnln("Data doesn't contain: " + dtdType);
                     continue;
                 }
                 DtdData dtdData = DtdData.getInstance(dtdType);
                 for (Element element : dtdData.getElements()) {
-                    if (element.isDeprecated() || element == dtdData.ANY || element == dtdData.PCDATA) {
+                    if (element.isDeprecated()
+                            || element == dtdData.ANY
+                            || element == dtdData.PCDATA) {
                         continue;
                     }
                     M3<String, String, Boolean> infoAV = infoEAV.get(element.name);
                     if (infoAV == null) {
-                        testPaths.logln("Data doesn't contain: "
-                            + dtdType
-                            + ":" + element.name);
+                        testPaths.logln("Data doesn't contain: " + dtdType + ":" + element.name);
                         continue;
                     }
 
@@ -363,10 +416,13 @@ public class TestPaths extends TestFmwkPlus {
                         }
                         Map<String, Boolean> infoV = infoAV.get(attribute.name);
                         if (infoV == null) {
-                            testPaths.logln("Data doesn't contain: "
-                                + dtdType
-                                + ":" + element.name
-                                + ":" + attribute.name);
+                            testPaths.logln(
+                                    "Data doesn't contain: "
+                                            + dtdType
+                                            + ":"
+                                            + element.name
+                                            + ":"
+                                            + attribute.name);
                             continue;
                         }
                         for (String value : attribute.values.keySet()) {
@@ -374,11 +430,15 @@ public class TestPaths extends TestFmwkPlus {
                                 continue;
                             }
                             if (!infoV.containsKey(value)) {
-                                testPaths.logln("Data doesn't contain: "
-                                    + dtdType
-                                    + ":" + element.name
-                                    + ":" + attribute.name
-                                    + ":" + value);
+                                testPaths.logln(
+                                        "Data doesn't contain: "
+                                                + dtdType
+                                                + ":"
+                                                + element.name
+                                                + ":"
+                                                + attribute.name
+                                                + ":"
+                                                + value);
                             }
                         }
                     }
@@ -390,11 +450,10 @@ public class TestPaths extends TestFmwkPlus {
     public void TestNonLdml() {
         int maxPerDirectory = getInclusion() <= 5 ? 20 : Integer.MAX_VALUE;
         CheckDeprecated checkDeprecated = new CheckDeprecated(this);
-        PathStarrer starrer = new PathStarrer();
         StringBuilder removed = new StringBuilder();
         Set<String> nonFinalValues = new LinkedHashSet<>();
         Set<String> skipLast = new HashSet(Arrays.asList("version", "generation"));
-        String[] normalizedPath = { "" };
+        String[] normalizedPath = {""};
 
         int counter = 0;
         for (String directory : Arrays.asList("keyboards/", "common/", "seed/", "exemplars/")) {
@@ -402,13 +461,20 @@ public class TestPaths extends TestFmwkPlus {
             for (String fileName : new File(dirPath).list()) {
                 File dir2 = new File(dirPath + fileName);
                 if (!dir2.isDirectory()
-                    || fileName.equals("properties") // TODO as flat files
-//                    || fileName.equals(".DS_Store")
-//                    || ChartDelta.LDML_DIRECTORIES.contains(dir)
-//                    || fileName.equals("dtd")  // TODO as flat files
-//                    || fileName.equals(".project")  // TODO as flat files
-//                    //|| dir.equals("uca") // TODO as flat files
-                    ) {
+                        || (dir2.getName().equals("import")
+                                && directory.equals("keyboards/")) // has a different root element
+                        || fileName.equals("properties") // TODO as flat files
+                //                    || fileName.equals(".DS_Store")
+                //                    || ChartDelta.LDML_DIRECTORIES.contains(dir)
+                //                    || fileName.equals("dtd")  // TODO as flat files
+                //                    || fileName.equals(".project")  // TODO as flat files
+                //                    //|| dir.equals("uca") // TODO as flat files
+                ) {
+                    continue;
+                }
+                if (dir2.getPath().contains("/keyboards/3.0")
+                        && logKnownIssue(
+                                "CLDR-17574", "With v46, parsing issues for keyboard xml files")) {
                     continue;
                 }
 
@@ -423,49 +489,43 @@ public class TestPaths extends TestFmwkPlus {
                     if (++count > maxPerDirectory) {
                         break;
                     }
-                    DtdType type = null;
-                    DtdData dtdData = null;
                     String fullName = dir2 + "/" + file;
-                    for (Pair<String, String> pathValue : XMLFileReader.loadPathValues(fullName, new ArrayList<Pair<String, String>>(), true)) {
+                    for (Pair<String, String> pathValue :
+                            XMLFileReader.loadPathValues(
+                                    fullName, new ArrayList<Pair<String, String>>(), true)) {
                         String path = pathValue.getFirst();
                         final String value = pathValue.getSecond();
                         XPathParts parts = XPathParts.getFrozenInstance(path);
-                        if (dtdData == null) {
-                            type = DtdType.valueOf(parts.getElement(0));
-                            dtdData = DtdData.getInstance(type);
-                        }
+                        DtdData dtdData = parts.getDtdData();
+                        DtdType type = dtdData.dtdType;
 
-                        XPathParts pathParts = XPathParts.getFrozenInstance(path);
-                        String finalElementString = pathParts.getElement(-1);
+                        String finalElementString = parts.getElement(-1);
                         Element finalElement = dtdData.getElementFromName().get(finalElementString);
                         if (!haveErrorsAlready.contains(finalElement)) {
                             ElementType elementType = finalElement.getType();
-                            // HACK!!
-                            if (pathParts.size() > 1 && "identity".equals(pathParts.getElement(1))) {
-                                elementType = ElementType.EMPTY;
-                                logKnownIssue("cldrbug:9784", "fix TODO's in Attribute validity tests");
-                            } else if (pathParts.size() > 2
-                                && "validity".equals(pathParts.getElement(2))
-                                && value.isEmpty()) {
-                                String typeValue = pathParts.getAttributeValue(-1, "type");
-                                if ("TODO".equals(typeValue)
-                                    || "locale".equals(typeValue)) {
-                                    elementType = ElementType.EMPTY;
-                                    logKnownIssue("cldrbug:9784", "fix TODO's in Attribute validity tests");
-                                }
-                            }
-                            if ((elementType == ElementType.PCDATA) == (value.isEmpty())
-                                && !finalElement.name.equals("nameOrderLocales")) {
-                                errln("PCDATA ≠ emptyValue inconsistency:"
-                                    + "\tfile=" + fileName + "/" + file
-                                    + "\telementType=" + elementType
-                                    + "\tvalue=«" + value + "»"
-                                    + "\tpath=" + path);
+                            Element.ValueConstraint requirement = finalElement.getValueConstraint();
+                            if (requirement == Element.ValueConstraint.empty && !value.isEmpty()
+                                    || requirement == Element.ValueConstraint.nonempty
+                                            && value.isEmpty()) {
+                                finalElement.getValueConstraint(); // for debugging
+                                errln(
+                                        "PCDATA ≠ emptyValue inconsistency:"
+                                                + "\tfile="
+                                                + fileName
+                                                + "/"
+                                                + file
+                                                + "\telementType="
+                                                + elementType
+                                                + "\tvalue=«"
+                                                + value
+                                                + "»"
+                                                + "\tpath="
+                                                + path);
                                 haveErrorsAlready.add(finalElement); // suppress all but first error
                             }
                         }
 
-                        if (checkDeprecated.check(dtdData, parts, fullName)) {
+                        if (checkDeprecated.check(parts, fullName)) {
                             break;
                         }
 
@@ -473,32 +533,54 @@ public class TestPaths extends TestFmwkPlus {
                         if (skipLast.contains(last)) {
                             continue;
                         }
+
+                        checkParts(fileName + "/" + file, parts);
+
                         String dpath = CLDRFile.getDistinguishingXPath(path, normalizedPath);
                         if (!dpath.equals(path)) {
-                            checkParts(dpath, dtdData);
+                            checkParts(fileName + "/" + file, dpath);
                         }
                         if (!normalizedPath.equals(path) && !normalizedPath[0].equals(dpath)) {
-                            checkParts(normalizedPath[0], dtdData);
+                            checkParts(fileName + "/" + file, normalizedPath[0]);
                         }
-                        parts = parts.cloneAsThawed();
-                        counter = removeNonDistinguishing(parts, dtdData, counter, removed, nonFinalValues);
-                        String cleaned = parts.toString();
-                        Pair<String, String> pair = Pair.of(type == DtdType.ldml ? file : type.toString(), cleaned);
+                        XPathParts mutableParts = parts.cloneAsThawed();
+                        counter =
+                                removeNonDistinguishing(
+                                        mutableParts, dtdData, counter, removed, nonFinalValues);
+                        String cleaned = mutableParts.toString();
+                        Pair<String, String> pair =
+                                Pair.of(type == DtdType.ldml ? file : type.toString(), cleaned);
                         if (seen.contains(pair)) {
-//                        parts.set(path);
-//                        removeNonDistinguishing(parts, dtdData, counter, removed, nonFinalValues);
-                            errln("Duplicate: " + file + ", " + path + ", " + cleaned + ", " + value);
+                            //                        parts.set(path);
+                            //                        removeNonDistinguishing(parts, dtdData,
+                            // counter, removed, nonFinalValues);
+                            if (type != DtdType.keyboardTest3
+                                    || !logKnownIssue(
+                                            "CLDR-17398",
+                                            "keyboardTest data appears as duplicate xpaths")) {
+                                errln(
+                                        "Duplicate "
+                                                + type.toString()
+                                                + ": "
+                                                + file
+                                                + ", "
+                                                + path
+                                                + ", "
+                                                + cleaned
+                                                + ", "
+                                                + value);
+                            }
                         } else {
                             seen.add(pair);
                             if (!nonFinalValues.isEmpty()) {
-                                String starredPath = starrer.set(path);
+                                String starredPath = PathStarrer.get(path);
                                 if (!seenStarred.contains(starredPath)) {
                                     seenStarred.add(starredPath);
                                     logln("Non-node values: " + nonFinalValues + "\t" + path);
                                 }
                             }
                             if (isVerbose()) {
-                                String starredPath = starrer.set(path);
+                                String starredPath = PathStarrer.get(path);
                                 if (!seenStarred.contains(starredPath)) {
                                     seenStarred.add(starredPath);
                                     logln("@" + "\t" + cleaned + "\t" + removed);
@@ -512,8 +594,12 @@ public class TestPaths extends TestFmwkPlus {
         checkDeprecated.show(getInclusion());
     }
 
-    private void checkParts(String path, DtdData dtdData) {
-        XPathParts parts = XPathParts.getFrozenInstance(path);
+    private void checkParts(String file, String path) {
+        checkParts(file, XPathParts.getFrozenInstance(path));
+    }
+
+    public void checkParts(String file, XPathParts parts) {
+        DtdData dtdData = parts.getDtdData();
         Element current = dtdData.ROOT;
         for (int i = 0; i < parts.size(); ++i) {
             String elementName = parts.getElement(i);
@@ -524,21 +610,44 @@ public class TestPaths extends TestFmwkPlus {
                 if (!assertNotNull("element", current)) {
                     return; // failed
                 }
+                assertFalse(file + "/" + elementName + " deprecated", current.isDeprecated());
             }
             for (String attributeName : parts.getAttributeKeys(i)) {
                 Attribute attribute = current.getAttributeNamed(attributeName);
                 if (!assertNotNull("attribute", attribute)) {
                     return; // failed
                 }
-                // later, check values
+                assertFalse(
+                        file + "/" + elementName + "@" + attributeName + " deprecated",
+                        attribute.isDeprecated());
+
+                String value = parts.getAttributeValue(i, attributeName);
+                switch (attribute.getValueStatus(value)) {
+                    case valid:
+                        break;
+                    default:
+                        errln(
+                                file
+                                        + "/"
+                                        + elementName
+                                        + "@"
+                                        + attributeName
+                                        + ", expected match to: "
+                                        + attribute.getMatchString()
+                                        + " actual: «"
+                                        + value
+                                        + "»");
+                        attribute.getValueStatus(value);
+                        break;
+                }
             }
         }
     }
 
-    static final Set<String> SKIP_NON_NODE = new HashSet<>(Arrays.asList("references", "visibility", "access"));
+    static final Set<String> SKIP_NON_NODE =
+            new HashSet<>(Arrays.asList("references", "visibility", "access"));
 
     /**
-     *
      * @param parts the thawed XPathParts (can't be frozen, for putAttributeValue)
      * @param data
      * @param counter
@@ -546,7 +655,12 @@ public class TestPaths extends TestFmwkPlus {
      * @param nonFinalValues
      * @return
      */
-    private int removeNonDistinguishing(XPathParts parts, DtdData data, int counter, StringBuilder removed, Set<String> nonFinalValues) {
+    private int removeNonDistinguishing(
+            XPathParts parts,
+            DtdData data,
+            int counter,
+            StringBuilder removed,
+            Set<String> nonFinalValues) {
         removed.setLength(0);
         nonFinalValues.clear();
         HashSet<String> toRemove = new HashSet<>();
@@ -565,7 +679,8 @@ public class TestPaths extends TestFmwkPlus {
                     toRemove.add(attribute);
                     if (i != last && !SKIP_NON_NODE.contains(attribute)) {
                         if (attribute.equals("draft")
-                            && (parts.getElement(1).equals("transforms") || parts.getElement(1).equals("collations"))) {
+                                && (parts.getElement(1).equals("transforms")
+                                        || parts.getElement(1).equals("collations"))) {
                             // do nothing
                         } else {
                             nonFinalValues.add(attribute);
@@ -575,12 +690,98 @@ public class TestPaths extends TestFmwkPlus {
             }
             if (!toRemove.isEmpty()) {
                 for (String attribute : toRemove) {
-                    removed.append("[@" + attribute + "=\"" + parts.getAttributeValue(i, attribute) + "\"]");
+                    removed.append(
+                            "[@"
+                                    + attribute
+                                    + "=\""
+                                    + parts.getAttributeValue(i, attribute)
+                                    + "\"]");
                     parts.removeAttribute(i, attribute);
                 }
                 toRemove.clear();
             }
         }
         return counter;
+    }
+
+    public void testForUndefined() {
+        DtdVisitor visitor =
+                new DtdVisitor() {
+                    final MatchElementAttribute skipAttributeNames =
+                            new MatchElementAttribute()
+                                    .add( // Add, once checking to make sure that these are safe.
+                                            // Pairs of element, attribute
+                                            "", "references", //
+                                            "", "cp", //
+                                            "version", "", //
+                                            // "ruleset", "type", //
+                                            "parseLenient", "", // UnicodeSet
+                                            "ruleset", "", // special structure
+                                            "casingItem", "", // Special structure
+                                            "unitIdComponent", "", // small, relatively fixed set
+                                            "unitConstant", "", // only used internally/...
+                                            "unitQuantity",
+                                                    "", // quantity and and baseUnit will be in
+                                            // validity/...
+                                            "convertUnit", "", // source and baseUnit will be in
+                                            // validity/...
+                                            "unitPreferences",
+                                                    "category", // category == quantity will be in
+                                            // validity/...
+                                            "unitPreferences",
+                                                    "usage", // usage will be in validity/...
+                                            "unitPreference", "", // not ids
+                                            "transform", "", // not ids
+                                            "numberingSystem", "rules", // rule format can't match
+                                            "coverageVariable", "", // no ids
+                                            "coverageLevel", "", // no ids
+                                            "approvalRequirement", "", // no ids
+                                            "pathMatch", "", // no ids
+                                            "languageMatch", "", // no ids
+                                            "rgPath", "", // no ids
+                                            "nestedBracketReplacement", "", // no ids
+                                            "mapTimezones", "", // ids checked elsewhere
+                                            "mapZone", "" // ids checked elsewhere
+                                            );
+                    final Set<String> skipElementAndChildren = Set.of("keyboard3", "keyboardTest3");
+
+                    @Override
+                    public boolean visit(
+                            DtdType dtdType,
+                            Stack<Element> ancestors,
+                            Element element,
+                            Attribute attribute) {
+                        if (skipElementAndChildren.contains(element.getName())) {
+                            return false;
+                        }
+                        final String attributeName = attribute.getName();
+                        if (skipAttributeNames.matches(element.getName(), attributeName)) {
+                            return true;
+                        }
+                        final ValueStatus valueStatus = attribute.getValueStatus("undefined");
+                        attribute.toString();
+                        if (valueStatus == ValueStatus.valid) {
+                            errln(
+                                    String.format(
+                                            "Can match 'undefined': type=%s\tancestors=%s\telement=%s\tattribute=%s\tmatch=%s",
+                                            dtdType,
+                                            ancestors,
+                                            element,
+                                            attributeName,
+                                            attribute.getMatchString()));
+                        } else {
+                            logln(
+                                    String.format(
+                                            "visiting: type=%s\tparent=%s\telement=%s\tancestors=%s\tmatch=%s",
+                                            dtdType,
+                                            ancestors,
+                                            element,
+                                            attributeName,
+                                            attribute.getMatchString()));
+                        }
+                        return true;
+                    }
+                };
+        new DtdData.DtdGuide(true, visitor).process();
     }
 }

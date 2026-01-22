@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.unicode.cldr.util.SupplementalDataInfo.ParentLocaleComponent;
 
 public class TestLocaleIDParser {
     @ParameterizedTest(name = "{index}: {0}")
@@ -25,9 +26,9 @@ public class TestLocaleIDParser {
             assertNotEquals(loc, newLoc, "Error: getParent() returned the same value");
             loc = newLoc;
         }
-        assertNull(loc, locid+": Test error: Expected chain to fall back to 'root' and then null");
+        assertNull(
+                loc, locid + ": Test error: Expected chain to fall back to 'root' and then null");
     }
-
 
     @ParameterizedTest(name = "{index}: {0}")
     @CsvSource({
@@ -41,11 +42,12 @@ public class TestLocaleIDParser {
         String loc = locid;
         for (final String link : chain.split("\\|")) {
             assertEquals(link, loc, "Fallback chain for " + locid);
-            final String newLoc = LocaleIDParser.getParent(loc, true);
+            final String newLoc = LocaleIDParser.getParent(loc, ParentLocaleComponent.collations);
             // make sure we are not stuck
             assertNotEquals(loc, newLoc, "Error: getParent() returned the same value");
             loc = newLoc;
         }
-        assertNull(loc, locid+": Test error: Expected chain to fall back to 'root' and then null");
+        assertNull(
+                loc, locid + ": Test error: Expected chain to fall back to 'root' and then null");
     }
 }

@@ -7,22 +7,18 @@
 //
 package org.unicode.cldr.web;
 
+import com.google.gson.annotations.SerializedName;
+import com.ibm.icu.text.UnicodeSet;
+import com.ibm.icu.util.ULocale;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -31,18 +27,14 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.unicode.cldr.test.CheckCLDR;
+import org.unicode.cldr.icu.dev.util.ElapsedTimer;
 import org.unicode.cldr.test.DisplayAndInputProcessor;
-import org.unicode.cldr.test.HelpMessages;
-import org.unicode.cldr.util.CLDRFile;
+import org.unicode.cldr.util.CLDRConfig;
 import org.unicode.cldr.util.CLDRLocale;
 import org.unicode.cldr.util.Level;
-import org.unicode.cldr.util.Organization;
 import org.unicode.cldr.util.PathHeader;
 import org.unicode.cldr.util.PathHeader.PageId;
 import org.unicode.cldr.util.StandardCodes;
-import org.unicode.cldr.web.CLDRProgressIndicator.CLDRProgressTask;
 import org.unicode.cldr.web.SurveyMain.Phase;
 import org.unicode.cldr.web.SurveyMain.UserLocaleStuff;
 import org.unicode.cldr.web.UserRegistry.LogoutException;
@@ -50,30 +42,25 @@ import org.unicode.cldr.web.UserRegistry.User;
 import org.unicode.cldr.web.api.Auth;
 import org.w3c.dom.Document;
 
-import com.ibm.icu.dev.util.ElapsedTimer;
-import com.ibm.icu.text.UnicodeSet;
-import com.ibm.icu.util.ULocale;
-
 /**
- * This is the per-client context passed to basically all functions it has
- * print*() like functions, and so can be written to.
+ * This is the per-client context passed to basically all functions it has print*() like functions,
+ * and so can be written to.
  */
 public class WebContext implements Cloneable, Appendable {
     public static final String TMPL_PATH = "/WEB-INF/tmpl/";
     private static final java.util.logging.Logger logger = SurveyLog.forClass(WebContext.class);
     // USER fields
     public SurveyMain sm = null;
-    public Document doc[] = new Document[0];
+    public Document[] doc = new Document[0];
     private CLDRLocale locale = null;
     public ULocale displayLocale = SurveyMain.TRANS_HINT_LOCALE;
-    public CLDRLocale docLocale[] = new CLDRLocale[0];
+    public CLDRLocale[] docLocale = new CLDRLocale[0];
     public CookieSession session = null;
     public ElapsedTimer reqTimer = null;
     public Hashtable<String, Object> temporaryStuff = new Hashtable<>();
     public static final String CLDR_WEBCONTEXT = "cldr_webcontext";
 
     public static final String TARGET_ZOOMED = "CLDR-ST-ZOOMED";
-    public static final String TARGET_EXAMPLE = "CLDR-ST-EXAMPLE";
     public static final String TARGET_DOCS = "CLDR-ST-DOCS";
 
     private static final String LOGIN_FAILED = "login failed";
@@ -88,7 +75,6 @@ public class WebContext implements Cloneable, Appendable {
     HttpServletResponse response;
 
     /**
-     *
      * @return the output PrintWriter
      */
     public PrintWriter getOut() {
@@ -96,8 +82,7 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * Flush output content. This is useful when JSPs are mixed in with servlet
-     * code.
+     * Flush output content. This is useful when JSPs are mixed in with servlet code.
      *
      * @see java.io.PrintWriter#flush()
      */
@@ -109,15 +94,16 @@ public class WebContext implements Cloneable, Appendable {
      * Return the parameter map of the underlying request.
      *
      * @return {@link ServletRequest#getParameterMap()}
+     *     <p>WARNING: this is accessed by st_footer.jsp
      */
     public Map<?, ?> getParameterMap() {
         return request.getParameterMap();
     }
 
     /**
-     * Construct a new WebContext from the servlet request and response. This is
-     * the normal constructor to use when a top level servlet or JSP spins up.
-     * Embedded JSPs should use fromRequest.
+     * Construct a new WebContext from the servlet request and response. This is the normal
+     * constructor to use when a top level servlet or JSP spins up. Embedded JSPs should use
+     * fromRequest.
      *
      * @see #fromRequest(ServletRequest, ServletResponse, Writer)
      */
@@ -127,14 +113,13 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * Internal function to setup the WebContext to point at a servlet req/resp.
-     * Also registers the WebContext with the Request.
+     * Internal function to setup the WebContext to point at a servlet req/resp. Also registers the
+     * WebContext with the Request.
      *
      * @param irq
      * @param irs
-     * @throws IOException
      */
-    protected void setRequestResponse(HttpServletRequest irq, HttpServletResponse irs) throws IOException {
+    protected void setRequestResponse(HttpServletRequest irq, HttpServletResponse irs) {
         request = irq;
         response = irs;
         // register us - only if another webcontext is not already registered.
@@ -144,9 +129,9 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * Change the output stream to a different writer. If it isn't a
-     * PrintWriter, it will be wrapped in one. The WebContext will assume it
-     * does not own the stream, and will not close it when done.
+     * Change the output stream to a different writer. If it isn't a PrintWriter, it will be wrapped
+     * in one. The WebContext will assume it does not own the stream, and will not close it when
+     * done.
      *
      * @param w
      */
@@ -161,41 +146,41 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * Extract (or create) a WebContext from a request/response. Call this from
-     * a .jsp which is embedded in survey tool to extract the WebContext object.
-     * The WebContext will have its output stream set to point to the request
-     * and response, so you can mix write calls from the JSP with ST calls.
+     * Extract (or create) a WebContext from a request/response. Call this from a .jsp which is
+     * embedded in survey tool to extract the WebContext object. The WebContext will have its output
+     * stream set to point to the request and response, so you can mix write calls from the JSP with
+     * ST calls.
      *
      * @param request
      * @param response
      * @param out
-     * @return the new WebContext, which was cloned from the one posted to the
-     *         Request
-     * @throws IOException
+     * @return the new WebContext, which was cloned from the one posted to the Request
+     *     <p>WARNING: this is accessed by stcontext.jspf
      */
-    public static JspWebContext fromRequest(ServletRequest request, ServletResponse response, Writer out) throws IOException {
+    public static JspWebContext fromRequest(
+            ServletRequest request, ServletResponse response, Writer out) {
         WebContext ctx = (WebContext) request.getAttribute(CLDR_WEBCONTEXT);
         if (ctx == null) {
-            throw new InternalError("WebContext: could not load fromRequest. Are you trying to load a JSP directly?");
+            throw new InternalError(
+                    "WebContext: could not load fromRequest. Are you trying to load a JSP directly?");
         }
         JspWebContext subCtx = new JspWebContext(ctx); // clone the important
         // fields..
-        subCtx.setRequestResponse((HttpServletRequest) request, // but use the
-            // req/resp of
-            // the current
-            // situation
-            (HttpServletResponse) response);
+        subCtx.setRequestResponse(
+                (HttpServletRequest) request, // but use the
+                // req/resp of
+                // the current
+                // situation
+                (HttpServletResponse) response);
         subCtx.setStream(out);
         return subCtx;
     }
 
     /**
-     * Copy one WebContext to another. This is useful when you wish to create a
-     * sub-context which has a different base URL (such as for processing a
-     * certain form or widget).
+     * Copy one WebContext to another. This is useful when you wish to create a sub-context which
+     * has a different base URL (such as for processing a certain form or widget).
      *
-     * @param other
-     *            the other WebContext to copy from
+     * @param other the other WebContext to copy from
      */
     public WebContext(WebContext other) {
         if ((other instanceof URLWebContext) && !(this instanceof URLWebContext)) {
@@ -207,50 +192,30 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * get a field's value as a boolean
      *
-     * @param x
-     *            field name
-     * @param def
-     *            default value if field is not found.
+     * @param x field name
+     * @param def default value if field is not found.
      * @return the field value
      */
     boolean fieldBool(String x, boolean def) {
         if (field(x).length() > 0) {
-            if (field(x).charAt(0) == 't') {
-                return true;
-            } else {
-                return false;
-            }
+            return field(x).charAt(0) == 't';
         } else {
             return def;
         }
     }
 
     /**
-     * get a field's value as an integer, or -1 if not found
-     *
-     * @param x
-     *            field name
-     * @return the field's value as an integer, or -1 if it was not found
-     */
-    public final int fieldInt(String x) {
-        return fieldInt(x, -1);
-    }
-
-    /**
      * get a field's value, or the default
      *
-     * @param x
-     *            field name
-     * @param def
-     *            default value
-     * @return the field's value as an integer, or the default value if the
-     *         field was not found.
+     * @param x field name
+     * @param def default value
+     * @return the field's value as an integer, or the default value if the field was not found.
      */
     public int fieldInt(String x, int def) {
         String f;
         if ((f = field(x)).length() > 0) {
             try {
-                return new Integer(f).intValue();
+                return Integer.parseInt(f);
             } catch (Throwable t) {
                 return def;
             }
@@ -262,8 +227,7 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * Return true if the field is present
      *
-     * @param x
-     *            field name
+     * @param x field name
      * @return true if the field is present
      */
     public boolean hasField(String x) {
@@ -273,8 +237,7 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * return a field's value, else ""
      *
-     * @param x
-     *            field name
+     * @param x field name
      * @return the field value, or else ""
      */
     public final String field(String x) {
@@ -284,10 +247,8 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * return a field's value, else default
      *
-     * @param x
-     *            field name
-     * @param def
-     *            default value
+     * @param x field name
+     * @param def default value
      * @return the field's value as a string, otherwise the default
      */
     public String field(String x, String def) {
@@ -303,36 +264,18 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /*
-     * Decode a single string from URL format into Unicode
+     * Return the input string, unchanged
      *
-     * @param res UTF-8 'encoded' bytes (expanded to a string)
+     * This method no longer serves any purpose since CLDR now requires UTF-8 encoding
+     * for all http requests and related services/configuration.
      *
-     * @return Unicode string (will return 'res' if no high bits were detected)
+     * This method is temporarily retained for compatibility with legacy code including .jsp.
+     *
+     * @param res the string
+     *
+     * @return the string
      */
     public static String decodeFieldString(String res) {
-        if (res == null)
-            return null;
-        byte asBytes[] = new byte[res.length()];
-        boolean wasHigh = false;
-        int n;
-        for (n = 0; n < res.length(); n++) {
-            asBytes[n] = (byte) (res.charAt(n) & 0x00FF);
-            // println(" n : " + (int)asBytes[n] + " .. ");
-            if (asBytes[n] < 0) {
-                wasHigh = true;
-            }
-        }
-        if (wasHigh == false) {
-            return res; // no utf-8
-        } else {
-            // println("[ trying to decode on: " + res + "]");
-        }
-        try {
-            res = new String(asBytes, "UTF-8");
-        } catch (Throwable t) {
-            return res;
-        }
-
         return res;
     }
 
@@ -340,8 +283,7 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * get a preference's value as a boolean. defaults to false.
      *
-     * @param x
-     *            pref name
+     * @param x pref name
      * @return preference value (or false)
      */
     public boolean prefBool(String x) {
@@ -349,61 +291,10 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * Get a preference's value as an integer. Defaults to 'def'
-     *
-     * @param x
-     *            field name
-     * @param def
-     *            default value
-     * @return the prefence's value
-     */
-    int prefInt(String x, int def) {
-        String f;
-        if ((f = pref(x, "")).length() > 0) {
-            try {
-                return new Integer(f).intValue();
-            } catch (Throwable t) {
-                return def;
-            }
-        } else {
-            return def;
-        }
-    }
-
-    /**
-     * Get a preference's value as an integer, or else -1
-     *
-     * @param x
-     *            field name
-     * @return preference value or -1
-     */
-    int prefInt(String x) {
-        return prefInt(x, -1);
-    }
-
-    int codesPerPage = -1;
-
-    /**
-     * Special preference: Number of codes to show on a single page
-     *
-     * @return The preferred value (minimum: 5)
-     * @see SurveyMain#CODES_PER_PAGE
-     */
-    int prefCodesPerPage() {
-        if (codesPerPage == -1) {
-            codesPerPage = prefInt(SurveyMain.PREF_CODES_PER_PAGE, SurveyMain.CODES_PER_PAGE);
-            codesPerPage = Math.max(codesPerPage, 5);
-        }
-        return codesPerPage;
-    }
-
-    /**
      * get a preference's value as a boolean. defaults to defVal.
      *
-     * @param x
-     *            preference name
-     * @param defVal
-     *            default value
+     * @param x preference name
+     * @param defVal default value
      * @return the preference value
      */
     boolean prefBool(String x, boolean defVal) {
@@ -418,21 +309,8 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * get a pref that is a string,
      *
-     * @param x
-     *            the field name and pref name
-     * @return string preference value or "" if otherwise not found.
-     */
-    String pref(String x) {
-        return pref(x, "");
-    }
-
-    /**
-     * get a pref that is a string,
-     *
-     * @param x
-     *            the field name and pref name
-     * @param def
-     *            default value
+     * @param x the field name and pref name
+     * @param def default value
      * @return pref value or def
      */
     String pref(String x, String def) {
@@ -440,7 +318,7 @@ public class WebContext implements Cloneable, Appendable {
         if (ret != null) {
             session.prefPut(x, ret);
         }
-        if ((ret == null) || (ret.length() <= 0)) {
+        if ((ret == null) || (ret.length() == 0)) {
             ret = def;
         }
         return ret;
@@ -449,10 +327,8 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * Get the target keyword and value for an 'a href' HTML tag
      *
-     * @param t
-     *            the target name to use
-     * @return the 'target=...' string - may be blank if the user has requested
-     *         no popups
+     * @param t the target name to use
+     * @return the 'target=...' string - may be blank if the user has requested no popups
      */
     public String atarget(String t) {
         if (prefBool(SurveyMain.PREF_NOPOPUPS)) {
@@ -463,24 +339,10 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * Get the target keyword and value for an 'a href' HTML tag on
-     * TARGET_ZOOMED
-     *
-     * @return the 'target=...' string - may be blank if the user has requested
-     *         no popups
-     * @see #TARGET_ZOOMED
-     */
-    public String atarget() {
-        return atarget(TARGET_ZOOMED);
-    }
-
-    /**
      * Add a parameter to the output URL
      *
-     * @param k
-     *            key
-     * @param v
-     *            value
+     * @param k key
+     * @param v value
      */
     public void addQuery(String k, String v) {
         outQueryMap.put(k, v);
@@ -492,21 +354,10 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * Copy from request queries to output query
-     */
-    public void addAllParametersAsQuery() {
-        for (Entry<String, String[]> e : request.getParameterMap().entrySet()) {
-            addQuery(e.getKey(), e.getValue()[0]);
-        }
-    }
-
-    /**
      * Add a boolean parameter to the output URL as 't' or 'f'
      *
-     * @param k
-     *            key
-     * @param v
-     *            value
+     * @param k key
+     * @param v value
      */
     void addQuery(String k, boolean v) {
         addQuery(k, v ? "t" : "f");
@@ -515,10 +366,8 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * Set a parameter on the output URL, replacing an existing value if any
      *
-     * @param k
-     *            key
-     * @param v
-     *            value
+     * @param k key
+     * @param v value
      */
     public void setQuery(String k, String v) {
         if (outQueryMap.get(k) == null) { // if it wasn't there..
@@ -529,8 +378,7 @@ public class WebContext implements Cloneable, Appendable {
             TreeMap<String, String> oldMap = outQueryMap;
             oldMap.put(k, v); // replace
             outQueryMap = new TreeMap<>();
-            for (Iterator<String> i = oldMap.keySet().iterator(); i.hasNext();) {
-                String somek = i.next();
+            for (String somek : oldMap.keySet()) {
                 addQuery(somek, oldMap.get(somek));
             }
         }
@@ -541,17 +389,16 @@ public class WebContext implements Cloneable, Appendable {
      *
      * @param k
      * @param v
+     *     <p>WARNING: this is accessed by debug_jsp.jspf and report.jspf
      */
     public void setQuery(String k, int v) {
-        setQuery(k, new Integer(v).toString());
+        setQuery(k, Integer.toString(v));
     }
 
     /**
-     * Remove the specified key from the query. Has no effect if the field
-     * doesn't exist.
+     * Remove the specified key from the query. Has no effect if the field doesn't exist.
      *
-     * @param k
-     *            key
+     * @param k key
      */
     public void removeQuery(String k) {
         if (outQueryMap.get(k) != null) { // if it was there..
@@ -560,8 +407,7 @@ public class WebContext implements Cloneable, Appendable {
             TreeMap<String, String> oldMap = outQueryMap;
             oldMap.remove(k); // replace
             outQueryMap = new TreeMap<>();
-            for (Iterator<String> i = oldMap.keySet().iterator(); i.hasNext();) {
-                String somek = i.next();
+            for (String somek : oldMap.keySet()) {
                 addQuery(somek, oldMap.get(somek));
             }
         }
@@ -582,6 +428,7 @@ public class WebContext implements Cloneable, Appendable {
 
     /**
      * Return the raw query string, or null
+     *
      * @return
      */
     public String query() {
@@ -589,8 +436,8 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * Returns the string that must be appended to the URL to start the next
-     * parameter - either ? or &amp;
+     * Returns the string that must be appended to the URL to start the next parameter - either ? or
+     * &amp;
      *
      * @return the connecting string
      */
@@ -611,6 +458,7 @@ public class WebContext implements Cloneable, Appendable {
         }
     }
 
+    // WARNING: this is accessed by st_top.jsp
     public String vurl(CLDRLocale loc) {
         return vurl(loc, null, null, null);
     }
@@ -620,12 +468,14 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * Get the new '/v' viewing URL. Note that this will include a fragment, do NOT append to the result (pass in something in queryAppend)
+     * Get the new '/v' viewing URL. Note that this will include a fragment, do NOT append to the
+     * result (pass in something in queryAppend)
+     *
      * @param loc locale to view.
-     * @param page pageID to view. Example:  PageId.Africa (shouldn't be null- yet)
+     * @param page pageID to view. Example: PageId.Africa (shouldn't be null- yet)
      * @param strid strid to view. Example: "12345678" or null
-     * @param queryAppend  this will be appended as the query. Example: "?email=foo@bar".
-     * Defaults to the session key.
+     * @param queryAppend this will be appended as the query. Example: "?email=foo@bar". Defaults to
+     *     the session key.
      * @return
      */
     public String vurl(CLDRLocale loc, PageId page, String strid, String queryAppend) {
@@ -633,7 +483,8 @@ public class WebContext implements Cloneable, Appendable {
         return WebContext.appendContextVurl(sb, loc, page, strid, queryAppend).toString();
     }
 
-    public static StringBuilder appendContextVurl(StringBuilder sb, CLDRLocale loc, PageId page, String strid, String queryAppend) {
+    public static StringBuilder appendContextVurl(
+            StringBuilder sb, CLDRLocale loc, PageId page, String strid, String queryAppend) {
 
         sb.append("/v");
         if (queryAppend != null && !queryAppend.isEmpty()) {
@@ -662,11 +513,10 @@ public class WebContext implements Cloneable, Appendable {
 
     public void redirectToVurl(String vurl) {
         println("<a class='vredirect' href='" + vurl + "'>Redirecting to " + vurl + "</a>");
-        println("<script>window.location=' " + vurl + "/'+window.location.hash.substring(1);</script>");
-    }
-
-    public void setServletPath(String path) {
-        theServletPath = path;
+        println(
+                "<script>window.location=' "
+                        + vurl
+                        + "/'+window.location.hash.substring(1);</script>");
     }
 
     private String theServletPath = null;
@@ -683,6 +533,7 @@ public class WebContext implements Cloneable, Appendable {
 
     /**
      * The base not including /servlet
+     *
      * @param request
      * @return
      */
@@ -702,67 +553,42 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * Get the context path for a certain resource
      *
-     * @param s
-     *            resource URL
+     * @param s resource URL
      * @return the context path for the specified resource
      */
     public String context(String s) {
-        if (request == null)
-            return s;
+        if (request == null) return s;
         return context(request, s);
     }
 
     /**
      * Get the context path for a certain resource
      *
-     * @param s
-     *            resource URL
+     * @param s resource URL
      * @return the context path for the specified resource
      */
     public static String context(HttpServletRequest request, String s) {
-        if (request == null)
-            return "/" + s;
+        if (request == null) return "/" + s;
         return request.getContextPath() + "/" + s;
     }
 
     /**
      * Get a link (HTML URL) to a JSP
      *
-     * @param s
-     *            resource to link to
+     * @param s resource to link to
      * @return the URL suitable for HTML
      */
     public String jspLink(String s) {
-        return context(s) + "?a=" + base()
-            + ((outQuery != null) ? ("&amp;" + outQuery) : ((session != null) ? ("&amp;s=" + session.id) : ""));
+        return context(s)
+                + "?a="
+                + base()
+                + ((outQuery != null)
+                        ? ("&amp;" + outQuery)
+                        : ((session != null) ? ("&amp;s=" + session.id) : ""));
     }
 
     /**
-     * Get a link (Text URL) to a JSP
-     *
-     * @param s
-     *            resource to link to
-     * @return the URL suitable for Text
-     */
-    public String jspUrl(String s) {
-        return context(s) + "?a=" + base()
-            + ((outQuery != null) ? ("&" + outQuery) : ((session != null) ? ("&s=" + session.id) : ""));
-    }
-
-    /**
-     * Output the full current output URL in hidden field format.
-     */
-    void printUrlAsHiddenFields() {
-        for (Iterator<String> e = outQueryMap.keySet().iterator(); e.hasNext();) {
-            String k = e.next().toString();
-            String v = outQueryMap.get(k).toString();
-            print("<input type='hidden' name='" + k + "' value='" + v + "'/>");
-        }
-    }
-
-    /**
-     * return the IP of the remote user. If they are behind a proxy, return the
-     * actual original URL.
+     * return the IP of the remote user. If they are behind a proxy, return the actual original URL.
      *
      * @return a URL
      */
@@ -771,11 +597,10 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * return the IP of the remote user given a request. If they are behind a
-     * proxy, return the actual original URL.
+     * return the IP of the remote user given a request. If they are behind a proxy, return the
+     * actual original URL.
      *
-     * @param request
-     *            the request to use
+     * @param request the request to use
      * @return a URL
      */
     public static String userIP(HttpServletRequest request) {
@@ -816,8 +641,7 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * Returns the host:port of the server
      *
-     * @param request
-     *            a specific request
+     * @param request a specific request
      * @return the "host:port:
      */
     static String serverHostport(HttpServletRequest request) {
@@ -845,8 +669,7 @@ public class WebContext implements Cloneable, Appendable {
      * Returns the scheme://host:port
      *
      * @return the "scheme://host:port"
-     * @param request
-     *            the request portion
+     * @param request the request portion
      */
     static String schemeHostPort(HttpServletRequest request) {
         return request.getScheme() + "://" + serverHostport(request);
@@ -855,8 +678,7 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * Print out a line
      *
-     * @param s
-     *            line to print
+     * @param s line to print
      * @see PrintWriter#println(String)
      */
     public final void println(String s) {
@@ -874,11 +696,13 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * Print out a Throwable as HTML.
      *
-     * @param t
-     *            throwable to print
+     * @param t throwable to print
      */
     void print(Throwable t) {
-        print("<pre style='border: 2px dashed red; margin: 1em; padding: 1'>" + t.toString() + "<br />");
+        print(
+                "<pre style='border: 2px dashed red; margin: 1em; padding: 1'>"
+                        + t.toString()
+                        + "<br />");
         StringWriter asString = new StringWriter();
         if (t instanceof SQLException) {
             println("SQL: " + DBUtils.unchainSqlException((SQLException) t));
@@ -890,28 +714,47 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * Send the user to another URL. Won't work if there was already some
-     * output.
+     * Send the user to another URL. Won't work if there was already some output.
      *
-     * @param where
+     * @param where the URL for redirection, such as "/cldr-apps/v#//"
      * @see HttpServletResponse#sendRedirect(String)
      */
     void redirect(String where) {
         try {
-            response.sendRedirect(where);
+            String port = getRedirectPort();
+            if (port != null) {
+                String url =
+                        request.getScheme() + "://" + request.getServerName() + ":" + port + where;
+                response.sendRedirect(url);
+            } else {
+                response.sendRedirect(where);
+            }
             out.close();
             close();
         } catch (IOException ioe) {
-            throw new RuntimeException(ioe.toString() + " while redirecting to " + where);
+            throw new RuntimeException(ioe + " while redirecting to " + where);
         }
     }
 
+    private static final String PORT_NUMBER_NOT_INITIALIZED = "?";
+
     /**
-     * Close the stream. Normally not called directly, except in outermost
-     * processor.
-     *
-     * @throws IOException
+     * On first access, this becomes either null (for default port number 80) or a port number such
+     * as "8888". Ordinarily Survey Tool uses nginx as a load-balancing server, running on the
+     * default port (80). For development it may be useful to have it on a different port. This can
+     * be enabled by a line such as this in cldr.properties: CLDR_REDIRECT_PORT=8888
      */
+    private static String webContextRedirectPort = PORT_NUMBER_NOT_INITIALIZED;
+
+    private String getRedirectPort() {
+        if (PORT_NUMBER_NOT_INITIALIZED.equals(webContextRedirectPort)) {
+            webContextRedirectPort =
+                    CLDRConfig.getInstance().getProperty("CLDR_REDIRECT_PORT", null);
+        }
+        return webContextRedirectPort; // default null
+    }
+
+    /** Close the stream. Normally not called directly, except in outermost processor. */
     void close() throws IOException {
         if (!dontCloseMe) {
             out.close();
@@ -933,8 +776,7 @@ public class WebContext implements Cloneable, Appendable {
     /**
      * Set this context to be handling a certain locale
      *
-     * @param l
-     *            locale to set
+     * @param l locale to set
      */
     public void setLocale(CLDRLocale l) {
         if (!SurveyMain.getLocalesSet().contains(l)) { // bogus
@@ -942,25 +784,20 @@ public class WebContext implements Cloneable, Appendable {
             return;
         }
         locale = l;
-        // localeString = locale.getBaseName();
-        processor = new DisplayAndInputProcessor(l, false);
+        processor = DisplayAndInputProcessorFactory.make(locale);
         Vector<CLDRLocale> localesVector = new Vector<>();
         for (CLDRLocale parents : locale.getParentIterator()) {
             localesVector.add(parents);
         }
         docLocale = localesVector.toArray(docLocale);
-        // logger.info("NOT NOT NOT fetching locale: " + l.toString() +
-        // ", count: " + doc.length);
     }
 
-    /**
-     * Cached direction of this locale.
-     */
+    /** Cached direction of this locale. */
     private HTMLDirection direction = null;
 
     /**
-     * Return the HTML direction of this locale, ltr or rtl. Returns ltr by
-     * default. TODO: should return display locale's directionality by default.
+     * Return the HTML direction of this locale, ltr or rtl. Returns ltr by default. TODO: should
+     * return display locale's directionality by default.
      *
      * @return directionality
      */
@@ -976,8 +813,7 @@ public class WebContext implements Cloneable, Appendable {
     }
 
     /**
-     * Return the current locale as a string. Deprecated, please use getLocale
-     * instead.
+     * Return the current locale as a string. Deprecated, please use getLocale instead.
      *
      * @deprecated use getLocale().toString() -
      * @see #getLocale()
@@ -985,69 +821,39 @@ public class WebContext implements Cloneable, Appendable {
     @Deprecated
     public final String localeString() {
         if (locale == null) {
-            throw new InternalError("localeString is null, locale=" + locale);
+            throw new InternalError("localeString is null");
         }
         return locale.toString();
     }
 
-    /**
-     * Print the coverage level for a certain locale.
-     */
-    public void showCoverageLevel() {
-        String itsLevel = getEffectiveCoverageLevel();
-        String recLevel = getRecommendedCoverageLevel();
-        String def = getRequiredCoverageLevel();
-        if (def.equals(COVLEV_RECOMMENDED)) {
-            print("Coverage Level: <tt class='codebox'>" + itsLevel.toString() + "</tt><br>");
-        } else {
-            print("Coverage Level: <tt class='codebox'>" + def + "</tt>  (overriding <tt>" + itsLevel.toString() + "</tt>)<br>");
-        }
-        print("Recommended level: <tt class='codebox'>" + recLevel.toString() + "</tt><br>");
-        print("<ul><li>To change your default coverage level, see ");
-        SurveyMain.printMenu(this, "", "options", "My Options", SurveyMain.QUERY_DO);
-        println("</li></ul>");
-    }
-
+    // WARNING: this is accessed by menu_top.jsp and possibleProblems.jsp
     public String getEffectiveCoverageLevel(CLDRLocale locale) {
         return getEffectiveCoverageLevel(locale.getBaseName());
     }
 
     public String getEffectiveCoverageLevel(String locale) {
         String level = getRequiredCoverageLevel();
-        if ((level == null) || (level.equals(COVLEV_RECOMMENDED)) || (level.equals("default"))) {
+        if (level == null || level.equals(COVLEV_RECOMMENDED)) {
             // fetch from org
             level = session.getOrgCoverageLevel(locale);
         }
         return level;
     }
 
-    public String getRecommendedCoverageLevel() {
-        String myOrg = session.getUserOrg();
-        if ((myOrg == null) || !isCoverageOrganization(myOrg)) {
-            return COVLEV_DEFAULT_RECOMMENDED_STRING;
-        } else {
-            CLDRLocale loc = getLocale();
-            if (loc != null) {
-                Level lev = StandardCodes.make().getLocaleCoverageLevel(myOrg, loc.toString());
-                if (lev == Level.UNDETERMINED) {
-                    lev = COVLEVEL_DEFAULT_RECOMMENDED;
-                }
-                return lev.toString();
-            } else {
-                return COVLEVEL_DEFAULT_RECOMMENDED.toString();
-            }
-        }
-    }
-
     public static final String COVLEV_RECOMMENDED = "default";
-    public static final String PREF_COVLEV_LIST[] = { COVLEV_RECOMMENDED,
-        Level.COMPREHENSIVE.toString(), Level.MODERN.toString(), Level.MODERATE.toString(), Level.BASIC.toString() };
+    public static final String[] PREF_COVLEV_LIST = {
+        COVLEV_RECOMMENDED,
+        Level.COMPREHENSIVE.toString(),
+        Level.MODERN.toString(),
+        Level.MODERATE.toString(),
+        Level.BASIC.toString()
+    };
 
-    /**
-     * The default level, if no organization is available.
-     */
+    /** The default level, if no organization is available. */
     public static final Level COVLEVEL_DEFAULT_RECOMMENDED = org.unicode.cldr.util.Level.MODERN;
-    public static final String COVLEV_DEFAULT_RECOMMENDED_STRING = COVLEVEL_DEFAULT_RECOMMENDED.name().toLowerCase();
+
+    public static final String COVLEV_DEFAULT_RECOMMENDED_STRING =
+            COVLEVEL_DEFAULT_RECOMMENDED.name().toLowerCase();
 
     /**
      * Is it an organization that participates in coverage?
@@ -1056,164 +862,40 @@ public class WebContext implements Cloneable, Appendable {
      * @return true if the organization participates in coverage, else false
      */
     public static boolean isCoverageOrganization(String org) {
-        return (org != null && StandardCodes.make().getLocaleCoverageOrganizationStrings().contains(org.toLowerCase()));
+        return (org != null
+                && StandardCodes.make()
+                        .getLocaleCoverageOrganizationStrings()
+                        .contains(org.toLowerCase()));
     }
 
-    /**
-     * Get a list of all locale types
-     *
-     * @return a list of locale types
-     * @see StandardCodes#getLocaleCoverageOrganizations()
-     */
-    static String[] getLocaleCoverageOrganizations() {
-        Set<Organization> set = StandardCodes.make().getLocaleCoverageOrganizations();
-        Organization[] orgArray = set.toArray(new Organization[0]);
-        String[] stringArray = new String[orgArray.length];
-        int i = 0;
-        for (Organization org : orgArray) {
-            stringArray[i++] = org.toString();
-        }
-        return stringArray;
-        // There was ArrayStoreException here:
-        // return StandardCodes.make().getLocaleCoverageOrganizations().toArray(new String[0]);
-    }
-
-    /**
-     * Append the WebContext Options map to the specified map
-     *
-     * @return the map
-     */
-    public CheckCLDR.Options getOptionsMap() {
-        String def = getRequiredCoverageLevel();
-        String org = getEffectiveCoverageLevel();
-
-        return new CheckCLDR.Options(getLocale(), SurveyMain.getTestPhase(), def, org);
-    }
-
-    /**
-     * @return
-     */
+    // WARNING: this is accessed by possibleProblems.jsp and usermenu.jsp
     public String getEffectiveCoverageLevel() {
-        String org = getEffectiveCoverageLevel(getLocale().toString());
-        return org;
+        return getEffectiveCoverageLevel(getLocale().toString());
     }
 
-    /**
-     * @return
-     */
     public String getRequiredCoverageLevel() {
-        String def = sm.getListSetting(this, SurveyMain.PREF_COVLEV, WebContext.PREF_COVLEV_LIST, false);
-        return def;
-    }
-
-    public enum LoadingShow {
-        dontShowLoading, showLoading
-    }
-
-    private static final boolean CACHE_DATA_SECTION = false; // TESTING, not ready for use
-
-    private static final Map<String, DataSection> dataSectionCache = CACHE_DATA_SECTION ? new ConcurrentHashMap<>() : null;
-
-    /**
-     * Get a DataSection
-     *
-     * @param prefix a string such as "//ldml"; or null
-     * @param matcher the XPathMatcher (which is ... ?); or null
-     * @param pageId the PageId, with a name such as "Generic" and a SectionId with a name such as "DateTime"; or null
-     * @return the DataSection
-     *
-     * Called only by SurveyAjax.getRow, twice:
-     *    ctx.getDataSection(null [prefix], null [matcher], pageId);
-     *    ctx.getDataSection(baseXp [prefix], matcher, null [pageId]);
-     *
-     * TODO: as part of DataSection performance improvement, consider moving this code to a different
-     * module, maybe DataSection itself, especially if we can make DataSection not be user-specific.
-     * WebContext is user-specific, and even request-specific.
-     *
-     * Renamed 2019-05-15 from getSection (5 args) to getDataSection
-     *
-     * Reference: https://unicode-org.atlassian.net/browse/CLDR-12020
-     */
-    public DataSection getDataSection(String prefix, XPathMatcher matcher, PageId pageId) {
-
-        DataSection section = null;
-        synchronized (this) {
-            String cacheKey = null;
-            if (CACHE_DATA_SECTION) {
-                cacheKey = locale.toString(); // not enough!
-                section = dataSectionCache.get(cacheKey);
-            }
-            if (section == null) {
-                CLDRProgressTask progress = sm.openProgress("Loading");
-                try {
-                    progress.update("<span title='" + sm.xpt.getPrettyPath(prefix) + "'>" + locale + "</span>");
-                    flush();
-                    synchronized (session) {
-                        section = DataSection.make(pageId, this /* ctx */, this.session, locale, prefix, matcher);
-                    }
-                } finally {
-                    progress.close(); // TODO: this can trigger "State Error: Closing an already-closed CLDRProgressIndicator"
-                }
-                if (section == null) {
-                    throw new InternalError("No section.");
-                }
-                if (CACHE_DATA_SECTION) {
-                    dataSectionCache.put(cacheKey, section);
-                }
-            }
-        }
-        return section;
+        return sm.getListSetting(this, SurveyMain.PREF_COVLEV, WebContext.PREF_COVLEV_LIST);
     }
 
     // Internal Utils
 
-    static final HelpMessages surveyToolHelpMessages = new HelpMessages("test_help_messages.html");
     public static final String CAN_MODIFY = "canModify";
-    public static final String DATA_SECTION = "DataSection";
-    public static final String ZOOMED_IN = "zoomedIn";
-    public static final String DATA_ROW = "DataRow";
-    public static final String BASE_EXAMPLE = "baseExample";
-    public static final String BASE_VALUE = "baseValue";
+    public static final String DATA_PAGE =
+            "DataPage"; // WARNING: this is accessed by stcontext.jspf
+    public static final String ZOOMED_IN =
+            "zoomedIn"; // WARNING: this is accessed by stcontext.jspf
+    public static final String DATA_ROW = "DataRow"; // WARNING: this is accessed by stcontext.jspf
 
     /**
      * Print a link to help with a specified title
      *
-     * @param what
-     *            the help to link to
-     * @param title
-     *            the title of the help
+     * @param what the help to link to
+     * @param title the title of the help
      */
     public void printHelpLink(String what, String title) {
-        printHelpLink(what, title, true);
-    }
-
-    /**
-     * @param what
-     * @param title
-     * @param doEdit
-     * @deprecated editing is deprecated
-     */
-    @Deprecated
-    public void printHelpLink(String what, String title, boolean doEdit) {
-        printHelpLink(what, title, doEdit, true);
-    }
-
-    /**
-     * @deprecated editing is deprecated
-     * @param what
-     * @param title
-     * @param doEdit
-     * @param parens
-     */
-    @Deprecated
-    private void printHelpLink(String what, String title, boolean doEdit, boolean parens) {
-        if (parens) {
-            print("(");
-        }
+        print("(");
         print("<a href=\"" + (SurveyMain.CLDR_HELP_LINK) + what + "\">" + title + "</a>");
-        if (parens) {
-            println(")");
-        }
+        println(")");
     }
 
     /**
@@ -1242,8 +924,16 @@ public class WebContext implements Cloneable, Appendable {
         if (message == null) {
             message = "[" + icon + "]";
         }
-        return "<img alt='[" + icon + "]' style='width: 16px; height: 16px; border: 0;' src='" + context(request, icon + ".png")
-            + "' title='" + message + "' />";
+        // The image file name such as "vote.png" is constructed here.
+        // Files such as "vote.png" may be referenced here without their full names
+        // occuring anywhere in the source code.
+        return "<img alt='["
+                + icon
+                + "]' style='width: 16px; height: 16px; border: 0;' src='"
+                + context(request, icon + ".png")
+                + "' title='"
+                + message
+                + "' />";
     }
 
     /**
@@ -1294,11 +984,13 @@ public class WebContext implements Cloneable, Appendable {
             WebContext.includeFragment(request, response, filename);
         } catch (Throwable t) {
             SurveyLog.logException(t, "Including template " + filename);
-            this.println("<div class='ferrorbox'><B>Error</b> while including template <tt class='code'>" + filename
-                + "</tt>:<br>");
+            this.println(
+                    "<div class='ferrorbox'><B>Error</b> while including template <tt class='code'>"
+                            + filename
+                            + "</tt>:<br>");
             this.print(t);
             this.println("</div>");
-            System.err.println("While expanding " + TMPL_PATH + filename + ": " + t.toString());
+            System.err.println("While expanding " + TMPL_PATH + filename + ": " + t);
             t.printStackTrace();
         }
     }
@@ -1309,12 +1001,10 @@ public class WebContext implements Cloneable, Appendable {
      * @param request
      * @param response
      * @param filename
-     * @throws ServletException
-     * @throws IOException
-     *             , NullPointerException
      */
-    public static void includeFragment(HttpServletRequest request, HttpServletResponse response, String filename)
-        throws ServletException, IOException {
+    public static void includeFragment(
+            HttpServletRequest request, HttpServletResponse response, String filename)
+            throws ServletException, IOException {
         RequestDispatcher dp = request.getRequestDispatcher(TMPL_PATH + filename);
         dp.include(request, response);
     }
@@ -1362,27 +1052,17 @@ public class WebContext implements Cloneable, Appendable {
      * A direction, suitable for html 'dir=...'
      *
      * @author srl
-     * @see getDirectionForLocale
      */
     public enum HTMLDirection {
-        LEFT_TO_RIGHT("ltr"), RIGHT_TO_LEFT("rtl");
-
-        private String str;
-
-        HTMLDirection(String str) {
-            this.str = str;
-        }
-
-        @Override
-        public String toString() {
-            return str;
-        }
+        @SerializedName("ltr")
+        LEFT_TO_RIGHT,
+        @SerializedName("rtl")
+        RIGHT_TO_LEFT;
 
         /**
          * Convert a CLDR direction to an enum
          *
-         * @param dir
-         *            CLDR direction string
+         * @param dir CLDR direction string
          * @return HTML direction enum
          */
         public static HTMLDirection fromCldr(String dir) {
@@ -1404,7 +1084,7 @@ public class WebContext implements Cloneable, Appendable {
      * @return true if the user can modify this locale
      */
     public Boolean canModify() {
-        if (STFactory.isReadOnlyLocale(locale) || SurveyMain.phase() == Phase.READONLY)
+        if (STFactory.isReadOnlyLocale(locale) || SurveyMain.surveyPhase(locale) == Phase.READONLY)
             return (canModify = false);
         if (canModify == null) {
             if (session != null && session.user != null) {
@@ -1419,7 +1099,7 @@ public class WebContext implements Cloneable, Appendable {
     public SurveyMain.UserLocaleStuff getUserFile() {
         SurveyMain.UserLocaleStuff uf = peekUserFile();
         if (uf == null) {
-            uf = sm.getUserFile(session, getLocale());
+            uf = sm.getUserFile();
             put("UserFile", uf);
         }
         return uf;
@@ -1436,26 +1116,15 @@ public class WebContext implements Cloneable, Appendable {
         }
     }
 
-    public CLDRFile getCLDRFile() {
-        return getUserFile().cldrfile;
-    }
-
-    /**
-     * Get the user settings.
-     *
-     * @return
-     */
-    UserSettings settings() {
-        return session.settings();
-    }
-
     public void no_js_warning() {
         boolean no_js = prefBool(SurveyMain.PREF_NOJAVASCRIPT);
         if (!no_js) {
             WebContext nuCtx = (WebContext) clone();
             nuCtx.setQuery(SurveyMain.PREF_NOJAVASCRIPT, "t");
             println("<noscript><h1>");
-            println(iconHtml("warn", "JavaScript disabled") + "JavaScript is disabled. Please enable JavaScript..");
+            println(
+                    iconHtml("warn", "JavaScript disabled")
+                            + "JavaScript is disabled. Please enable JavaScript..");
             println("</h1></noscript>");
         }
     }
@@ -1485,7 +1154,7 @@ public class WebContext implements Cloneable, Appendable {
      * Get a certain cookie
      *
      * @param id
-     * @return
+     * @return WARNING: this is accessed by usermenu.jsp
      */
     public Cookie getCookie(String id) {
         return getCookie(request, id);
@@ -1493,9 +1162,8 @@ public class WebContext implements Cloneable, Appendable {
 
     public static Cookie getCookie(HttpServletRequest request, String id) {
         if (request == null) return null;
-        Cookie cooks[] = request.getCookies();
-        if (cooks == null)
-            return null;
+        Cookie[] cooks = request.getCookies();
+        if (cooks == null) return null;
         for (Cookie c : cooks) {
             if (c.getName().equals(id)) {
                 return c;
@@ -1528,23 +1196,29 @@ public class WebContext implements Cloneable, Appendable {
         return null;
     }
 
-    /**
-     * Set a cookie
-     *
-     * @param id
-     * @param value
-     * @param expiry
-     */
-    Cookie addCookie(String id, String value, int expiry) {
-        return addCookie(response, id, value, expiry);
-    }
-
-    static Cookie addCookie(HttpServletResponse response, String id, String value, int expiry) {
+    static void addCookie(HttpServletResponse response, String id, String value, int expiry) {
         Cookie c = new Cookie(id, value);
         c.setMaxAge(expiry);
         c.setPath("/");
         response.addCookie(c);
-        return c;
+    }
+
+    /**
+     * Clear a cookie
+     *
+     * @param request
+     * @param response
+     * @param c
+     */
+    public static void clearCookie(
+            HttpServletRequest request, HttpServletResponse response, String c) {
+        Cookie c0 = WebContext.getCookie(request, c);
+        if (c0 != null) {
+            c0.setValue("");
+            c0.setPath("/");
+            // c0.setMaxAge(0);
+            response.addCookie(c0);
+        }
     }
 
     @Override
@@ -1567,7 +1241,15 @@ public class WebContext implements Cloneable, Appendable {
 
     @Override
     public String toString() {
-        return "{ " + this.getClass().getName() + ": url=" + url() + ", ip=" + this.userIP() + ", user=" + this.user() + "}";
+        return "{ "
+                + this.getClass().getName()
+                + ": url="
+                + url()
+                + ", ip="
+                + this.userIP()
+                + ", user="
+                + this.user()
+                + "}";
     }
 
     /**
@@ -1585,8 +1267,7 @@ public class WebContext implements Cloneable, Appendable {
      * @return
      */
     public boolean getCanModify() {
-        boolean canModify = (UserRegistry.userCanModifyLocale(session.user, getLocale()));
-        return canModify;
+        return (UserRegistry.userCanModifyLocale(session.user, getLocale()));
     }
 
     /**
@@ -1597,6 +1278,7 @@ public class WebContext implements Cloneable, Appendable {
         return vurl(locale, null, null, null);
     }
 
+    // WARNING: this is accessed by generalinfo.jsp and st_top.jsp
     public String getLocaleDisplayName(String loc) {
         return getLocaleDisplayName(CLDRLocale.getInstance(loc));
     }
@@ -1616,9 +1298,9 @@ public class WebContext implements Cloneable, Appendable {
         return field("dump").equals(SurveyMain.testpw) || hasAdminPassword();
     }
 
-    private static UnicodeSet csvSpecial = new UnicodeSet("[, \"]").freeze();
+    private static final UnicodeSet csvSpecial = new UnicodeSet("[, \"]").freeze();
 
-    public static final void csvWrite(Writer out, String str) throws IOException {
+    public static void csvWrite(Writer out, String str) throws IOException {
         str = str.trim();
         if (csvSpecial.containsSome(str)) {
             out.write('"');
@@ -1641,9 +1323,7 @@ public class WebContext implements Cloneable, Appendable {
         return pageId;
     }
 
-    /**
-     * set the session. Only call this once.
-     */
+    /** set the session. Only call this once. */
     public void setSession() {
         if (request == null && session != null) {
             setSessionMessage("using canned session"); // already set - for testing
@@ -1663,40 +1343,51 @@ public class WebContext implements Cloneable, Appendable {
         }
         String email = field(SurveyMain.QUERY_EMAIL);
 
+        User user = null;
+
         // if there was an email/password in the cookie, use that.
         {
-            String myEmail = getCookieValue(SurveyMain.QUERY_EMAIL);
-            String myPassword = getCookieValue(SurveyMain.QUERY_PASSWORD);
-            if (myEmail != null && (email == null || email.isEmpty())) {
-                email = myEmail;
-                if (myPassword != null && (password == null || password.isEmpty())) {
-                    password = myPassword;
-                }
-            } else {
-                if (myEmail != null && !myEmail.equals(email)) {
-                    removeLoginCookies(request, response);
+            final String jwt = getCookieValue(SurveyMain.COOKIE_SAVELOGIN);
+            if (jwt != null && !jwt.isBlank()) {
+                final String jwtId = CookieSession.sm.klm.getSubject(jwt);
+                if (jwtId != null && !jwtId.isBlank()) {
+                    if (!email.isEmpty() && !password.isEmpty()) {
+                        // If the user was already logged in as Admin/TC/Manager, then used a URL
+                        // with explicit email/password to log in as a different user, the old
+                        // cookies (especially JWT) must be removed to prevent staying logged
+                        // in as the first user
+                        removeLoginCookies(request, response);
+                    } else {
+                        User jwtInfo = CookieSession.sm.reg.getInfo(Integer.parseInt(jwtId));
+                        if (jwtInfo != null) {
+                            user = jwtInfo;
+                            logger.fine("Logged in " + jwtInfo + " #" + jwtId + " using JWT");
+                        }
+                    }
                 }
             }
         }
 
-        User user = null;
         // if an email/password given, try to fetch a user
-        try {
-            user = CookieSession.sm.reg.get(password, email, userIP());
-        } catch (LogoutException e) {
-            logout(); // failed login, so logout this session.
+        if (user == null) { // if not already logged in via jwt
+            try {
+                user = CookieSession.sm.reg.get(password, email, userIP());
+            } catch (LogoutException e) {
+                logout(); // failed login, so logout this session.
+            }
         }
         if (user != null) {
             logger.fine("Logged in " + user);
             user.touch(); // mark this user as active.
         }
 
-
         // we just logged in- see if there's already a user session for this user..
         if (user != null) {
             session = CookieSession.retrieveUser(user.email); // is this user already logged in?
             if (session != null) {
-                if (null == CookieSession.retrieve(session.id)) { // double check- is the session still valid?
+                if (null
+                        == CookieSession.retrieve(
+                                session.id)) { // double check- is the session still valid?
                     session = null; // don't allow dead sessions to show up
                     // via the user list.
                 }
@@ -1708,27 +1399,32 @@ public class WebContext implements Cloneable, Appendable {
         if (aNum != null) {
             session = CookieSession.retrieve(aNum);
             logger.fine("From cookie " + Auth.SESSION_HEADER + " : " + session);
-
-
         }
 
         if (session != null && session.user != null && user != null && user.id != session.user.id) {
-            logger.fine("Changing session " + session.id + " from " + session.user.toString() + " to " + user.toString());
-            session = null; // user was already logged in as 'session.user', replacing this with 'user'
+            logger.fine("Changing session " + session.id + " from " + session.user + " to " + user);
+            session = null; // user was already logged in as 'session.user', replacing this with
+            // 'user'
         }
 
-        if ((user == null) &&
-            (hasField(SurveyMain.QUERY_PASSWORD) || hasField(SurveyMain.QUERY_EMAIL))) {
-            logger.fine("Logging out - mySession=" + session + ",user=" + user + ", and had em/pw");
+        if ((user == null)
+                && (hasField(SurveyMain.QUERY_PASSWORD) || hasField(SurveyMain.QUERY_EMAIL))) {
+            logger.fine("Logging out - mySession=" + session + ", and had em/pw");
             logout(); // zap cookies if some id/pw failed to work
         }
 
         if (session == null && user == null) {
-            session = CookieSession.checkForAbuseFrom(userIP(), SurveyMain.BAD_IPS, request.getHeader("User-Agent"));
+            session =
+                    CookieSession.checkForAbuseFrom(
+                            userIP(), SurveyMain.BAD_IPS, request.getHeader("User-Agent"));
             if (session != null) {
                 logger.info("throttling session " + session.id);
-                println("<h1>Note: Your IP, " + userIP() + " has been throttled for making " + SurveyMain.BAD_IPS.get(userIP())
-                    + " connections. Try turning on cookies, or obeying the 'META ROBOTS' tag.</h1>");
+                println(
+                        "<h1>Note: Your IP, "
+                                + userIP()
+                                + " has been throttled for making "
+                                + SurveyMain.BAD_IPS.get(userIP())
+                                + " connections. Try turning on cookies, or obeying the 'META ROBOTS' tag.</h1>");
                 flush();
                 session = null;
                 setSessionMessage("Bad IP.");
@@ -1738,34 +1434,51 @@ public class WebContext implements Cloneable, Appendable {
 
         logger.fine("Session Now=" + session + ", user=" + user);
 
-        // guest?
-        if (user != null && UserRegistry.userIsTC(user)) {
-            // allow in administrator or TC.
-        } else if ((user != null) && (session == null)) { // user trying to log in-
-            if (CookieSession.tooManyUsers()) {
-                System.err.println("Refused login for " + email + " from " + userIP() + " - too many users ( " + CookieSession.getUserCount() + ")");
-                setSessionMessage("We are swamped with about " + CookieSession.getUserCount()
-                    + " people using the SurveyTool right now! Please try back in a little while.");
-                return;
-            }
-        } else if (session == null || (session.user == null)) { // guest user
-            if (CookieSession.tooManyGuests()) {
-                if (session != null) {
-                    System.err.println("Logged-out guest  " + session.id + " from " + userIP() + " - too many users ( " + CookieSession.getUserCount() + ")");
-                    session.remove(); // remove guests at this point
-                    session = null;
+        // allow in administrator or TC.
+        if (!UserRegistry.userIsTCOrStronger(user)) {
+            if ((user != null) && (session == null)) { // user trying to log in-
+                if (CookieSession.tooManyUsers()) {
+                    System.err.println(
+                            "Refused login for "
+                                    + email
+                                    + " from "
+                                    + userIP()
+                                    + " - too many users ( "
+                                    + CookieSession.getUserCount()
+                                    + ")");
+                    setSessionMessage(
+                            "We are swamped with about "
+                                    + CookieSession.getUserCount()
+                                    + " people using the SurveyTool right now! Please try back in a little while.");
+                    return;
                 }
-                logout(); // clear session cookie
-                setSessionMessage("We have too many people browsing the CLDR Data on the Survey Tool. Please try again later when the load has gone down.");
-                return;
+            } else if (session == null || (session.user == null)) { // guest user
+                if (CookieSession.tooManyObservers()) {
+                    if (session != null) {
+                        System.err.println(
+                                "Logged-out observer  "
+                                        + session.id
+                                        + " from "
+                                        + userIP()
+                                        + " - too many users ( "
+                                        + CookieSession.getUserCount()
+                                        + ")");
+                        session.remove(); // remove observers at this point
+                        session = null;
+                    }
+                    logout(); // clear session cookie
+                    setSessionMessage(
+                            "We have too many people browsing the CLDR Data on the Survey Tool. Please try again later when the load has gone down.");
+                    return;
+                }
             }
         }
 
         // New up a session, if we don't already have one.
         if (session == null) {
-            String newId = CookieSession.newId(user == null);
-            session = CookieSession.newSession(user == null, userIP(), newId);
-            logger.fine("New session #"+ session + " for " + user);
+            String newId = CookieSession.newId();
+            session = CookieSession.newSession(userIP(), newId);
+            logger.fine("New session #" + session + " for " + user);
         }
 
         if (user != null) {
@@ -1777,14 +1490,7 @@ public class WebContext implements Cloneable, Appendable {
             }
         } else {
             if ((email != null) && (email.length() > 0) && (session.user == null)) {
-                String encodedEmail;
-                try {
-                    encodedEmail = URLEncoder.encode(email, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    // The server doesn't support UTF-8?  (Should never happen)
-                    throw new RuntimeException(e);
-                }
-                setSessionMessage(LOGIN_FAILED);  // No reset at present, CLDR-7405
+                setSessionMessage(LOGIN_FAILED); // No reset at present, CLDR-7405
             }
         }
         // processs the 'remember me'
@@ -1799,16 +1505,14 @@ public class WebContext implements Cloneable, Appendable {
         }
     }
 
-    /**
-     * Logout this ctx
-     */
+    /** Logout this ctx */
     public void logout() {
         logout(request, response);
     }
 
     /**
-     * Logout this req/response (zap cookie)
-     * Zaps http session
+     * Logout this req/response (zap cookie) Zaps http session
+     *
      * @param request
      * @param response
      */
@@ -1817,10 +1521,17 @@ public class WebContext implements Cloneable, Appendable {
         if (session != null) {
             String sessionId = (String) session.getAttribute(SurveyMain.SURVEYTOOL_COOKIE_SESSION);
             if (CookieSession.DEBUG_INOUT) {
-                System.err.println("logout() of session " + session.getId() + " and cookieSession " + sessionId);
+                System.err.println(
+                        "logout() of session "
+                                + session.getId()
+                                + " and cookieSession "
+                                + sessionId);
             }
             if (sessionId != null) {
-                CookieSession.remove(sessionId);
+                final UserRegistry.User user = CookieSession.remove(sessionId);
+                if (user != null) {
+                    user.touch(); // update user last seen time to logout time
+                }
             }
             session.removeAttribute(SurveyMain.SURVEYTOOL_COOKIE_SESSION);
         }
@@ -1831,29 +1542,12 @@ public class WebContext implements Cloneable, Appendable {
      * @param request
      * @param response
      */
-    public static void removeLoginCookies(HttpServletRequest request, HttpServletResponse response) {
-        Cookie c0 = WebContext.getCookie(request, SurveyMain.QUERY_EMAIL);
-        if (c0 != null) { // only zap extant cookies
-            c0.setValue("");
-            c0.setPath("/");
-            // c0.setMaxAge(0);
-            response.addCookie(c0);
-        }
-        Cookie c1 = WebContext.getCookie(request, SurveyMain.QUERY_PASSWORD);
-        if (c1 != null) {
-            c1.setValue("");
-            c1.setPath("/");
-            // c1.setMaxAge(0);
-            response.addCookie(c1);
-        }
-        // clear non-JSESSIONID session header cookie
-        Cookie c3 = WebContext.getCookie(request, Auth.SESSION_HEADER);
-        if (c3 != null) {
-            c3.setValue("");
-            c3.setPath("/");
-            // c1.setMaxAge(0);
-            response.addCookie(c3);
-        }
+    public static void removeLoginCookies(
+            HttpServletRequest request, HttpServletResponse response) {
+        WebContext.clearCookie(request, response, SurveyMain.QUERY_EMAIL);
+        WebContext.clearCookie(request, response, SurveyMain.QUERY_PASSWORD);
+        WebContext.clearCookie(request, response, SurveyMain.COOKIE_SAVELOGIN);
+        WebContext.clearCookie(request, response, Auth.SESSION_HEADER);
         try {
             HttpSession s = request.getSession(false);
             if (s != null) {
@@ -1866,39 +1560,37 @@ public class WebContext implements Cloneable, Appendable {
 
     public static PageId getPageId(String pageField) {
         if (pageField != null && !pageField.isEmpty()) {
-            try {
-                return PathHeader.PageId.forString(pageField);
-            } catch (Exception e) {
-                // ignore.
-            }
+            return PathHeader.PageId.fromString(pageField);
         }
         return null;
     }
 
-    /**
-     * Remember this login (adds cookie to ctx.response )
-     */
+    /** Remember this login (adds cookie to ctx.response ) */
     public void loginRemember(User user) {
         loginRemember(response, user);
     }
 
-    /**
-     * Remember this login (adds cookie to response )
-     */
+    /** Remember this login (adds cookie to response ) */
     public static void loginRemember(HttpServletResponse response, User user) {
-        addCookie(response, SurveyMain.QUERY_EMAIL, user.email, SurveyMain.TWELVE_WEEKS);
-        addCookie(response, SurveyMain.QUERY_PASSWORD, user.getPassword(), SurveyMain.TWELVE_WEEKS);
+        loginRemember(response, user.id);
     }
 
-    /**
-     * Set the Session ID cookie (not JSESSION) on the given response.
-     */
+    public static void loginRemember(HttpServletResponse response, int id) {
+        addCookie(
+                response,
+                SurveyMain.COOKIE_SAVELOGIN,
+                CookieSession.sm.klm.createJwtForSubject(Integer.toString(id)),
+                SurveyMain.TWELVE_WEEKS);
+    }
+
+    /** Set the Session ID cookie (not JSESSION) on the given response. */
     public static void setSessionCookie(HttpServletResponse response, String sessionId) {
         addCookie(response, Auth.SESSION_HEADER, sessionId, SurveyMain.TWELVE_WEEKS);
     }
 
     /**
      * Get the Session cookie (not JSESSION)
+     *
      * @param request
      * @return cookie or null
      */
@@ -1908,6 +1600,7 @@ public class WebContext implements Cloneable, Appendable {
 
     /**
      * Get the Session string from the session cookie (not JSESSION) or null
+     *
      * @param request
      * @return session ID or null
      */
@@ -1933,5 +1626,19 @@ public class WebContext implements Cloneable, Appendable {
         if (session != null) {
             session.setMessage(s);
         }
+    }
+
+    /** Get session if there is one, but don't create one */
+    public static CookieSession peekSession(HttpServletRequest request) {
+        String aNum = getCookieValue(request, Auth.SESSION_HEADER);
+        if (aNum != null) {
+            logger.info("peeked session ID from cookie" + aNum);
+            CookieSession session = CookieSession.retrieveWithoutTouch(aNum);
+            logger.fine("Peeked session From cookie " + Auth.SESSION_HEADER + " : " + session);
+            return session;
+        } else {
+            logger.info("NO SESSION ID in peeked cookie");
+        }
+        return null;
     }
 }

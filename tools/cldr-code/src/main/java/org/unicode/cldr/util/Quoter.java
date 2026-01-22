@@ -13,7 +13,7 @@ public abstract class Quoter {
     private static boolean DEBUG = false;
 
     protected boolean quoting = false;
-    protected StringBuffer output = new StringBuffer();
+    protected StringBuilder output = new StringBuilder();
 
     public void setQuoting(boolean value) {
         quoting = value;
@@ -48,11 +48,9 @@ public abstract class Quoter {
         return output.toString();
     }
 
-    /**
-     * Implements standard ICU rule quoting
-     */
+    /** Implements standard ICU rule quoting */
     public static class RuleQuoter extends Quoter {
-        private StringBuffer quoteBuffer = new StringBuffer();
+        private StringBuilder quoteBuffer = new StringBuilder();
 
         @Override
         public void setQuoting(boolean value) {

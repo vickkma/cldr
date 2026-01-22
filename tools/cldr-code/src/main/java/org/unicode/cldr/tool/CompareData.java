@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
-
+import org.unicode.cldr.icu.dev.util.UOption;
 import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRPaths;
 import org.unicode.cldr.util.CldrUtility;
@@ -13,18 +13,9 @@ import org.unicode.cldr.util.LocaleIDParser;
 import org.unicode.cldr.util.PathUtilities;
 import org.unicode.cldr.util.PrettyPath;
 
-import com.ibm.icu.dev.tool.UOption;
-import com.ibm.icu.text.Collator;
-import com.ibm.icu.text.RuleBasedCollator;
-import com.ibm.icu.util.ULocale;
-
 public class CompareData {
 
-    private static final int HELP1 = 0,
-        HELP2 = 1,
-        SOURCEDIR = 2,
-        DESTDIR = 3,
-        MATCH = 4;
+    private static final int HELP1 = 0, HELP2 = 1, SOURCEDIR = 2, DESTDIR = 3, MATCH = 4;
 
     private static final UOption[] options = {
         UOption.HELP_H(),
@@ -34,12 +25,7 @@ public class CompareData {
         UOption.create("match", 'm', UOption.REQUIRES_ARG).setDefault(".*"),
     };
 
-    String[] directoryList = { "main", "collation", "segmentations" };
-
-    static RuleBasedCollator uca = (RuleBasedCollator) Collator.getInstance(ULocale.ROOT);
-    {
-        uca.setNumericCollation(true);
-    }
+    String[] directoryList = {"main", "collation", "segmentations"};
 
     static PrettyPath prettyPathMaker = new PrettyPath();
     static CLDRFile english;
@@ -66,7 +52,7 @@ public class CompareData {
             int deletedItemsTotal = 0;
             int sameItemsTotal = 0;
 
-            for (Iterator<String> it = locales.iterator(); it.hasNext();) {
+            for (Iterator<String> it = locales.iterator(); it.hasNext(); ) {
                 int newItems = 0;
                 int replacementItems = 0;
                 int deletedItems = 0;
@@ -77,8 +63,7 @@ public class CompareData {
                 try {
                     CLDRFile oldFile = oldFactory.make(locale, false);
                     pathsSeen.clear();
-                    for (Iterator<String> it2 = file.iterator(); it2.hasNext();) {
-                        String path = it2.next();
+                    for (String path : file) {
                         String value = file.getStringValue(path);
                         String oldValue = oldFile.getStringValue(path);
                         if (oldValue == null) {
@@ -90,8 +75,7 @@ public class CompareData {
                         }
                         pathsSeen.add(path);
                     }
-                    for (Iterator<String> it2 = oldFile.iterator(); it2.hasNext();) {
-                        String path = it2.next();
+                    for (String path : oldFile) {
                         if (!pathsSeen.contains(path)) {
                             deletedItems++;
                         }
@@ -99,27 +83,46 @@ public class CompareData {
                 } catch (Exception e) {
                     newItems = size(file.iterator());
                 }
-                String langScript = new LocaleIDParser().set(file.getLocaleID()).getLanguageScript();
-                System.out.println(langScript + "\t" + file.getLocaleID() + "\t" + sameItems + "\t" + newItems + "\t"
-                    + replacementItems + "\t" + deletedItems);
+                String langScript =
+                        new LocaleIDParser().set(file.getLocaleID()).getLanguageScript();
+                System.out.println(
+                        langScript
+                                + "\t"
+                                + file.getLocaleID()
+                                + "\t"
+                                + sameItems
+                                + "\t"
+                                + newItems
+                                + "\t"
+                                + replacementItems
+                                + "\t"
+                                + deletedItems);
                 newItemsTotal += newItems;
                 replacementItemsTotal += replacementItems;
                 deletedItemsTotal += deletedItems;
                 sameItemsTotal += sameItems;
             }
-            System.out.println("TOTAL" + "\t" + "\t" + sameItemsTotal + "\t" + newItemsTotal + "\t"
-                + replacementItemsTotal + "\t" + deletedItemsTotal);
+            System.out.println(
+                    "TOTAL"
+                            + "\t"
+                            + "\t"
+                            + sameItemsTotal
+                            + "\t"
+                            + newItemsTotal
+                            + "\t"
+                            + replacementItemsTotal
+                            + "\t"
+                            + deletedItemsTotal);
         } finally {
             deltaTime = System.currentTimeMillis() - deltaTime;
             System.out.println("Elapsed: " + deltaTime / 1000.0 + " seconds");
             System.out.println("Done");
         }
-
     }
 
     private static int size(Iterator iterator) {
         int count = 0;
-        for (; iterator.hasNext();) {
+        for (; iterator.hasNext(); ) {
             iterator.next();
             ++count;
         }

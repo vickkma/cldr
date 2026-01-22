@@ -1,18 +1,5 @@
 <template>
   <div v-if="loggedIn" class="reportResponse">
-    <div>
-      <a-tooltip class="boxy" v-if="reportStatus">
-        Approval Status:
-        <template #title>
-          {{ reportStatus.status }}: {{ reportStatus.acceptability }}
-        </template>
-        <div class="d-dr-status statuscell" :class="statusClass">&nbsp;</div>
-        {{ humanizeAcceptability }}
-      </a-tooltip>
-      <a-spin size="small" v-if="!loaded" />
-    </div>
-    <a-alert v-if="error" type="error" v-model:message="error" />
-
     <p>
       Please read the
       <a
@@ -23,32 +10,57 @@
       before continuing.
     </p>
 
-    <a-radio-group v-model:value="state" @change="changed">
+    <a-radio-group v-model:value="state" :disabled="!canVote" @change="changed">
       <a-radio :style="radioStyle" value="acceptable">
         I have reviewed the items below, and they are all acceptable</a-radio
       >
       <a-radio :style="radioStyle" value="unacceptable">
         The items are not all acceptable, but I have entered in votes for the
-        right ones or filed a ticket.</a-radio
+        right ones and filed at least one forum post to explain the
+        problems.</a-radio
       >
       <a-radio :style="radioStyle" value="incomplete">
         I have not reviewed the items.</a-radio
       >
     </a-radio-group>
+    <hr v-if="loaded || error" />
+    <a-alert v-if="error" type="error" v-model:message="error" />
+    <a-spin size="small" v-if="!loaded" />
+    <a-collapse v-if="reportStatus">
+      <a-collapse-panel :header="approvalHeader" :ghost="voteCount > 0">
+        <VoteInfo
+          :votes="reportStatus.votes"
+          :votingResults="reportStatus.votingResults"
+          :winner="reportStatus.status"
+        />
+        <template #extra>
+          <span class="statuscell" :class="statusClass">{{ statusIcon }}</span>
+          {{ humanizeAcceptability }}
+        </template>
+      </a-collapse-panel>
+    </a-collapse>
   </div>
 </template>
 
 <script>
-import * as cldrClient from "../esm/cldrClient.js";
-import * as cldrReport from "../esm/cldrReport.js";
-import * as cldrStatus from "../esm/cldrStatus.js";
-import * as cldrText from "../esm/cldrText.js";
+import * as cldrClient from "../esm/cldrClient.mjs";
+import * as cldrNotify from "../esm/cldrNotify.mjs";
+import * as cldrReport from "../esm/cldrReport.mjs";
+import * as cldrStatus from "../esm/cldrStatus.mjs";
+import * as cldrTable from "../esm/cldrTable.mjs";
+import * as cldrText from "../esm/cldrText.mjs";
+import VoteInfo from "./VoteInfo.vue";
+
 export default {
+  components: {
+    VoteInfo,
+  },
   props: [
     "report", // e.g. 'numbers'
   ],
-  data: function () {
+  data() {
     return {
+      canVote: false,
       completed: false,
       acceptable: false,
       loaded: false,
@@ -58,20 +70,40 @@ export default {
       radioStyle: { display: "block" },
     };
   },
-  created: async function () {
+  async created() {
     this.client = await cldrClient.getClient();
     await this.reload();
   },
   computed: {
+    approvalHeader() {
+      if (this.voteCount == 0) {
+        return "Approval Status";
+      } else {
+        return `Approval Status: ${this.voteCount} vote(s)`;
+      }
+    },
+    voteCount() {
+      if (!this.reportStatus) {
+        return 0;
+      }
+      return Object.keys(this.reportStatus.votes).length;
+    },
     loggedIn() {
       return !!cldrStatus.getSurveyUser();
     },
+
     reportName() {
       return cldrReport.reportName(this.report);
     },
+
     statusClass() {
       return `d-dr-${this.reportStatus.status}`;
     },
+
+    statusIcon() {
+      return cldrTable.getStatusIcon(this.reportStatus.status);
+    },
+
     humanizeAcceptability() {
       if (!this.reportStatus) {
         return "loading";
@@ -102,6 +134,7 @@ export default {
           break;
       }
     },
+
     /**
      * map 2 fields to a string
      */
@@ -115,6 +148,7 @@ export default {
         return "incomplete";
       }
     },
+
     async changed() {
       this.loaded = false;
       const user = cldrStatus.getSurveyUser();
@@ -128,7 +162,7 @@ export default {
         await this.client.apis.voting.updateReport(
           {
             user: user.id,
-            locale: this.$cldrOpts.locale,
+            locale: cldrStatus.getCurrentLocale(),
             report: this.report,
           },
           {
@@ -140,11 +174,17 @@ export default {
         );
         await this.reload(); // will set loaded=true
       } catch (e) {
-        console.error(e);
+        cldrNotify.exception(
+          e,
+          `Trying to vote for report ${
+            this.report
+          } in ${cldrStatus.getCurrentLocale()}`
+        );
         this.error = e;
         this.loaded = true;
       }
     },
+
     async reload() {
       this.loaded = false;
       const user = cldrStatus.getSurveyUser();
@@ -157,11 +197,11 @@ export default {
         // get MY vote
         const resp = this.client.apis.voting.getReport({
           user: user.id,
-          locale: this.$cldrOpts.locale,
+          locale: cldrStatus.getCurrentLocale(),
         });
         // get the overall status for this locale
         const reportLocaleStatusResponse = cldrReport.getOneReportLocaleStatus(
-          this.$cldrOpts.locale,
+          cldrStatus.getCurrentLocale(),
           this.report
         );
 
@@ -172,12 +212,18 @@ export default {
           completed: this.completed,
           acceptable: this.acceptable,
         });
-        this.reportStatus = await reportLocaleStatusResponse; // { status: approved, acceptability: acceptable }
-        console.dir(await reportLocaleStatusResponse);
+        const { report, canVote } = await reportLocaleStatusResponse;
+        this.reportStatus = report; // { status: approved, acceptability: acceptable }
         this.loaded = true;
+        this.canVote = canVote;
         this.error = null;
       } catch (e) {
-        console.error(e);
+        cldrNotify.exception(
+          e,
+          `Trying to load report ${
+            this.report
+          } in ${cldrStatus.getCurrentLocale()}`
+        );
         this.error = e;
         this.loaded = true;
       }

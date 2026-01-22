@@ -6,9 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
-
-import org.json.JSONException;
+import org.unicode.cldr.util.CLDRFile;
+import org.unicode.cldr.util.Factory;
 import org.unicode.cldr.util.XMLSource;
+import org.unicode.cldr.web.util.JSONException;
 
 public class SurveyBulkClosePosts {
 
@@ -33,12 +34,13 @@ public class SurveyBulkClosePosts {
     /**
      * The number of threads to close; after doExecute, the number of threads actually closed
      *
-     * A "thread" is an initial post (not a reply), plus any posts that are replies to it
+     * <p>A "thread" is an initial post (not a reply), plus any posts that are replies to it
      */
     private int threadCount = 0;
 
     /**
-     * The number of posts (including replies) actually closed; only set after doExecute (for efficiency)
+     * The number of posts (including replies) actually closed; only set after doExecute (for
+     * efficiency)
      */
     private int postCount = 0;
 
@@ -89,10 +91,12 @@ public class SurveyBulkClosePosts {
     }
 
     private void prepareOpenRequestsDetailQuery() throws SQLException {
-        String sql = "SELECT id,loc,xpath,value"
-            + " FROM " + DBUtils.Table.FORUM_POSTS.toString()
-            + " WHERE is_open=TRUE"
-            + " AND type=?";
+        String sql =
+                "SELECT id,loc,xpath,value"
+                        + " FROM "
+                        + DBUtils.Table.FORUM_POSTS.toString()
+                        + " WHERE is_open=TRUE"
+                        + " AND type=?";
         ps = DBUtils.prepareForwardReadOnly(conn, sql);
         ps.setInt(1, SurveyForum.PostType.REQUEST.toInt());
     }
@@ -108,10 +112,12 @@ public class SurveyBulkClosePosts {
     }
 
     private boolean matchesWinning(String loc, Integer xpath, String value) {
-        XMLSource diskData = sm.getDiskFactory().makeSource(loc).freeze();
+        Factory diskFac = sm.getDiskFactory();
+        CLDRFile cldrFile = diskFac.make(loc, true);
+        XMLSource diskData = cldrFile.getResolvingDataSource();
         String xpathString = sm.xpt.getById(xpath);
         String curValue = diskData.getValueAtDPath(xpathString);
-        return diskData.equalsOrInheritsCurrentValue(value, curValue, xpathString);
+        return cldrFile.equalsOrInheritsCurrentValue(value, curValue, xpathString);
     }
 
     private void doExecute() {

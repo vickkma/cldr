@@ -2,6 +2,11 @@
 /* Made with CSSEdit and Espresso2 */
 @charset "UTF-8";
 
+/* TODO: should load this locally via webpack, see https://unicode-org.atlassian.net/browse/CLDR-9195 */
+@import url("//fonts.googleapis.com/css?family=Noto+Sans:400italic,700italic,400,700");
+@import url("//fonts.googleapis.com/css?family=Noto+Sans+Symbols:400italic,700italic,400,700");
+@import url("//fonts.googleapis.com/css?family=Noto+Nastaliq+Urdu");
+
 span.age  {
 	font-weight: bold;
 	font-style: italic;
@@ -29,6 +34,25 @@ ul.adminList li.notselected {
 	background-color: #eee;
 	border-left:  1px solid #ddd;
 	border-right:  1px solid #ddd;
+}
+
+.transcript-container {
+	display: none;
+}
+
+.transcript-container.visible {
+	display: block;
+}
+
+a.show-transcript {
+	float: right;
+}
+
+pre.transcript-text {
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+	font-size: small;
+	white-space: pre-line;
+	word-break: normal;
 }
 
 #small_login_shower button {
@@ -179,7 +203,7 @@ div.adminUserUser i {
     border:  2px solid black;
 }
 
-i.userlevel_street {
+i.userlevel_guest {
 	background-color: navy !important;
 	color:  white !important;
 }
@@ -191,11 +215,6 @@ i.userlevel_locked {
 	background-color: gray !important;
 	color:  silver !important;
 }
-i.userlevel_expert {
-	background-color: teal !important;
-	color:  black !important;
-}
-
 i.userlevel_manager{
 	background-color: #e77de7 !important;
 	color: white !important;
@@ -531,20 +550,6 @@ pre.adminExceptionMESSAGE {
 	padding-left:   20px;
 	padding-bottom: 0;
 	margin-bottom: 0;
-}
-
-div.sidewaysArea {
-	font-size: smaller;
-	padding-left: 20px;
-}
-
-div.sideways_same  {
-	background: url(squo.png) no-repeat 0 top;
-}
-
-div.sideways_diff  {
-	background-color: #fbb;
-	background: url(zoom.png) no-repeat 0 top;
 }
 
 div.adminException {
@@ -982,6 +987,7 @@ i.loadingMsgSpin {
 }
 */
 
+
 .loaderAnimIcon {
 	background-image: url('loader.gif');
 	background-repeat: no-repeat;
@@ -1280,17 +1286,14 @@ div.forumDiv div.subpost .postHeader {
 	display:  table-cell;
 }
 
-button.forumNewButton {
-
-}
-
 button.forumNewPostFlagButton {
     padding-left: 2em;
+    background: url(flag-d.png) no-repeat left center;
 }
 
 button.forumNewPostFlagButton:hover {
     padding-left: 2em;
-    background: url(flag.png) no-repeat;
+    background: url(flag.png) no-repeat left center;
 }
 
 div.forumDiv .adminUserUser {
@@ -1678,16 +1681,12 @@ table#voteinfo thead th:first-child {
 */
 .cldrValue {
 	white-space: pre-wrap;
-	/* See the top of this file for language specific CSS, including specific
+	/* See the the section below this one for language specific CSS, including specific
 		font overrides. */
 	font-family: "Noto Sans",
 					"Noto Sans Symbols",
 					sans-serif;
 }
-
-/* TODO: should load this locally via webpack, see https://unicode-org.atlassian.net/browse/CLDR-9195 */
-@import url("//fonts.googleapis.com/css?family=Noto+Sans:400italic,700italic,400,700");
-@import url("//fonts.googleapis.com/css?family=Noto+Sans+Symbols:400italic,700italic,400,700");
 
 /* lang specific CSS */
 
@@ -1700,6 +1699,13 @@ The the following can work here:
 }
 
 */
+
+/* Kashmiri and Urdu are typically in Nastaliq. Kashmiri in particular uses a letter that is
+   not rendered correctly in Noto Naskh (see CLDR-16595) */
+
+:lang(ks), :lang(ur) {
+	font-family: "Noto Nastaliq Urdu";
+}
 
 /* The following is directly includeable as per https://github.com/saturngod/mmwebfonts/issues/4 */
 @font-face {
@@ -1714,18 +1720,9 @@ Use padauk or MM3 if available, otherwise Mon3.
   font-family:padauk,Myanmar3,'MON3 Anonta 1';
 }
 
-@font-face {
-	font-family:'NotoSerifNyiakengPuachueHmong-Bold';
-	src:local('NotoSerifNyiakengPuachueHmong-Bold'),url('fonts/NotoSerifNyiakengPuachueHmong-Bold.otf');
-}
-
-@font-face {
-	font-family:'NotoSerifNyiakengPuachueHmong-Regular';
-	src:local('NotoSerifNyiakengPuachueHmong-Regular'),url('fonts/NotoSerifNyiakengPuachueHmong-Regular.ttf');
-}
 
 :lang(hnj) {
-	font-family: "NotoSerifNyiakengPuachueHmong-Regular"
+	font-family: "NotoSerifNyiakengPuachueHmong-Regular", "Noto Serif NP Hmong"
 }
 
 .voteInfo_perValue {
@@ -1910,12 +1907,13 @@ p.errCodeMsg {
     font-family: Georgia, "Times New Roman", Times, serif;
     font-weight: normal;
     font-style: normal;
-    padding-left:  20px;
     margin-left:  3em;
     margin-right:  3em;
     border:  2px solid silver;
 	font-size: larger;
 	white-space: pre-line;
+	padding: 0.5em;
+	background-color: #ecd290;
 }
 
 p.errCodeMsg .fgred {
@@ -1923,9 +1921,10 @@ p.errCodeMsg .fgred {
 }
 
 #LoadingMessageSection p.errCodeMsg button {
-    display:  block;
+    display:  inline-block;
     margin-top: 1em;
-    font-size: x-large;
+    font-size: larger;
+	margin-left: 0.5em;
 }
 
 .cldr_substituted {
@@ -1967,6 +1966,11 @@ p.errCodeMsg .fgred {
 div.d-example {
     font: small "Lucida Grande", Lucida, Verdana, sans-serif;
     margin-top:7px;
+}
+
+/* bootstrap popover likes to force the alignment left, but we want it to follow the language */
+.popover .d-example-popover {
+	text-align: initial !important;
 }
 
 #stchanged_loc {
@@ -2229,12 +2233,13 @@ tr.tr_err {
 }
 
 /*
-  ready to submit
-  TODO: when/where/why is this tr_submit used? Or is it unused?
-  */
-
+ * tr_submit highlights a row when a dialog is open for submitting a new value.
+ * Usually the position of the dialog is a good indicator of the row to which it corresponds. However,
+ * if the row is near the top or bottom of the window, the dialog may be positioned higher or lower in
+ * order to be completely visible. The distinctive style of the row may then help to avoid confusion.
+ */
 tr.tr_submit {
-	background-color: #dfd;
+	background-color: #dfd; /* pale green */
 }
 
 div.v-oldVotes-subDiv {
@@ -2243,14 +2248,6 @@ div.v-oldVotes-subDiv {
 
 h2.v-oldvotes-sub {
     border-top:  2px solid silver;
-}
-
-/*
- Unknown status
-*/
-
-tr.tr_unknown {
-
 }
 
 div.helpHtml, .helpContent {
@@ -2349,45 +2346,25 @@ span.pathChunk:after
 }
 
 .d-dr-approved {
-	width: 16px;
-	height: 16px;
-	background: url(approved.png) no-repeat center;
+	color: green;
 }
 
-.d-dr-contributed {
-	width: 16px;
-	height: 16px;
-	background: url(contributed.png) no-repeat center;
+.d-dr-contributed,.d-dr-provisional,.d-dr-inherited-provisional {
+	color: orange;
 }
 
-.d-dr-provisional {
-	width: 16px;
-	height: 16px;
-	background: url(provisional.png) no-repeat center;
-}
-
-.d-dr-inherited-provisional {
-	width: 16px;
-	height: 16px;
-	background: url(inherited-provisional.png) no-repeat center;
-}
-
-.d-dr-unconfirmed {
-	width: 16px;
-	height: 16px;
-	background: url(unconfirmed.png) no-repeat center;
-}
-
-.d-dr-inherited-unconfirmed {
-	width: 16px;
-	height: 16px;
-	background: url(inherited-unconfirmed.png) no-repeat center;
+.d-dr-unconfirmed,.d-dr-inherited-unconfirmed {
+	color: red;
 }
 
 .d-dr-missing {
-	width: 16px;
-	height: 16px;
-	background: url(missing.png) no-repeat center;
+	color: black;
+}
+
+.statuscell {
+	text-align: right;
+	font-family: emoji !important;
+	font-variant-emoji: emoji;
 }
 
 .voteDiv .winningStatus  {
@@ -2675,7 +2652,7 @@ transition: background-color 0.2s;
 	background: url(star.png) no-repeat center center;
 }
 
-.d-dr-approved,.d-dr-contributed,.d-dr-unconfirmed,.d-dr-provisional,.d-dr-missing,.i-star,.label-icon {
+.i-star,.label-icon {
 	position:relative;
 	left:5px;
 	display:inline-block;
@@ -2694,12 +2671,6 @@ transition: background-color 0.2s;
 	height: 17px;
 	background: url(flag.png) no-repeat center center;
 }
-.i-flag-d {
-	padding: 2px;
-	width: 17px;
-	height: 17px;
-	background: url(flag-d.png) no-repeat center center;
-}
 
 .s-flag {
 	width: 17px;
@@ -2707,11 +2678,6 @@ transition: background-color 0.2s;
 	background: url(flag.png) no-repeat center center ;
 }
 
-.s-flag-d {
-	width: 17px;
-	height: 30px;
-	background: url(flag-d.png) no-repeat center center ;
-}
 td.d-change,td.d-change-err,td.d-change-warn {
 	white-space: nowrap;
 }
@@ -2826,20 +2792,6 @@ div.voterList {
 	display:  block;
 }
 
-p.pClassExplain {
-	margin-top: 0.25em;
-	display: inline;
-	font-weight: normal;
-	font-size: small;
-	margin-left:  1em;
-}
-p.pClassExplain:before {
-	content: '(';
-}
-p.pClassExplain:after {
-	content: ')';
-}
-
 div.voterList .voterName {
 	font-weight: bold;
 	display:  inline;
@@ -2853,19 +2805,6 @@ div.voterList p {
 	margin-top:0;
 	margin-bottom:  0.5em;
 }
-
-/* formatting for date time review */
-.dtf-table, .dtf-int {margin-left:auto; margin-right:auto; border-collapse:collapse;}
-.dtf-table, .dtf-s, .dtf-nopad, .dtf-fix, .dtf-th, .dtf-h, .dtf-sep, .dtf-left, .dtf-int {border:1px solid gray;}
-.dtf-th {background-color:#EEE; padding:4px}
-.dtf-s, .dtf-nopad, .dtf-fix {padding:3px; text-align:center}
-.dtf-sep {background-color:#EEF; text-align:center}
-.dtf-s {text-align:center;}
-.dtf-int {width:100%; height:100%}
-.dtf-fix {width:1px}
-.dtf-left {text-align:left;}
-.dtf-nopad {padding:0px; vertical-align:top;}
-.dtf-gray {background-color:#EEF}
 
 .rolloverspan:hover {
 	color: white !important;
@@ -2925,12 +2864,6 @@ td.v-path {
 
 #oldVotesAcceptList {
     border-collapse: collapse;
-}
-
-#OtherSection p.special_general {
-    padding:  3em;
-	background: url(vote.png) no-repeat 1em center;
-	line-height: 2em
 }
 
 #oldVotesAcceptList td {
@@ -3339,3 +3272,7 @@ div.thinUser {
      color: red;
      background-color: lightgoldenrodyellow !important;
  }
+
+.sidebyside-narrow a[href] {
+	word-wrap: break-word;
+}

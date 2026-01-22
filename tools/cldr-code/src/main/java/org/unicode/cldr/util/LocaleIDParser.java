@@ -8,6 +8,9 @@
  */
 package org.unicode.cldr.util;
 
+import com.google.common.collect.ImmutableList;
+import com.ibm.icu.impl.Utility;
+import com.ibm.icu.text.UnicodeSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -15,9 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import com.ibm.icu.impl.Utility;
-import com.ibm.icu.text.UnicodeSet;
+import org.unicode.cldr.util.SupplementalDataInfo.ParentLocaleComponent;
 
 public class LocaleIDParser {
     /**
@@ -42,7 +43,7 @@ public class LocaleIDParser {
     public static Set<String> getLanguageScript(Collection<String> in, Set<String> output) {
         if (output == null) output = new TreeSet<>();
         LocaleIDParser lparser = new LocaleIDParser();
-        for (Iterator<String> it = in.iterator(); it.hasNext();) {
+        for (Iterator<String> it = in.iterator(); it.hasNext(); ) {
             output.add(lparser.set(it.next()).getLanguageScript());
         }
         return output;
@@ -93,7 +94,7 @@ public class LocaleIDParser {
             if (i >= pieces.length) return this;
         }
         if (pieces[i].length() == 2 && letters.containsAll(pieces[i])
-            || pieces[i].length() == 3 && digits.containsAll(pieces[i])) {
+                || pieces[i].length() == 3 && digits.containsAll(pieces[i])) {
             region = pieces[i++];
             if (i >= pieces.length) return this;
         }
@@ -107,49 +108,45 @@ public class LocaleIDParser {
     }
 
     /**
-     * Get the parent of a locale. If the input is "root", then return null.
-     * For example, if localeName is "fr_CA", return "fr".
+     * Get the parent of a locale. If the input is "root", then return null. For example, if
+     * localeName is "fr_CA", return "fr".
      *
-     * Only works on canonical locale names (right casing, etc.)!
+     * <p>Only works on canonical locale names (right casing, etc.)!
      *
-     * Formerly this function returned an empty string when localeName was "_VETTING".
-     * Now it returns "root" where it would have returned an empty string.
-     * TODO: explain "__VETTING", somehow related to SUMMARY_LOCALE. Note that
-     * CLDRLocale.process() changes "__" to "_" before this function is called.
-     * Reference: https://unicode-org.atlassian.net/browse/CLDR-13133
+     * <p>Formerly this function returned an empty string when localeName was "_VETTING". Now it
+     * returns "root" where it would have returned an empty string. TODO: explain "__VETTING",
+     * somehow related to SUMMARY_LOCALE. Note that CLDRLocale.process() changes "__" to "_" before
+     * this function is called. Reference: https://unicode-org.atlassian.net/browse/CLDR-13133
      */
-    public static final String getParent(String localeName) {
-        return getParent(localeName, false);
+    public static final String getParent(String localeId) {
+        return getParent(localeId, ParentLocaleComponent.main);
     }
 
     /**
-     * Get the parent of a locale. If the input is "root", then return null.
-     * For example, if localeName is "fr_CA", return "fr".
+     * Get the parent of a locale. If the input is "root", then return null. For example, if
+     * localeId is "fr_CA", return "fr". There is a different inheritance chain for certain
+     * supplemental data elements.
      *
-     * Only works on canonical locale names (right casing, etc.)!
-     *
-     * Formerly this function returned an empty string when localeName was "_VETTING".
-     * Now it returns "root" where it would have returned an empty string.
-     * TODO: explain "__VETTING", somehow related to SUMMARY_LOCALE. Note that
-     * CLDRLocale.process() changes "__" to "_" before this function is called.
-     * Reference: https://unicode-org.atlassian.net/browse/CLDR-13133
-     * @param ignoreParentLocale true of the parentLocale and default script behavior should be ignored (such as with collation)
+     * @param localeId Only works on canonical locale names (right casing, etc.)!
+     * @param component picks the component that indicates the inheritance chain. Is either the
+     *     standard ('main') used for all ldml-dtd items, or is one of the particular elements in
+     *     supplemental data that has a different inheritance, such as collations or plurals
      */
-    public static String getParent(String localeName, boolean ignoreParentLocale) {
+    public static String getParent(String localeId, ParentLocaleComponent component) {
         SupplementalDataInfo sdi = SupplementalDataInfo.getInstance();
-        if (!ignoreParentLocale) {
-            String explicitParent = sdi.getExplicitParentLocale(localeName);
-            if (explicitParent != null) {
-                return explicitParent;
-            }
+        String explicitParent = sdi.getExplicitParentLocale(localeId, component);
+        if (explicitParent != null) {
+            return explicitParent;
         }
-        int pos = localeName.lastIndexOf('_');
+        int pos = localeId.lastIndexOf('_');
         if (pos >= 0) {
-            String truncated = localeName.substring(0, pos);
-            // if the final item is a script, and it is not the default content, then go directly to root
-            int pos2 = getScriptPosition(localeName);
-            if (pos2 > 0 && !ignoreParentLocale) {
-                String script = localeName.substring(pos + 1);
+            String truncated = localeId.substring(0, pos);
+            // if the final item is a script, and it is not the default content, then go directly to
+            // root
+            int pos2 = getScriptPosition(localeId);
+            boolean skipNonLikely = sdi.parentLocalesSkipNonLikely(component);
+            if (pos2 > 0 && skipNonLikely) {
+                String script = localeId.substring(pos + 1);
                 String defaultScript = sdi.getDefaultScript(truncated);
                 if (!script.equals(defaultScript)) {
                     return "root";
@@ -160,7 +157,7 @@ public class LocaleIDParser {
             }
             return truncated;
         }
-        if (localeName.equals("root")) {
+        if (localeId.equals("root")) {
             return null;
         }
         return "root";
@@ -168,19 +165,22 @@ public class LocaleIDParser {
 
     /**
      * Return the base language subtag: en_US => en, en_Latn_US => en, en => en, root => root
+     *
      * @param localeID
      * @return
      */
     public static String getSimpleBaseLanguage(String localeID) {
         int pos = localeID.indexOf('_');
         if (pos >= 0) {
-            return localeID.substring(0,pos);
+            return localeID.substring(0, pos);
         }
         return localeID;
     }
 
     /**
-     * If the locale consists of baseLanguage+script, return the position of the separator, otherwise -1.
+     * If the locale consists of baseLanguage+script, return the position of the separator,
+     * otherwise -1.
+     *
      * @param s
      */
     public static int getScriptPosition(String locale) {
@@ -195,10 +195,10 @@ public class LocaleIDParser {
     }
 
     /**
-     * Utility to get the simple parent of a locale. If the input is "root", then the output is null.
-     * This method is similar to the getParent() method above, except that it does NOT pay any attention
-     * to the explicit parent locales information. Thus, getParent("zh_Hant") will return "root",
-     * but getSimpleParent("zh_Hant") would return "zh".
+     * Utility to get the simple parent of a locale. If the input is "root", then the output is
+     * null. This method is similar to the getParent() method above, except that it does NOT pay any
+     * attention to the explicit parent locales information. Thus, getParent("zh_Hant") will return
+     * "root", but getSimpleParent("zh_Hant") would return "zh".
      */
     public static String getSimpleParent(String localeName) {
         int pos = localeName.lastIndexOf('_');
@@ -230,7 +230,11 @@ public class LocaleIDParser {
     }
 
     public enum Level {
-        Language, Script, Region, Variants, Other
+        Language,
+        Script,
+        Region,
+        Variants,
+        Other
     }
 
     /**
@@ -273,5 +277,41 @@ public class LocaleIDParser {
             }
         }
         return result.toString();
+    }
+
+    public static final ImmutableList<String> FALLBACK_CHAIN = ImmutableList.of();
+    public static final ImmutableList<String> ROOT_PARENT_CHAIN =
+            ImmutableList.of(XMLSource.ROOT_ID);
+
+    /**
+     * Return localeIds getParent chain. Return null if there is none (localeID == root or
+     * code-fallback). Note: an L1 locale will have exactly 1 element, and be identical to
+     * ROOT_PARENT_CHAIN. TODO optimize by caching the chains Returns a
+     */
+    public static List<String> getParentChain(String localeID) {
+        if (XMLSource.ROOT_ID.equals(localeID)) {
+            return FALLBACK_CHAIN;
+        }
+        List<String> result = null;
+        while (true) {
+            String parent = getParent(localeID);
+            if (parent.equals(XMLSource.ROOT_ID)) {
+                if (result == null) {
+                    return ROOT_PARENT_CHAIN;
+                } else {
+                    result.addAll(ROOT_PARENT_CHAIN);
+                    return ImmutableList.copyOf(result);
+                }
+            }
+            if (result == null) {
+                result = new ArrayList<>();
+            }
+            result.add(parent);
+            localeID = parent;
+        }
+    }
+
+    public static boolean isL1(String localeId) {
+        return XMLSource.ROOT_ID.equals(getParent(localeId));
     }
 }

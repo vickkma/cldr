@@ -18,28 +18,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone Repository (Custom Ref)
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.git-ref }}
           lfs: false
       - name: Calculate Tag Name
         id: tagname
         run: >
-          echo "::set-output name=tag::$(env TZ=UTC date +'production/%Y-%m-%d-%H%Mz')"
+          echo "tag=$(env TZ=UTC date +'production/%Y-%m-%d-%H%Mz')" >> $GITHUB_OUTPUT
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 11
           distribution: 'temurin'
       - name: Cache local Maven repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('tools/**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Cache local npm repository
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -52,6 +52,11 @@ jobs:
           -DskipTests=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: DataDog sourcemap upload
+        run: npx --package=@datadog/datadog-ci datadog-ci sourcemaps upload tools/cldr-apps/src/main/webapp/dist/ --minified-path-prefix=/cldr-apps/dist/ --release-version=r${{ github.event.inputs.git-ref }} --service=surveytool
+        env:
+          DATADOG_SITE: ${{ secrets.DATADOG_SITE }}
+          DATADOG_API_KEY: ${{ secrets.DATADOG_API_KEY }}
       - name: Build liberty server
         run: >
           mvn -s .github/workflows/mvn-settings.xml -B  -pl cldr-apps liberty:create liberty:deploy liberty:package -Dinclude=usr --file tools/pom.xml
@@ -62,18 +67,17 @@ jobs:
         run: >
           zip tools/cldr-apps/target/cldr-apps.zip  -d  wlp/usr/servers/cldr/apps/expanded/\*
       - name: Upload cldr-apps.zip
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: cldr-apps-server
           path: tools/cldr-apps/target/cldr-apps.zip
-      - name: Tag Production Commit
-        uses: simpleactions/create-tag@d5c32a2d86b1f96142bbe1ebe8b3b62b0a0587ff
+      - name: Create Release for Production
+        uses: ncipollo/release-action@v1.16.0
         with:
-          sha: ${{ github.event.inputs.git-ref }}
+          commit: ${{ github.event.inputs.git-ref }}
+          prerelease: true
           tag: "${{ steps.tagname.outputs.tag }}"
-          message: "Deployed via GitHub by @${{ github.actor }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          body: "Automated release from ’production’ Action"
   deploy:
     name: Deploy to Production
     needs:
@@ -81,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download cldr-apps.zip
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: cldr-apps-server
     - name: Deploy to st

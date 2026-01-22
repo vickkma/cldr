@@ -6,17 +6,20 @@ const path = require('path');
 
 const dir = '../../../docs/ldml';
 const trfile = /^tr35.*\.md$/;
+const partOneName = 'tr35.md';
 
 const contentsStart = /^## <a name="Contents".*$/;  // beginning of contents: always has #Contents
 const contentsEnd = /^## .*$/; // end of contents: the next ##
+const partsStart = /^## (Parts|<a name="Parts").*$/;  // beginning of contents: always has #Contents
+const partsEnd = contentsEnd; // same
 
 // ToC entries we don't want, for deletion
 const tocDelete = [
-    /^\* \[.*Unicode Technical Standard.*$/,
-    /^  \* \[_Summary_\].*$/,
-    /^  \* \[_Status_\].*$/,
-    /^\* \[Parts\].*$/,
-    /^\* \[Contents of.*$/
+    /^[ ]*\* \[.*Unicode Technical Standard.*$/,
+    /^[ ]*\* \[_Summary_\].*$/,
+    /^[ ]*\* \[_Status_\].*$/,
+    /^[ ]*\* \[Parts\].*$/,
+    /^[ ]*\* \[Contents of.*$/
 ];
 
 const gfmOpts = {
@@ -24,6 +27,42 @@ const gfmOpts = {
     includeUnlinked: true,
     createLinks: true,
 };
+
+/**
+ *
+ * @param {string} f path
+ * @returns object with contents and lines for full text + line array respectively
+ */
+async function readAsLines(f) {
+    const contents = await fs.readFile(f, 'utf-8');
+    const lines = contents.split(/(?:\r)?\n/);
+    return { contents, lines };
+}
+
+/** get the Parts section from part 1 */
+async function getMainParts(dir) {
+    const f = path.join(dir, partOneName);
+    console.log('Reading (for Parts): ' + f);
+    const { lines } = await readAsLines(f);
+    let i = 0;
+    for (; i < lines.length; i++) {
+        if (partsStart.test(lines[i])) break;
+    }
+    if (i == lines.length) throw Error(`End of file looking for start of '## Parts' in ${f}`);
+    const out = [];
+    out.push(lines[i]);
+    for (i++; i < lines.length; i++) {
+        if (partsEnd.test(lines[i])) {
+            break;
+        }
+        out.push(lines[i]);
+    }
+    if (i == lines.length) throw Error(`End of file looking for end of '## Parts' in ${f}`);
+    return out;
+}
+
+/** global promise for the Parts from part 1 */
+const part1Parts = getMainParts(dir);
 
 /**
  *
@@ -47,18 +86,32 @@ async function getSrcFiles() {
  */
 async function processFile(f) {
     console.log('Reading: ' + f);
-    const contents = await fs.readFile(f, 'utf-8');
-
-    // now, reinsert
-    const lines = contents.split('\n');
+    const { contents, lines } = await readAsLines(f);
 
     // new lines go into this array.
     const out = [];
 
-    let i;
+    let i = 0;
+
+    if (!f.endsWith(partOneName)) {
+        // look for beginning of Parts
+        for (; i < lines.length; i++) {
+            if (partsStart.test(lines[i])) break;
+            out.push(lines[i]);
+        }
+        if (i == lines.length) throw Error(`EOF looking for start of Parts in ${f}`);
+        // find end (next section)
+        for (i++; i < lines.length; i++) {
+            if (partsEnd.test(lines[i])) break;
+        }
+        // don't care if we are at EOF here.
+
+        out.push(...await part1Parts); // push the part from part 1
+        // this SHOULD be the beginning of the contentsStart also.
+    }
 
     // go through the lines, looking for the header to the old ToC.
-    for (i = 0; i < lines.length; i++) {
+    for (; i < lines.length; i++) {
         out.push(lines[i]); // Emit the header line for the old ToC
         if (contentsStart.test(lines[i])) {
             break;
@@ -94,9 +147,22 @@ async function processFile(f) {
     if (i == lines.length) {
         throw Error(`in ${f}: ran out of lines looking for end of ToC`);
     }
+
+    const oldcopyright = /(Copyright\s*[©]?)\s*([0-9]{4,4})[–-—](?:[0-9]{4,4})\s*Unicode/;
+    const newyear = new Date().getFullYear(); // 2023, etc
+    const badlink = /(\()(http[s]?:\/\/[w\.]*unicode\.org\/reports\/tr35\/)?tr35([^\./]*)\.html/g;
+    const badlink2 = /(\()(http[s]?:\/\/[w\.]*unicode\.org\/reports\/tr35)[\/]?#/g;
+    const badlink3 = /\(http(?:s)?:\/\/(?:www\.)?unicode\.org\/reports\/tr35(?:\/)?\)/g;
+
     // Write out all remaining lines in the file.
     for (; i < lines.length; i++) {
-        out.push(lines[i]);
+        out.push(lines[i]
+            .replace(oldcopyright, `$1 $2–${newyear} Unicode`)
+            .replace(badlink, '$1tr35$3.md')
+            .replace(badlink2, '$1tr35.md#')
+            .replace(badlink3, '(tr35.md)')
+            // replace ./tr35… with tr35…
+            .replace(/\]\(\.\/tr35/g, '](tr35'));
     }
 
     // Write the whole file to disk.

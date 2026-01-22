@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
-<!-- Copyright © 1991-2022 Unicode, Inc.
+<!-- Copyright © 1991-2025 Unicode, Inc.
 For terms of use, see http://www.unicode.org/copyright.html
-SPDX-License-Identifier: Unicode-DFS-2016
+SPDX-License-Identifier: Unicode-3.0
 CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
 -->
 <ldml>
@@ -34,14 +34,14 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<codePatterns>
 			<codePattern type="language">↑↑↑</codePattern>
 			<codePattern type="script">↑↑↑</codePattern>
-			<codePattern type="territory">{0}</codePattern>
+			<codePattern type="territory">↑↑↑</codePattern>
 		</codePatterns>
 	</localeDisplayNames>
 	<characters>
-		<exemplarCharacters draft="contributed">[\u0901 \u0902 ः अ क ख ग घ ङ च छ ज झ ञ ट ठ ड ढ ण त थ द ध न प फ ब भ म य र ल व श ष स ह ा ि ी \u0941 \u0942 \u0943 \u0945 \u0947 \u0948 ो ौ \u094D]</exemplarCharacters>
+		<exemplarCharacters draft="contributed">[ँ ंः अ क ख ग घ ङ च छ ज झ ञ ट ठ ड ढ ण त थ द ध न प फ ब भ म य र ल व श ष स ह ा ि ी ु ू ृ ॅ े ै ो ौ ्]</exemplarCharacters>
 		<exemplarCharacters type="auxiliary">[आ इ ई उ ऊ ऋ ए ऐ ओ औ]</exemplarCharacters>
 		<exemplarCharacters type="numbers" draft="contributed">[\- ‑ , . % ‰ + 0० 1१ 2२ 3३ 4४ 5५ 6६ 7७ 8८ 9९]</exemplarCharacters>
-		<exemplarCharacters type="punctuation" draft="contributed">[\- ‑ , \: ! ? . … ' ‘ ’ &quot; “ ” ( ) \[ \] \{ \} § @ * / \\ \&amp; # ` |]</exemplarCharacters>
+		<exemplarCharacters type="punctuation" draft="contributed">[\- ‑ , \: ! ? . … '‘’ &quot;“” ( ) \[ \] \{ \} § @ * / \\ \&amp; # ` |]</exemplarCharacters>
 	</characters>
 	<delimiters>
 		<quotationStart>↑↑↑</quotationStart>
@@ -179,15 +179,29 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 	<numbers>
 		<defaultNumberingSystem>deva</defaultNumberingSystem>
 		<otherNumberingSystems>
-			<native draft="contributed">latn</native>
+			<native draft="contributed">↑↑↑</native>
 		</otherNumberingSystems>
-		<symbols numberSystem="latn">
-			<decimal>.</decimal>
+		<symbols numberSystem="deva">
+			<decimal>↑↑↑</decimal>
 			<group>↑↑↑</group>
 			<percentSign>↑↑↑</percentSign>
 			<plusSign>↑↑↑</plusSign>
 			<minusSign>↑↑↑</minusSign>
 		</symbols>
+		<symbols numberSystem="latn">
+			<decimal>↑↑↑</decimal>
+			<group>↑↑↑</group>
+			<percentSign>↑↑↑</percentSign>
+			<plusSign>↑↑↑</plusSign>
+			<minusSign>↑↑↑</minusSign>
+		</symbols>
+		<decimalFormats numberSystem="deva">
+			<decimalFormatLength>
+				<decimalFormat>
+					<pattern>↑↑↑</pattern>
+				</decimalFormat>
+			</decimalFormatLength>
+		</decimalFormats>
 		<decimalFormats numberSystem="latn">
 			<decimalFormatLength>
 				<decimalFormat>
@@ -195,6 +209,13 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 				</decimalFormat>
 			</decimalFormatLength>
 		</decimalFormats>
+		<scientificFormats numberSystem="deva">
+			<scientificFormatLength>
+				<scientificFormat>
+					<pattern>↑↑↑</pattern>
+				</scientificFormat>
+			</scientificFormatLength>
+		</scientificFormats>
 		<scientificFormats numberSystem="latn">
 			<scientificFormatLength>
 				<scientificFormat>
@@ -202,6 +223,13 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 				</scientificFormat>
 			</scientificFormatLength>
 		</scientificFormats>
+		<percentFormats numberSystem="deva">
+			<percentFormatLength>
+				<percentFormat>
+					<pattern>↑↑↑</pattern>
+				</percentFormat>
+			</percentFormatLength>
+		</percentFormats>
 		<percentFormats numberSystem="latn">
 			<percentFormatLength>
 				<percentFormat>
@@ -209,6 +237,13 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 				</percentFormat>
 			</percentFormatLength>
 		</percentFormats>
+		<currencyFormats numberSystem="deva">
+			<currencyFormatLength>
+				<currencyFormat type="standard">
+					<pattern>↑↑↑</pattern>
+				</currencyFormat>
+			</currencyFormatLength>
+		</currencyFormats>
 		<currencyFormats numberSystem="latn">
 			<currencyFormatLength>
 				<currencyFormat type="standard">

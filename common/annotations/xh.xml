@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
-<!-- Copyright © 1991-2022 Unicode, Inc.
+<!-- Copyright © 1991-2025 Unicode, Inc.
 For terms of use, see http://www.unicode.org/copyright.html
-SPDX-License-Identifier: Unicode-DFS-2016
+SPDX-License-Identifier: Unicode-3.0
 CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
 -->
 <ldml>
@@ -15,11 +15,11 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🏻" type="tts">ithoni yesikhumba esikhanyayo</annotation>
 		<annotation cp="🏼">ithoni yesikhumba | ithoni yesikhumba esikhanyayo phakathi | uhlobo 3</annotation>
 		<annotation cp="🏼" type="tts">ithoni yesikhumba esikhanyayo phakathi</annotation>
-		<annotation cp="🏽">ithoni yesikhumba | ithoni yesikhumba esiphakathi | uhlobo 4</annotation>
+		<annotation cp="🏽">4 | isikhumba | ithoni | phakathi | uhlobo</annotation>
 		<annotation cp="🏽" type="tts">ithoni yesikhumba esiphakathi</annotation>
-		<annotation cp="🏾">ithoni yesikhumba | ithoni yesikhumba esiphakathi mnyama | uhlobo 5</annotation>
+		<annotation cp="🏾">5 | isikhumba | ithoni | uhlobo | untsundu</annotation>
 		<annotation cp="🏾" type="tts">ithoni yesikhumba esiphakathi mnyama</annotation>
-		<annotation cp="🏿">ithoni yesikhumba | ithoni yesikhumba emnyama | uhlobo 6</annotation>
+		<annotation cp="🏿">6 | isikhumba | ithoni | mnyama | uhlobo</annotation>
 		<annotation cp="🏿" type="tts">ithoni yesikhumba emnyama</annotation>
 		<annotation cp="😀">hleka | ubuso | ubuso obuhlekayo</annotation>
 		<annotation cp="😀" type="tts">ubuso obuhlekayo</annotation>
@@ -235,8 +235,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🙉" type="tts">inkawu evale iindlebe</annotation>
 		<annotation cp="🙊">ethintelweyo | eyalelweyo | hayi | inkawu | inkawu evale umlomo | nakanye | thetha | ubusi | ubuso | umjekulo</annotation>
 		<annotation cp="🙊" type="tts">inkawu evale umlomo</annotation>
-		<annotation cp="💋">iinyheke | phuza | uphawu lokuphuza</annotation>
-		<annotation cp="💋" type="tts">uphawu lokuphuza</annotation>
 		<annotation cp="💌">ileta | ileta yothando | intliziyo | iposi | uthando</annotation>
 		<annotation cp="💌" type="tts">ileta yothando</annotation>
 		<annotation cp="💘">intliziyo enotolo | u-cupid | utolo</annotation>
@@ -273,6 +271,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="💜" type="tts">intliziyo emfusa</annotation>
 		<annotation cp="🖤">ekhohlakeleyo | emnyama | intliziyo emnyama | ububi</annotation>
 		<annotation cp="🖤" type="tts">intliziyo emnyama</annotation>
+		<annotation cp="💋">iinyheke | phuza | uphawu lokuphuza</annotation>
+		<annotation cp="💋" type="tts">uphawu lokuphuza</annotation>
 		<annotation cp="💯">100 | amanqaku alikhulu | igcwele | ikhulu | inqaku</annotation>
 		<annotation cp="💯" type="tts">amanqaku alikhulu</annotation>
 		<annotation cp="💢">hlekisa | isimboli yomsindo | ukucaphuka | umsindo</annotation>
@@ -287,8 +287,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="💨" type="tts">ukubaleka</annotation>
 		<annotation cp="🕳">umngxuma</annotation>
 		<annotation cp="🕳" type="tts">umngxuma</annotation>
-		<annotation cp="💣">hlekisa | ibhombu</annotation>
-		<annotation cp="💣" type="tts">ibhombu</annotation>
 		<annotation cp="💬">hlekisa | ibhaloni yentetho | ibhaluni | incoko | intetho | iqhamza</annotation>
 		<annotation cp="💬" type="tts">ibhaloni yentetho</annotation>
 		<annotation cp="👁‍🗨">iliso | iliso elikwiqhamza lentetho | ingqina | iqamza lentetho</annotation>
@@ -775,14 +773,14 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="💏" type="tts">phuza</annotation>
 		<annotation cp="💑">isibini | isibini esinentliziyo | uthando</annotation>
 		<annotation cp="💑" type="tts">isibini esinentliziyo</annotation>
-		<annotation cp="👪">usapho</annotation>
-		<annotation cp="👪" type="tts">usapho</annotation>
 		<annotation cp="🗣">i-silhouette | intloko | intloko ethethayo | thetha | ubuso | ukuthetha</annotation>
 		<annotation cp="🗣" type="tts">intloko ethethayo</annotation>
 		<annotation cp="👤">intloko namagxa | umfanekiso oqingqiweyo | umfanekiso oqingqiweyo wentloko namagxa</annotation>
 		<annotation cp="👤" type="tts">umfanekiso oqingqiweyo wentloko namagxa</annotation>
 		<annotation cp="👥">imifanekiso eqingqiweyo yentloko namagxa | intloko namagxa | umfanekiso oqingqiweyo</annotation>
 		<annotation cp="👥" type="tts">imifanekiso eqingqiweyo yentloko namagxa</annotation>
+		<annotation cp="👪">usapho</annotation>
+		<annotation cp="👪" type="tts">usapho</annotation>
 		<annotation cp="👣">imizila yeenyawo | impahla | umzila | umzila weenyawo</annotation>
 		<annotation cp="👣" type="tts">imizila yeenyawo</annotation>
 		<annotation cp="🐵">inkawu | ubuso | ubuso benkawu</annotation>
@@ -941,6 +939,12 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🐙" type="tts">ingwane</annotation>
 		<annotation cp="🐚">iqokobhe | iqokobhe elijikelezayo | ujikelezayo</annotation>
 		<annotation cp="🐚" type="tts">iqokobhe elijikelezayo</annotation>
+		<annotation cp="🦀">I-Cancer | i-zodiac | unonkala</annotation>
+		<annotation cp="🦀" type="tts">unonkala</annotation>
+		<annotation cp="🦐">encinane | i-shellfish | inqonci | ukutya</annotation>
+		<annotation cp="🦐" type="tts">inqonci</annotation>
+		<annotation cp="🦑">i-molusc | i-squid | ukutya</annotation>
+		<annotation cp="🦑" type="tts">i-squid</annotation>
 		<annotation cp="🐌">inkumba</annotation>
 		<annotation cp="🐌" type="tts">inkumba</annotation>
 		<annotation cp="🦋">entle | ibhabhathane | isinambuzane</annotation>
@@ -1005,6 +1009,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🍂" type="tts">igqabi eliwileyo</annotation>
 		<annotation cp="🍃">igqabi | igqabi eliphaphathekayo emoyeni | phaphatheka | phaphathekisa | umoya</annotation>
 		<annotation cp="🍃" type="tts">igqabi eliphaphathekayo emoyeni</annotation>
+		<annotation cp="🍄">i-toadstool | ikhowa</annotation>
+		<annotation cp="🍄" type="tts">ikhowa</annotation>
 		<annotation cp="🍇">idiliya | isiqhamo</annotation>
 		<annotation cp="🍇" type="tts">idiliya</annotation>
 		<annotation cp="🍈">isiqhamo | umxoxozi</annotation>
@@ -1053,8 +1059,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🥒" type="tts">inkonkomire</annotation>
 		<annotation cp="🥦">i-broccoli | ikhaphetshu lasendle</annotation>
 		<annotation cp="🥦" type="tts">i-broccoli</annotation>
-		<annotation cp="🍄">i-toadstool | ikhowa</annotation>
-		<annotation cp="🍄" type="tts">ikhowa</annotation>
 		<annotation cp="🥜">amandongomane | imifuno | indongomane | ukutya</annotation>
 		<annotation cp="🥜" type="tts">amandongomane</annotation>
 		<annotation cp="🌰">i-chestnut | isityalo</annotation>
@@ -1143,12 +1147,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🥠" type="tts">iqebengwane lethamsanqa</annotation>
 		<annotation cp="🥡">ibhokisi ye-takeout | iemele yembatyisi</annotation>
 		<annotation cp="🥡" type="tts">ibhokisi ye-takeout</annotation>
-		<annotation cp="🦀">I-Cancer | i-zodiac | unonkala</annotation>
-		<annotation cp="🦀" type="tts">unonkala</annotation>
-		<annotation cp="🦐">encinane | i-shellfish | inqonci | ukutya</annotation>
-		<annotation cp="🦐" type="tts">inqonci</annotation>
-		<annotation cp="🦑">i-molusc | i-squid | ukutya</annotation>
-		<annotation cp="🦑" type="tts">i-squid</annotation>
 		<annotation cp="🍦">emnandi | ethambileyo | i-dessert | iayiskrim | ikhrimu | umkhenkce</annotation>
 		<annotation cp="🍦" type="tts">iayiskrim ethambileyo</annotation>
 		<annotation cp="🍧">emnandi | esikiweyo | i-dessert | umkhenkce | umkhenkce osikiweyo</annotation>
@@ -1713,6 +1711,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🥌" type="tts">ilitye lokugoba</annotation>
 		<annotation cp="🎯">chana | i-bull | i-bullseye | i-dart | iliso | into ekujoliswe kuyo | ukuchana ngokuthe ngqo | umdlalo</annotation>
 		<annotation cp="🎯" type="tts">ukuchana ngokuthe ngqo</annotation>
+		<annotation cp="🔫">isixhobo | ivolovolo | umpu | umpu wesandla</annotation>
+		<annotation cp="🔫" type="tts">umpu</annotation>
 		<annotation cp="🎱">8 | i-billiard | i-pool 8 ball | ibhola | iibhola ezisi-8 | isibhozo | umdlalo</annotation>
 		<annotation cp="🎱" type="tts">i-pool 8 ball</annotation>
 		<annotation cp="🔮">ibhola | ibhola yekristale | ikristale | intlantla | intsomi | isixhobo</annotation>
@@ -1829,7 +1829,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🔔" type="tts">intsimbi</annotation>
 		<annotation cp="🔕">cwaka | ethintelweyo | ethuleyo | hayi | intsimbi | intsimbi ehlatyiweyo | nakanye | thuleyo | yalelwe</annotation>
 		<annotation cp="🔕" type="tts">intsimbi ehlatyiweyo</annotation>
-		<annotation cp="🎼">inqaku | inqaku lomculo | umculo</annotation>
+		<annotation cp="🎼">ezomculo | inowuthi | ukudlala umculo | umculo</annotation>
 		<annotation cp="🎼" type="tts">inqaku lomculo</annotation>
 		<annotation cp="🎵">inowuthi | inowuthi yomculo | umculo</annotation>
 		<annotation cp="🎵" type="tts">inowuthi yomculo</annotation>
@@ -1849,12 +1849,12 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="📻" type="tts">irediyo</annotation>
 		<annotation cp="🎷">i-sax | i-saxophone | isixhobo | umculo</annotation>
 		<annotation cp="🎷" type="tts">i-saxophone</annotation>
+		<annotation cp="🎺">isixhobo | ixolongo | umculo</annotation>
+		<annotation cp="🎺" type="tts">ixolongo</annotation>
 		<annotation cp="🎸">ikatala | isixhobo | umculo</annotation>
 		<annotation cp="🎸" type="tts">ikatala</annotation>
 		<annotation cp="🎹">i-piano | ikhibhodi | ikhibhodi yomculo | isixhobo | umculo</annotation>
 		<annotation cp="🎹" type="tts">ikhibhodi yomculo</annotation>
-		<annotation cp="🎺">isixhobo | ixolongo | umculo</annotation>
-		<annotation cp="🎺" type="tts">ixolongo</annotation>
 		<annotation cp="🎻">i-violin | isixhobo | umculo</annotation>
 		<annotation cp="🎻" type="tts">i-violin</annotation>
 		<annotation cp="🥁">igubu | iintonga zegubu | umculo</annotation>
@@ -2085,8 +2085,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🗡" type="tts">isinkempe</annotation>
 		<annotation cp="⚔">amakrele | amakrele anqamlezileyo | enqamlezileyo | isixhobo</annotation>
 		<annotation cp="⚔" type="tts">amakrele anqamlezileyo</annotation>
-		<annotation cp="🔫">isixhobo | ivolovolo | umpu | umpu wesandla</annotation>
-		<annotation cp="🔫" type="tts">umpu</annotation>
+		<annotation cp="💣">hlekisa | ibhombu</annotation>
+		<annotation cp="💣" type="tts">ibhombu</annotation>
 		<annotation cp="🏹">-Sagittarius | i-zodiac | isaphetha notolo | isixhobo | ubuchule bokutola | umtoli | utolo</annotation>
 		<annotation cp="🏹" type="tts">isaphetha notolo</annotation>
 		<annotation cp="🛡">ikhaka | isixhobo</annotation>
@@ -2147,27 +2147,27 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🚰" type="tts">amanzi aphathwayo</annotation>
 		<annotation cp="♿">isimboli yesitulo samavili | ufikelelo</annotation>
 		<annotation cp="♿" type="tts">isimboli yesitulo samavili</annotation>
-		<annotation cp="🚹">i-wc | igumbi lamadoda | igumbi lokuphumla | indoda | ithoyilethi</annotation>
+		<annotation cp="🚹">elamadoda | igumbi | igumbi langasese | igumbi lokuhlambela | indlu yagnasese | indlu yangasese | indoda | iWC</annotation>
 		<annotation cp="🚹" type="tts">igumbi lamadoda</annotation>
-		<annotation cp="🚺">i-wc | ibhinqa | igumbi lokuphumla | igumi lamabhinqa | ithoyilethi</annotation>
+		<annotation cp="🚺">elamabhinqa | ibhinqa | igumbi | igumbi langasese | igumbi lokuhlambela | indlu yangasese | iWC</annotation>
 		<annotation cp="🚺" type="tts">igumi lamabhinqa</annotation>
-		<annotation cp="🚻">i-WC | igumbi lokuphumla | ithoyilethi</annotation>
+		<annotation cp="🚻">igumbi langasese | igumbi lokuhlambela | indlu encinci | indlu yangasese | iWC</annotation>
 		<annotation cp="🚻" type="tts">igumbi lokuphumla</annotation>
-		<annotation cp="🚼">isimboli yosana | ukutshintsha | usana</annotation>
+		<annotation cp="🚼">ukutshintsha usana | uphawu | uphawu losana</annotation>
 		<annotation cp="🚼" type="tts">isimboli yosana</annotation>
-		<annotation cp="🚾">amanzi | i-wc | igumbi lokuphumla | indlu yangasese | ithoyilethi egungxulwayo</annotation>
+		<annotation cp="🚾">amanzi | i-wc | igumbi langasese | indlu yangasese | ithoyilethi egungxulwayo</annotation>
 		<annotation cp="🚾" type="tts">ithoyilethi egungxulwayo</annotation>
 		<annotation cp="🛂">iphaspoti | ulawulo | ulawulo lwephaspoti</annotation>
 		<annotation cp="🛂" type="tts">ulawulo lwephaspoti</annotation>
 		<annotation cp="🛃">amasiko</annotation>
 		<annotation cp="🛃" type="tts">amasiko</annotation>
-		<annotation cp="🛄">impahla | ukulanda</annotation>
+		<annotation cp="🛄">ezifikileyo | ezilindileyo | ezithwaliweyo | iibhegi | iikasi | imithwalo | inqwelo moya | uhambo | ukuhamba | ukulanda | ukupakisha</annotation>
 		<annotation cp="🛄" type="tts">ukulanda impahla</annotation>
-		<annotation cp="🛅">impahla | isitshixo | umthwalo wasekhohlo</annotation>
+		<annotation cp="🛅">eshiyekileyo | ikasi | ikhabhathi | umthwalo</annotation>
 		<annotation cp="🛅" type="tts">umthwalo wasekhohlo</annotation>
 		<annotation cp="⚠">isilumkiso</annotation>
 		<annotation cp="⚠" type="tts">isilumkiso</annotation>
-		<annotation cp="🚸">abantwana abawelayo | itrafiki | ukunqamleza | umntu ohamba ngeenyawo | umntwana</annotation>
+		<annotation cp="🚸">abantwana | izithuthi | ukuwela | umntu ohamba ngeenyawo | umntwana</annotation>
 		<annotation cp="🚸" type="tts">abantwana abawelayo</annotation>
 		<annotation cp="⛔">akungenwa | hayi | ithintelwe | itrafiki | nakanye | ukungena | yalelwe</annotation>
 		<annotation cp="⛔" type="tts">akungenwa</annotation>
@@ -2179,7 +2179,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🚭" type="tts">akutshaywa</annotation>
 		<annotation cp="🚯">akulahlwa nkunkuma | hayi | inkunkuma | ithintelwe | nakanye | yalelwe</annotation>
 		<annotation cp="🚯" type="tts">akulahlwa nkunkuma</annotation>
-		<annotation cp="🚱">amanzi | amanzi angaphathwayo | awaselwa | ayiphatheki</annotation>
+		<annotation cp="🚱">amanzi | awangowoselwa | awaselwa | kuthintelwe | yomile</annotation>
 		<annotation cp="🚱" type="tts">amanzi angaphathwayo</annotation>
 		<annotation cp="🚷">abahambi abavumelekanga | hayi | ithintelwe | nakanye | umntu ohamba ngeenyawo | yalelwe</annotation>
 		<annotation cp="🚷" type="tts">abahambi abavumelekanga</annotation>
@@ -2215,19 +2215,19 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="↩" type="tts">utolo olusekunene olugobe ekhohlo</annotation>
 		<annotation cp="↪">utolo | utolo olusekhohlo olugobe ekunene</annotation>
 		<annotation cp="↪" type="tts">utolo olusekhohlo olugobe ekunene</annotation>
-		<annotation cp="⤴">utolo | utolo olusekunene olugobe phezulu</annotation>
+		<annotation cp="⤴">ekunene | lugobile | phezulu | utolo</annotation>
 		<annotation cp="⤴" type="tts">utolo olusekunene olugobe phezulu</annotation>
-		<annotation cp="⤵">ezantsi | utolo | utolo olusekunene olugobe ezantsi</annotation>
+		<annotation cp="⤵">ekunene | ezantsi | lugobile | utolo</annotation>
 		<annotation cp="⤵" type="tts">utolo olusekunene olugobe ezantsi</annotation>
 		<annotation cp="🔃">amatolo athe nkqo ajikeleza ngasekunene | jikeleza ngasekunene | layisha kwakhona | utolo</annotation>
 		<annotation cp="🔃" type="tts">amatolo athe nkqo ajikeleza ngasekunene</annotation>
 		<annotation cp="🔄">i-whithershins | iqhosha lamatolo elijikeleza ngasekunene | jikeleza ngasekhohlo | ngokujikeleza ngasekhohlo | utolo</annotation>
 		<annotation cp="🔄" type="tts">iqhosha lamatolo elijikeleza ngasekunene</annotation>
-		<annotation cp="🔙">emva | utolo | utolo oluthi EMVA</annotation>
+		<annotation cp="🔙">EMVA | utolo</annotation>
 		<annotation cp="🔙" type="tts">utolo oluthi EMVA</annotation>
-		<annotation cp="🔚">ukuphela | utolo | utolo oluthi UKUPHELA</annotation>
+		<annotation cp="🔚">UKUPHELA | utolo</annotation>
 		<annotation cp="🔚" type="tts">utolo oluthi UKUPHELA</annotation>
-		<annotation cp="🔛">ilayitile | uphawu | utolo | utolo oluthi iLayitile!</annotation>
+		<annotation cp="🔛">ILAYITILE! | uphawu | utolo</annotation>
 		<annotation cp="🔛" type="tts">utolo oluthi iLayitile!</annotation>
 		<annotation cp="🔜">kungekudala | utolo | utolo oluthi KUNGEKUDALA</annotation>
 		<annotation cp="🔜" type="tts">utolo oluthi KUNGEKUDALA</annotation>
@@ -2241,7 +2241,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🕉" type="tts">i-om</annotation>
 		<annotation cp="✡">inkwenkwezi | inkwenkwezi kaDavide | UDavide | unqulo | yomJuda</annotation>
 		<annotation cp="✡" type="tts">inkwenkwezi kaDavide</annotation>
-		<annotation cp="☸">I-Buddhist | i-dharma | ivili le-dharma | iviliheel | unqulo</annotation>
+		<annotation cp="☸">ivili | UmBhuda | umdharma | unqulo</annotation>
 		<annotation cp="☸" type="tts">ivili le-dharma</annotation>
 		<annotation cp="☯">i-tao | i-taoist | i-yang | i-yin | i-yin yang | unqulo</annotation>
 		<annotation cp="☯" type="tts">i-yin yang</annotation>
@@ -2283,13 +2283,13 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="♓" type="tts">I-Pisces</annotation>
 		<annotation cp="⛎">I-Ophiuchus | i-zodiac | inyoka | irhamncwa | umthwali</annotation>
 		<annotation cp="⛎" type="tts">I-Ophiuchus</annotation>
-		<annotation cp="🔀">enqamlezileyo | iqhosha lokushafula iingoma | utolo</annotation>
+		<annotation cp="🔀">enqamlezileyo | iingoma | iqhosha | ukushafula | utolo</annotation>
 		<annotation cp="🔀" type="tts">iqhosha lokushafula iingoma</annotation>
 		<annotation cp="🔁">iqhosha lokuphinda | ngokujikeleza ngasekunene | phindaphinda | utolo</annotation>
 		<annotation cp="🔁" type="tts">iqhosha lokuphinda</annotation>
 		<annotation cp="🔂">iqhosha elithi phinda kanye | kanye | ngokujikeleza ngasekunene | utolo</annotation>
 		<annotation cp="🔂" type="tts">iqhosha elithi phinda kanye</annotation>
-		<annotation cp="▶">dlala | ekunene | iqhosha lokudlala | unxantathu | utolo</annotation>
+		<annotation cp="▶">dlala | ekunene | iqhosha | unxantathu | utolo</annotation>
 		<annotation cp="▶" type="tts">iqhosha lokudlala</annotation>
 		<annotation cp="⏩">iqhosha lokukhawulezisa | kabini | ngokukhawuleza | ngokukhawulezisa | utolo</annotation>
 		<annotation cp="⏩" type="tts">iqhosha lokukhawulezisa</annotation>
@@ -2425,7 +2425,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🆒" type="tts">iqhosha elithi KUHLE</annotation>
 		<annotation cp="🆓">iqhosha elithi simahla | simahla</annotation>
 		<annotation cp="🆓" type="tts">iqhosha elithi simahla</annotation>
-		<annotation cp="ℹ">i | inkcazelo</annotation>
+		<annotation cp="ℹ">I | inkcazelo</annotation>
 		<annotation cp="ℹ" type="tts">inkcazelo</annotation>
 		<annotation cp="🆔">id | iqhosha le-ID | isazisi</annotation>
 		<annotation cp="🆔" type="tts">iqhosha le-ID</annotation>
@@ -2449,8 +2449,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🆚" type="tts">iqhosha elithi VS</annotation>
 		<annotation cp="🈁">&quot;apha&quot; | iqhosha elithi &quot;apha&quot; laseJapan | IsiJapa | katakana | ココ</annotation>
 		<annotation cp="🈁" type="tts">iqhosha elithi &quot;apha&quot; laseJapan</annotation>
-		<annotation cp="🈂">&quot;intalwulo yenkonzo&quot; | iqhosha elithi &quot;intalwulo yenkonzo&quot; lesiJapan | IsiJapan | katakana | サ</annotation>
-		<annotation cp="🈂" type="tts">iqhosha elithi &quot;intalwulo yenkonzo&quot; lesiJapan</annotation>
+		<annotation cp="🈂">inkonzo | intlawulo | iqhosha | isiJapan | katakana</annotation>
+		<annotation cp="🈂" type="tts">Iqhosha elithi “intlawulo yenkonzo” elingesiJapan</annotation>
 		<annotation cp="🈷">&quot;imali yenyanga&quot; | i-ideograph | iqhosha elithi &quot;imali yenyanga&quot; lesiJapan | IsiJapan | 月</annotation>
 		<annotation cp="🈷" type="tts">iqhosha elithi &quot;imali yenyanga&quot; lesiJapan</annotation>
 		<annotation cp="🈶">&quot;ayiphisi&quot; | i-ideograph | iqhosha elithi &quot;ayikho simahla&quot; lesiJapan | IsiJapan | 有</annotation>

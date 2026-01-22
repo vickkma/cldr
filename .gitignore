@@ -9,6 +9,7 @@
 # All
 .project
 .classpath
+.idea
 
 # /tools/
 /tools/dist
@@ -30,3 +31,4 @@ exception.log
 # Site generation stuff
 /_site
 derby.log
+.lycheecache

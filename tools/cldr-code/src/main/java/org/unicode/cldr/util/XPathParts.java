@@ -6,6 +6,12 @@
  */
 package org.unicode.cldr.util;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSet.Builder;
+import com.ibm.icu.impl.Utility;
+import com.ibm.icu.util.Freezable;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -21,23 +27,21 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.ImmutableSet.Builder;
-import com.ibm.icu.impl.Utility;
-import com.ibm.icu.util.Freezable;
-
 /**
  * Parser for XPath
  *
- * Each XPathParts object describes a single path, with its xPath member, for example
- *     //ldml/characters/exemplarCharacters[@type="auxiliary"]
- * and a list of Element objects that depend on xPath.
- * Each Element object has an "element" string such as "ldml", "characters", or "exemplarCharacters",
- * plus attributes such as a Map from key "type" to value "auxiliary".
+ * <p>Each XPathParts object describes a single path, with its xPath member, for example
+ * //ldml/characters/exemplarCharacters[@type="auxiliary"] and a list of Element objects that depend
+ * on xPath. Each Element object has an "element" string such as "ldml", "characters", or
+ * "exemplarCharacters", plus attributes such as a Map from key "type" to value "auxiliary".
+ *
+ * <p>Caches values for fast lookup.
+ *
+ * <p>(If caching isn't needed, such as with supplemental data at static init time, see {@link
+ * SimpleXPathParts#getFrozenInstance(String)}
  */
-public final class XPathParts implements Freezable<XPathParts>, Comparable<XPathParts> {
+public final class XPathParts extends XPathParser
+        implements Freezable<XPathParts>, Comparable<XPathParts> {
     private static final boolean DEBUGGING = false;
 
     private volatile boolean frozen = false;
@@ -51,30 +55,21 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     /**
      * Construct a new empty XPathParts object.
      *
-     * Note: for faster performance, call getFrozenInstance or getInstance instead of this constructor.
-     * This constructor remains public for special cases in which individual elements are added with
-     * addElement rather than using a complete path string.
+     * <p>Note: for faster performance, call getFrozenInstance or getInstance instead of this
+     * constructor. This constructor remains public for special cases in which individual elements
+     * are added with addElement rather than using a complete path string.
      */
-    public XPathParts() {
+    public XPathParts() {}
 
-    }
-
-    /**
-     * See if the xpath contains an element
-     */
+    /** See if the xpath contains an element */
     public boolean containsElement(String element) {
-        for (int i = 0; i < elements.size(); ++i) {
-            if (elements.get(i).getElement().equals(element)) {
-                return true;
-            }
-        }
-        return false;
+        return findElement(element) >= 0;
     }
 
     /**
      * Empty the xpath
      *
-     * Called by JsonConverter.rewrite() and CLDRFile.write()
+     * <p>Called by JsonConverter.rewrite() and CLDRFile.write()
      */
     public XPathParts clear() {
         elements.clear();
@@ -83,32 +78,31 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     }
 
     /**
-     * Write out the difference from this xpath and the last, putting the value in the right place. Closes up the
-     * elements that were not closed, and opens up the new.
+     * Write out the difference from this xpath and the last, putting the value in the right place.
+     * Closes up the elements that were not closed, and opens up the new.
      *
      * @param pw the PrintWriter to receive output
-     * @param filteredXPath used for calling filteredXPath.writeComment; may or may not be same as "this";
-     *        "filtered" is from xpath, while "this" may be from getFullXPath(xpath)
-     * @param lastFullXPath the last XPathParts (not filtered), or null (to be treated same as empty)
+     * @param filteredXPath used for calling filteredXPath.writeComment; may or may not be same as
+     *     "this"; "filtered" is from xpath, while "this" may be from getFullXPath(xpath)
+     * @param lastFullXPath the last XPathParts (not filtered), or null (to be treated same as
+     *     empty)
      * @param v getStringValue(xpath); or empty string
      * @param xpath_comments the Comments object; or null
      * @return this XPathParts
-     *
-     * Note: this method gets THREE XPathParts objects: this, filteredXPath, and lastFullXPath.
-     *
-     * TODO: create a unit test that calls this function directly.
-     *
-     * Called only by XMLModify.main and CLDRFile.write, as follows:
-     *
-     * CLDRFile.write:
-     *    current.writeDifference(pw, current, last, "", tempComments);
-     *    current.writeDifference(pw, currentFiltered, last, v, tempComments);
-     *
-     * XMLModify.main:
-     *    parts.writeDifference(out, parts, lastParts, value, null);
+     *     <p>Note: this method gets THREE XPathParts objects: this, filteredXPath, and
+     *     lastFullXPath.
+     *     <p>TODO: create a unit test that calls this function directly.
+     *     <p>Called only by XMLModify.main and CLDRFile.write, as follows:
+     *     <p>CLDRFile.write: current.writeDifference(pw, current, last, "", tempComments);
+     *     current.writeDifference(pw, currentFiltered, last, v, tempComments);
+     *     <p>XMLModify.main: parts.writeDifference(out, parts, lastParts, value, null);
      */
-    public XPathParts writeDifference(PrintWriter pw, XPathParts filteredXPath, XPathParts lastFullXPath,
-        String v, Comments xpath_comments) {
+    public XPathParts writeDifference(
+            PrintWriter pw,
+            XPathParts filteredXPath,
+            XPathParts lastFullXPath,
+            String v,
+            Comments xpath_comments) {
         int limit = (lastFullXPath == null) ? 0 : findFirstDifference(lastFullXPath);
         if (lastFullXPath != null) {
             // write the end of the last one
@@ -123,7 +117,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         // now write the start of the current
         for (int i = limit; i < size() - 1; ++i) {
             if (xpath_comments != null) {
-                filteredXPath.writeComment(pw, xpath_comments, i + 1, Comments.CommentType.PREBLOCK);
+                filteredXPath.writeComment(
+                        pw, xpath_comments, i + 1, Comments.CommentType.PREBLOCK);
             }
             pw.print(Utility.repeat("\t", i));
             pw.println(elements.get(i).toString(XML_OPEN));
@@ -136,11 +131,15 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         pw.print(Utility.repeat("\t", (size() - 1)));
         Element e = elements.get(size() - 1);
         String eValue = v;
-        if (eValue.length() == 0) {
+        if (eValue.isEmpty()) {
             pw.print(e.toString(XML_NO_VALUE));
         } else {
             pw.print(e.toString(XML_OPEN));
-            pw.print(untrim(eValue, size()));
+            if (getDtdData().isCdataElement(e.getElement())) {
+                pw.print("<![CDATA[\n" + eValue + "]]>");
+            } else {
+                pw.print(untrim(eValue, size()));
+            }
             pw.print(e.toString(XML_CLOSE));
         }
         if (xpath_comments != null) {
@@ -157,7 +156,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     /**
      * Write the last xpath.
      *
-     * last.writeLast(pw) is equivalent to current.clear().writeDifference(pw, null, last, null, tempComments).
+     * <p>last.writeLast(pw) is equivalent to current.clear().writeDifference(pw, null, last, null,
+     * tempComments).
      *
      * @param pw the PrintWriter to receive output
      */
@@ -180,15 +180,17 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
 
     public static class Comments implements Cloneable {
         public enum CommentType {
-            LINE, PREBLOCK, POSTBLOCK
+            LINE,
+            PREBLOCK,
+            POSTBLOCK
         }
 
-        private EnumMap<CommentType, Map<String, String>> comments = new EnumMap<>(
-            CommentType.class);
+        private final EnumMap<CommentType, Map<String, String>> comments =
+                new EnumMap<>(CommentType.class);
 
         public Comments() {
             for (CommentType c : CommentType.values()) {
-                comments.put(c, new HashMap<String, String>());
+                comments.put(c, new HashMap<>());
             }
         }
 
@@ -214,7 +216,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         public List<String> extractCommentsWithoutBase() {
             List<String> result = new ArrayList<>();
             for (CommentType style : CommentType.values()) {
-                for (Iterator<String> it = comments.get(style).keySet().iterator(); it.hasNext();) {
+                for (Iterator<String> it = comments.get(style).keySet().iterator();
+                        it.hasNext(); ) {
                     String key = it.next();
                     String value = comments.get(style).get(key);
                     result.add(value + "\t - was on: " + key);
@@ -242,7 +245,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
          */
         public Comments joinAll(Comments other) {
             for (CommentType c : CommentType.values()) {
-                CldrUtility.joinWithSeparation(comments.get(c), XPathParts.NEWLINE, other.comments.get(c));
+                CldrUtility.joinWithSeparation(
+                        comments.get(c), XPathParts.NEWLINE, other.comments.get(c));
             }
             return this;
         }
@@ -254,7 +258,7 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
             if (initialComment.equals(string)) initialComment = "";
             if (finalComment.equals(string)) finalComment = "";
             for (CommentType c : CommentType.values()) {
-                for (Iterator<String> it = comments.get(c).keySet().iterator(); it.hasNext();) {
+                for (Iterator<String> it = comments.get(c).keySet().iterator(); it.hasNext(); ) {
                     String key = it.next();
                     String value = comments.get(c).get(key);
                     if (!value.equals(string)) continue;
@@ -275,8 +279,7 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         }
 
         /**
-         * @param finalComment
-         *            The finalComment to set.
+         * @param finalComment The finalComment to set.
          */
         public Comments setFinalComment(String finalComment) {
             this.finalComment = finalComment;
@@ -291,8 +294,7 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         }
 
         /**
-         * @param initialComment
-         *            The initialComment to set.
+         * @param initialComment The initialComment to set.
          */
         public Comments setInitialComment(String initialComment) {
             this.initialComment = initialComment;
@@ -303,10 +305,10 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     /**
      * @param pw
      * @param xpath_comments
-     * @param index
-     *            TODO
+     * @param index TODO
      */
-    private XPathParts writeComment(PrintWriter pw, Comments xpath_comments, int index, Comments.CommentType style) {
+    private XPathParts writeComment(
+            PrintWriter pw, Comments xpath_comments, int index, Comments.CommentType style) {
         if (index == 0) return this;
         String xpath = toString(index);
         Log.logln(DEBUGGING, "Checking for: " + xpath);
@@ -318,9 +320,7 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         return this;
     }
 
-    /**
-     * Finds the first place where the xpaths differ.
-     */
+    /** Finds the first place where the xpaths differ. */
     public int findFirstDifference(XPathParts last) {
         int min = elements.size();
         if (last.elements.size() < min) min = last.elements.size();
@@ -333,9 +333,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     }
 
     /**
-     * Checks if the new xpath given is like the this one.
-     * The only diffrence may be extra alt and draft attributes but the
-     * value of type attribute is the same
+     * Checks if the new xpath given is like this one. The only difference may be extra alt and
+     * draft attributes but the value of type attribute is the same
      *
      * @param last
      * @return
@@ -366,12 +365,10 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         return false;
     }
 
-    /**
-     * Does this xpath contain the attribute at all?
-     */
+    /** Does this xpath contain the attribute at all? */
+    @Override
     public boolean containsAttribute(String attribute) {
-        for (int i = 0; i < elements.size(); ++i) {
-            Element element = elements.get(i);
+        for (Element element : elements) {
             if (element.getAttributeValue(attribute) != null) {
                 return true;
             }
@@ -379,42 +376,38 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         return false;
     }
 
-    /**
-     * Does it contain the attribute/value pair?
-     */
+    /** Does it contain the attribute/value pair? */
     public boolean containsAttributeValue(String attribute, String value) {
-        for (int i = 0; i < elements.size(); ++i) {
-            String otherValue = elements.get(i).getAttributeValue(attribute);
+        for (Element element : elements) {
+            String otherValue = element.getAttributeValue(attribute);
             if (otherValue != null && value.equals(otherValue)) return true;
         }
         return false;
     }
 
-    /**
-     * How many elements are in this xpath?
-     */
+    @Override
     public int size() {
         return elements.size();
     }
 
-    /**
-     * Get the nth element. Negative values are from end
-     */
+    /** Get the nth element. Negative values are from end */
+    @Override
     public String getElement(int elementIndex) {
         return elements.get(elementIndex >= 0 ? elementIndex : elementIndex + size()).getElement();
     }
 
     public int getAttributeCount(int elementIndex) {
-        return elements.get(elementIndex >= 0 ? elementIndex : elementIndex + size()).getAttributeCount();
+        return elements.get(elementIndex >= 0 ? elementIndex : elementIndex + size())
+                .getAttributeCount();
     }
 
     /**
-     * Get the attributes for the nth element (negative index is from end). Returns null or an empty map if there's
-     * nothing.
-     * PROBLEM: exposes internal map
+     * Get the attributes for the nth element (negative index is from end). Returns null or an empty
+     * map if there's nothing. PROBLEM: exposes internal map
      */
     public Map<String, String> getAttributes(int elementIndex) {
-        return elements.get(elementIndex >= 0 ? elementIndex : elementIndex + size()).getAttributes();
+        return elements.get(elementIndex >= 0 ? elementIndex : elementIndex + size())
+                .getAttributes();
     }
 
     /**
@@ -425,14 +418,15 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
      */
     public Collection<String> getAttributeKeys(int elementIndex) {
         return elements.get(elementIndex >= 0 ? elementIndex : elementIndex + size())
-            .getAttributes()
-            .keySet();
+                .getAttributes()
+                .keySet();
     }
 
     /**
-     * Get the attributeValue for the attrbute at the nth element (negative index is from end). Returns null if there's
-     * nothing.
+     * Get the attributeValue for the attrbute at the nth element (negative index is from end).
+     * Returns null if there's nothing.
      */
+    @Override
     public String getAttributeValue(int elementIndex, String attribute) {
         if (elementIndex < 0) {
             elementIndex += size();
@@ -451,7 +445,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         }
         makeElementsMutable();
         makeElementMutable(elementIndex);
-        // make mutable may change elements.get(elementIndex), so we have to use elements.get(elementIndex) after calling
+        // make mutable may change elements.get(elementIndex), so we have to use
+        // elements.get(elementIndex) after calling
         elements.get(elementIndex).putAttribute(attribute, value);
     }
 
@@ -467,9 +462,7 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         return getAttributes(index);
     }
 
-    /**
-     * Find the attribute value
-     */
+    /** Find the attribute value */
     public String findAttributeValue(String elementName, String attributeName) {
         Map<String, String> attributes = findAttributes(elementName);
         if (attributes == null) {
@@ -478,24 +471,32 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         return attributes.get(attributeName);
     }
 
+    @Override
+    protected void handleClearElements() {
+        elements.clear();
+    }
+
+    @Override
+    protected void handleAddElement(String element) {
+        addElement(element);
+    }
+
     /**
-     * Add an Element object to this XPathParts, using the given element name.
-     * If this is the first Element in this XPathParts, also set dtdData.
-     * Do not set any attributes.
+     * Add an Element object to this XPathParts, using the given element name. If this is the first
+     * Element in this XPathParts, also set dtdData. Do not set any attributes.
      *
-     * @param element the string describing the element, such as "ldml",
-     *                "supplementalData", etc.
+     * @param element the string describing the element, such as "ldml", "supplementalData", etc.
      * @return this XPathParts
      */
     public XPathParts addElement(String element) {
-        if (elements.size() == 0) {
+        if (elements.isEmpty()) {
             try {
                 /*
                  * The first element should match one of the DtdType enum values.
                  * Use it to set dtdData.
                  */
                 File dir = CLDRConfig.getInstance().getCldrBaseDirectory();
-                dtdData = DtdData.getInstance(DtdType.valueOf(element), dir);
+                dtdData = DtdData.getInstance(DtdType.fromElement(element), dir);
             } catch (Exception e) {
                 dtdData = null;
             }
@@ -527,10 +528,9 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         }
     }
 
-
     /**
-     * Varargs version of addElement.
-     *  Usage:  xpp.addElements("ldml","localeDisplayNames")
+     * Varargs version of addElement. Usage: xpp.addElements("ldml","localeDisplayNames")
+     *
      * @param element
      * @return this for chaining
      */
@@ -541,9 +541,12 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         return this;
     }
 
-    /**
-     * Add an attribute/value pair to the current last element.
-     */
+    @Override
+    protected void handleAddAttribute(String attribute, String value) {
+        addAttribute(attribute, value);
+    }
+
+    /** Add an attribute/value pair to the current last element. */
     public XPathParts addAttribute(String attribute, String value) {
         putAttributeValue(elements.size() - 1, attribute, value);
         return this;
@@ -565,12 +568,16 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     public XPathParts removeAttributes(int elementIndex, Collection<String> attributeNames) {
         elementIndex = elementIndex >= 0 ? elementIndex : elementIndex + size();
         Map<String, String> ea = elements.get(elementIndex).attributes;
-        if (ea == null || attributeNames == null || attributeNames.isEmpty() || Collections.disjoint(attributeNames, ea.keySet())) {
+        if (ea == null
+                || attributeNames == null
+                || attributeNames.isEmpty()
+                || Collections.disjoint(attributeNames, ea.keySet())) {
             return this;
         }
         makeElementsMutable();
         makeElementMutable(elementIndex);
-        // make mutable may change elements.get(elementIndex), so we have to use elements.get(elementIndex) after calling
+        // make mutable may change elements.get(elementIndex), so we have to use
+        // elements.get(elementIndex) after calling
         elements.get(elementIndex).removeAttributes(attributeNames);
         return this;
     }
@@ -580,106 +587,28 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
      *
      * @param xPath the path string
      * @param initial boolean, if true, call elements.clear() and set dtdData = null before adding,
-     *                and make requiredPrefix // instead of /
+     *     and make requiredPrefix // instead of /
      * @return the XPathParts, or parseError
-     *
-     * Called by set (initial = true), and addRelative (initial = false)
+     *     <p>Called by set (initial = true), and addRelative (initial = false)
      */
     private XPathParts addInternal(String xPath, boolean initial) {
-        String lastAttributeName = "";
-        String requiredPrefix = "/";
         if (initial) {
-            elements.clear();
             dtdData = null;
-            requiredPrefix = "//";
         }
-        if (!xPath.startsWith(requiredPrefix)) {
-            return parseError(xPath, 0);
-        }
-        int stringStart = requiredPrefix.length(); // skip prefix
-        char state = 'p';
-        // since only ascii chars are relevant, use char
-        int len = xPath.length();
-        for (int i = 2; i < len; ++i) {
-            char cp = xPath.charAt(i);
-            if (cp != state && (state == '\"' || state == '\'')) {
-                continue; // stay in quotation
-            }
-            switch (cp) {
-            case '/':
-                if (state != 'p' || stringStart >= i) {
-                    return parseError(xPath, i);
-                }
-                if (stringStart > 0) {
-                    addElement(xPath.substring(stringStart, i));
-                }
-                stringStart = i + 1;
-                break;
-            case '[':
-                if (state != 'p' || stringStart >= i) {
-                    return parseError(xPath, i);
-                }
-                if (stringStart > 0) {
-                    addElement(xPath.substring(stringStart, i));
-                }
-                state = cp;
-                break;
-            case '@':
-                if (state != '[') {
-                    return parseError(xPath, i);
-                }
-                stringStart = i + 1;
-                state = cp;
-                break;
-            case '=':
-                if (state != '@' || stringStart >= i) {
-                    return parseError(xPath, i);
-                }
-                lastAttributeName = xPath.substring(stringStart, i);
-                state = cp;
-                break;
-            case '\"':
-            case '\'':
-                if (state == cp) { // finished
-                    if (stringStart > i) {
-                        return parseError(xPath, i);
-                    }
-                    addAttribute(lastAttributeName, xPath.substring(stringStart, i));
-                    state = 'e';
-                    break;
-                }
-                if (state != '=') {
-                    return parseError(xPath, i);
-                }
-                stringStart = i + 1;
-                state = cp;
-                break;
-            case ']':
-                if (state != 'e') {
-                    return parseError(xPath, i);
-                }
-                state = 'p';
-                stringStart = -1;
-                break;
-            }
-        }
-        // check to make sure terminated
-        if (state != 'p' || stringStart >= xPath.length()) {
-            return parseError(xPath, xPath.length());
-        }
-        if (stringStart > 0) {
-            addElement(xPath.substring(stringStart, xPath.length()));
-        }
+
+        // call superclass for parsing
+        handleParse(xPath, initial);
+
         return this;
     }
 
-    /**
-     * boilerplate
-     */
+    /** boilerplate */
     @Override
     public String toString() {
         return toString(elements.size());
     }
+
+    // TODO combine and optimize these
 
     public String toString(int limit) {
         if (limit < 0) {
@@ -703,16 +632,14 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         if (limit < 0) {
             limit += size();
         }
-        String result = "";
+        StringBuilder result = new StringBuilder();
         for (int i = start; i < limit; ++i) {
-            result += elements.get(i).toString(XPATH_STYLE);
+            result.append(elements.get(i).toString(XPATH_STYLE));
         }
-        return result;
+        return result.toString();
     }
 
-    /**
-     * boilerplate
-     */
+    /** boilerplate */
     @Override
     public boolean equals(Object other) {
         try {
@@ -734,24 +661,17 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         return dtdData.getDtdComparator().xpathComparator(this, that);
     }
 
-
-    /**
-     * boilerplate
-     */
+    /** boilerplate */
     @Override
     public int hashCode() {
         int result = elements.size();
-        for (int i = 0; i < elements.size(); ++i) {
-            result = result * 37 + elements.get(i).hashCode();
+        for (Element element : elements) {
+            result = result * 37 + element.hashCode();
         }
         return result;
     }
 
     // ========== Privates ==========
-
-    private XPathParts parseError(String s, int i) {
-        throw new IllegalArgumentException("Malformed xPath '" + s + "' at " + i);
-    }
 
     public static final int XPATH_STYLE = 0, XML_OPEN = 1, XML_CLOSE = 2, XML_NO_VALUE = 3;
     public static final String NEWLINE = "\n";
@@ -769,7 +689,7 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         }
 
         public Element(String element, Map<String, String> attributes) {
-            this.element = element.intern();  // allow fast comparison
+            this.element = element.intern(); // allow fast comparison
             if (attributes == null) {
                 this.attributes = null;
             } else {
@@ -779,8 +699,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         }
 
         /**
-         * Add the given attribute, value pair to this Element object; or,
-         * if value is null, remove the attribute.
+         * Add the given attribute, value pair to this Element object; or, if value is null, remove
+         * the attribute.
          *
          * @param attribute, the string such as "number" or "cldrVersion"
          * @param value, the string such as "$Revision$" or "35", or null for removal
@@ -790,7 +710,7 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
             if (value == null) {
                 if (attributes != null) {
                     attributes.remove(attribute);
-                    if (attributes.size() == 0) {
+                    if (attributes.isEmpty()) {
                         attributes = null;
                     }
                 }
@@ -814,7 +734,7 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
             for (String attribute : attributeNames) {
                 attributes.remove(attribute);
             }
-            if (attributes.size() == 0) {
+            if (attributes.isEmpty()) {
                 attributes = null;
             }
         }
@@ -825,50 +745,38 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         }
 
         /**
-         * @param style
-         *            from XPATH_STYLE
+         * @param style from XPATH_STYLE
          * @return
          */
         public String toString(int style) {
             StringBuilder result = new StringBuilder();
             // Set keys;
             switch (style) {
-            case XPathParts.XPATH_STYLE:
-                result.append('/').append(element);
-                writeAttributes("[@", "\"]", false, result);
-                break;
-            case XPathParts.XML_OPEN:
-            case XPathParts.XML_NO_VALUE:
-                result.append('<').append(element);
-                writeAttributes(" ", "\"", true, result);
-                if (style == XML_NO_VALUE) {
-                    result.append('/');
-                }
-                if (CLDRFile.HACK_ORDER && element.equals("ldml")) {
-                    result.append(' ');
-                }
-                result.append('>');
-                break;
-            case XML_CLOSE:
-                result.append("</").append(element).append('>');
-                break;
+                case XPathParts.XPATH_STYLE:
+                    result.append('/').append(element);
+                    writeAttributes("[@", "\"]", false, result);
+                    break;
+                case XPathParts.XML_OPEN:
+                case XPathParts.XML_NO_VALUE:
+                    result.append('<').append(element);
+                    writeAttributes(" ", "\"", true, result);
+                    if (style == XML_NO_VALUE) {
+                        result.append('/');
+                    }
+                    if (CLDRFile.HACK_ORDER && element.equals("ldml")) {
+                        result.append(' ');
+                    }
+                    result.append('>');
+                    break;
+                case XML_CLOSE:
+                    result.append("</").append(element).append('>');
+                    break;
             }
             return result.toString();
         }
 
-        /**
-         * @param element
-         *            TODO
-         * @param prefix
-         *            TODO
-         * @param postfix
-         *            TODO
-         * @param removeLDMLExtras
-         *            TODO
-         * @param result
-         */
-        private Element writeAttributes(String prefix, String postfix,
-            boolean removeLDMLExtras, StringBuilder result) {
+        private Element writeAttributes(
+                String prefix, String postfix, boolean removeLDMLExtras, StringBuilder result) {
             if (getAttributeCount() == 0) {
                 return this;
             }
@@ -888,9 +796,14 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
                     }
                 }
                 try {
-                    result.append(prefix).append(attribute).append("=\"")
-                    .append(removeLDMLExtras ? TransliteratorUtilities.toHTML.transliterate(value) : value)
-                    .append(postfix);
+                    result.append(prefix)
+                            .append(attribute)
+                            .append("=\"")
+                            .append(
+                                    removeLDMLExtras
+                                            ? TransliteratorUtilities.toHTML.transliterate(value)
+                                            : value)
+                            .append(postfix);
                 } catch (RuntimeException e) {
                     throw e; // for debugging
                 }
@@ -905,13 +818,14 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
          * @param attribute
          * @param value
          * @return true to skip, else false
-         *
-         * Called only by writeAttributes
-         *
-         * Assume suppressionMap isn't null.
+         *     <p>Called only by writeAttributes
+         *     <p>Assume suppressionMap isn't null.
          */
-        private boolean skipAttribute(String element, String attribute, String value,
-            Map<String, Map<String, String>> suppressionMap) {
+        private boolean skipAttribute(
+                String element,
+                String attribute,
+                String value,
+                Map<String, Map<String, String>> suppressionMap) {
             Map<String, String> attribute_value = suppressionMap.get(element);
             boolean skip = false;
             if (attribute_value != null) {
@@ -937,9 +851,11 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
                 Element that = (Element) other;
                 // == check is ok since we intern elements
                 return element == that.element
-                    && (attributes == null ? that.attributes == null
-                    : that.attributes == null ? attributes == null
-                    : attributes.equals(that.attributes));
+                        && (attributes == null
+                                ? that.attributes == null
+                                : that.attributes == null
+                                        ? attributes == null
+                                        : attributes.equals(that.attributes));
             } catch (ClassCastException e) {
                 return false;
             }
@@ -991,8 +907,7 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     /**
      * Search for an element within the path.
      *
-     * @param elementName
-     *            the element to look for
+     * @param elementName the element to look for
      * @return element number if found, else -1 if not found
      */
     public int findElement(String elementName) {
@@ -1010,28 +925,25 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
      * Get the MapComparator for this XPathParts.
      *
      * @return the MapComparator, or null
-     *
-     * Called by the Element constructor, and by putAttribute
+     *     <p>Called by the Element constructor, and by putAttribute
      */
     private MapComparator<String> getAttributeComparator() {
-        return dtdData == null ? null
-            : dtdData.dtdType == DtdType.ldml ? CLDRFile.getAttributeOrdering()
-                : dtdData.getAttributeComparator();
+        return dtdData == null
+                ? null
+                : dtdData.dtdType == DtdType.ldml
+                        ? CLDRFile.getAttributeOrdering()
+                        : dtdData.getAttributeComparator();
     }
 
     /**
-     * Determines if an elementName is contained in the path.
-     *
-     * @param elementName
-     * @return
+     * @deprecated use {@link #containsElement(String)}
      */
+    @Deprecated
     public boolean contains(String elementName) {
-        return findElement(elementName) >= 0;
+        return containsElement(elementName);
     }
 
-    /**
-     * add a relative path to this XPathParts.
-     */
+    /** add a relative path to this XPathParts. */
     public XPathParts addRelative(String path) {
         if (frozen) {
             throw new UnsupportedOperationException("Can't modify frozen Element");
@@ -1049,8 +961,7 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         return addInternal(path, false);
     }
 
-    /**
-     */
+    /** */
     public XPathParts trimLast() {
         if (frozen) {
             throw new UnsupportedOperationException("Can't modify frozen Element");
@@ -1061,29 +972,29 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     }
 
     /**
-     * Replace the elements of this XPathParts with clones of the elements of the given other XPathParts
+     * Replace the elements of this XPathParts with clones of the elements of the given other
+     * XPathParts
      *
      * @param parts the given other XPathParts (not modified)
      * @return this XPathParts (modified)
-     *
-     * Called by XPathParts.replace and CldrItem.split.
+     *     <p>Called by XPathParts.replace and CldrItem.split.
      */
-//   If this is restored, it will need to be modified.
-//    public XPathParts set(XPathParts parts) {
-//        if (frozen) {
-//            throw new UnsupportedOperationException("Can't modify frozen Element");
-//        }
-//        try {
-//            dtdData = parts.dtdData;
-//            elements.clear();
-//            for (Element element : parts.elements) {
-//                elements.add((Element) element.clone());
-//            }
-//            return this;
-//        } catch (CloneNotSupportedException e) {
-//            throw (InternalError) new InternalError().initCause(e);
-//        }
-//    }
+    //   If this is restored, it will need to be modified.
+    //    public XPathParts set(XPathParts parts) {
+    //        if (frozen) {
+    //            throw new UnsupportedOperationException("Can't modify frozen Element");
+    //        }
+    //        try {
+    //            dtdData = parts.dtdData;
+    //            elements.clear();
+    //            for (Element element : parts.elements) {
+    //                elements.add((Element) element.clone());
+    //            }
+    //            return this;
+    //        } catch (CloneNotSupportedException e) {
+    //            throw (InternalError) new InternalError().initCause(e);
+    //        }
+    //    }
 
     /**
      * Replace up to i with parts
@@ -1091,31 +1002,30 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
      * @param i
      * @param parts
      */
-//    If this is restored, it will need to be modified.
-//    public XPathParts replace(int i, XPathParts parts) {
-//        if (frozen) {
-//            throw new UnsupportedOperationException("Can't modify frozen Element");
-//        }
-//        List<Element> temp = elements;
-//        elements = new ArrayList<>();
-//        set(parts);
-//        for (; i < temp.size(); ++i) {
-//            elements.add(temp.get(i));
-//        }
-//        return this;
-//    }
+    //    If this is restored, it will need to be modified.
+    //    public XPathParts replace(int i, XPathParts parts) {
+    //        if (frozen) {
+    //            throw new UnsupportedOperationException("Can't modify frozen Element");
+    //        }
+    //        List<Element> temp = elements;
+    //        elements = new ArrayList<>();
+    //        set(parts);
+    //        for (; i < temp.size(); ++i) {
+    //            elements.add(temp.get(i));
+    //        }
+    //        return this;
+    //    }
 
     /**
      * Utility to write a comment.
      *
      * @param pw
-     * @param blockComment
-     *            TODO
+     * @param blockComment TODO
      * @param indent
      */
     static void writeComment(PrintWriter pw, int indent, String comment, boolean blockComment) {
         // now write the comment
-        if (comment.length() == 0) return;
+        if (comment.isEmpty()) return;
         if (blockComment) {
             pw.print(Utility.repeat("\t", indent));
         } else {
@@ -1126,15 +1036,13 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
             boolean first = true;
             int countEmptyLines = 0;
             // trim the line iff the indent != 0.
-            for (Iterator<String> it = CldrUtility.splitList(comment, NEWLINE, indent != 0, null).iterator(); it.hasNext();) {
-                String line = it.next();
-                if (line.length() == 0) {
+            for (String line : CldrUtility.splitList(comment, NEWLINE, indent != 0, null)) {
+                if (line.isEmpty()) {
                     ++countEmptyLines;
                     continue;
                 }
                 if (countEmptyLines != 0) {
-                    for (int i = 0; i < countEmptyLines; ++i)
-                        pw.println();
+                    for (int i = 0; i < countEmptyLines; ++i) pw.println();
                     countEmptyLines = 0;
                 }
                 if (first) {
@@ -1160,8 +1068,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     }
 
     /**
-     * Utility to determine if this a language locale?
-     * Note: a script is included with the language, if there is one.
+     * Utility to determine if this a language locale? Note: a script is included with the language,
+     * if there is one.
      *
      * @param in
      * @return
@@ -1175,7 +1083,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     }
 
     /**
-     * Returns -1 if parent isn't really a parent, 0 if they are identical, and 1 if parent is a proper parent
+     * Returns -1 if parent isn't really a parent, 0 if they are identical, and 1 if parent is a
+     * proper parent
      */
     public static int isSubLocale(String parent, String possibleSublocale) {
         if (parent.equals("root")) {
@@ -1189,10 +1098,9 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
         return 1;
     }
 
-    /**
-     * Sets an attribute/value on the first matching element.
-     */
-    public XPathParts setAttribute(String elementName, String attributeName, String attributeValue) {
+    /** Sets an attribute/value on the first matching element. */
+    public XPathParts setAttribute(
+            String elementName, String attributeName, String attributeValue) {
         int index = findElement(elementName);
         putAttributeValue(index, attributeName, attributeValue);
         return this;
@@ -1212,7 +1120,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
                 String attributeValue = attributesAndValues.getValue();
                 int pos = attributeValue.indexOf("proposed");
                 if (pos < 0) break;
-                if (pos > 0 && attributeValue.charAt(pos - 1) == '-') --pos; // backup for "...-proposed"
+                if (pos > 0 && attributeValue.charAt(pos - 1) == '-')
+                    --pos; // backup for "...-proposed"
                 if (pos == 0) {
                     putAttributeValue(i, attribute, null);
                     break;
@@ -1264,7 +1173,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     @Override
     public XPathParts freeze() {
         if (!frozen) {
-            // ensure that it can't be modified. Later we can fix all the call sites to check frozen.
+            // ensure that it can't be modified. Later we can fix all the call sites to check
+            // frozen.
             List<Element> temp = new ArrayList<>(elements.size());
             for (Element element : elements) {
                 temp.add(element.makeImmutable());
@@ -1294,8 +1204,13 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
     }
 
     public static XPathParts getFrozenInstance(String path) {
-        XPathParts result = cache.computeIfAbsent(path,
-            (String forPath) -> new XPathParts().addInternal(forPath, true).freeze());
+        XPathParts result = cache.get(path);
+        if (result == null) {
+            // CLDR-17504: This can recursively create new paths during creation so MUST NOT
+            // happen inside the lambda of computeIfAbsent(), but freezing the path is safe.
+            XPathParts unfrozen = new XPathParts().addInternal(path, true);
+            result = cache.computeIfAbsent(path, (String p) -> unfrozen.freeze());
+        }
         return result;
     }
 
@@ -1305,8 +1220,8 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
 
     public Set<String> getElements() {
         Builder<String> builder = ImmutableSet.builder();
-        for (int i = 0; i < elements.size(); ++i) {
-            builder.add(elements.get(i).getElement());
+        for (Element element : elements) {
+            builder.add(element.getElement());
         }
         return builder.build();
     }
@@ -1324,9 +1239,10 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
             for (Entry<String, String> entry : this.getAttributes(i).entrySet()) {
                 String k = entry.getKey();
                 if (getDtdData().isDistinguishing(getElement(i), k)
-                    || k.equals("alt") // is always distinguishing, so we don't really need this.
-                    || k.equals("draft")
-                    || k.startsWith("xml:")) {
+                        || k.equals(
+                                "alt") // is always distinguishing, so we don't really need this.
+                        || k.equals("draft")
+                        || k.startsWith("xml:")) {
                     continue;
                 }
                 if (ueMap == null) {
@@ -1349,5 +1265,13 @@ public final class XPathParts implements Freezable<XPathParts>, Comparable<XPath
             putAttributeValue(i, attribute, null);
         }
         return this;
+    }
+
+    public List<String> getAttributeValues() {
+        List<String> attributes = new ArrayList<>();
+        for (int i = 0; i < size(); ++i) {
+            attributes.addAll(getAttributes(i).values());
+        }
+        return attributes;
     }
 }

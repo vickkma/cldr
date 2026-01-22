@@ -1,10 +1,8 @@
 package org.unicode.cldr.unittest;
 
 import java.util.Iterator;
-
+import org.unicode.cldr.icu.dev.test.TestFmwk;
 import org.unicode.cldr.util.LruMap;
-
-import com.ibm.icu.dev.test.TestFmwk;
 
 public class TestLruMap extends TestFmwk {
     public static void main(String[] args) {

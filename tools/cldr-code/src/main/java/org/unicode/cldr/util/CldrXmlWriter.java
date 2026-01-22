@@ -2,11 +2,12 @@ package org.unicode.cldr.util;
 
 import com.google.common.base.Splitter;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-/**
- * Export CLDRFile objects as XML files
- */
+/** Export CLDRFile objects as XML files */
 public class CldrXmlWriter {
 
     private static final boolean WRITE_COMMENTS_THAT_NO_LONGER_HAVE_BASE = false;
@@ -34,7 +35,7 @@ public class CldrXmlWriter {
 
         xmlSource = cldrFile.dataSource;
         orderedSet = new TreeSet<>(cldrFile.getComparator());
-        xmlSource.forEach(orderedSet::add);
+        cldrFile.fullIterable().forEach(orderedSet::add);
         if (orderedSet.size() > 0) { // May not have any elements.
             final String firstPath = orderedSet.iterator().next();
             firstFullPath = cldrFile.getFullXPath(firstPath);
@@ -75,7 +76,8 @@ public class CldrXmlWriter {
         if (!cldrFile.isNonInheriting()) {
             initializeIdentity();
         }
-        final String initialComment = fixInitialComment(xmlSource.getXpathComments().getInitialComment());
+        final String initialComment =
+                fixInitialComment(xmlSource.getXpathComments().getInitialComment());
         XPathParts.writeComment(pw, 0, initialComment, true);
     }
 
@@ -138,6 +140,9 @@ public class CldrXmlWriter {
                 continue;
             }
             String v = cldrFile.getStringValue(xpath);
+            if (v == null) {
+                continue;
+            }
             if (suppressInheritanceMarkers && CldrUtility.INHERITANCE_MARKER.equals(v)) {
                 continue;
             }
@@ -149,7 +154,8 @@ public class CldrXmlWriter {
             if (currentFiltered.size() >= 2 && currentFiltered.getElement(1).equals("identity")) {
                 continue;
             }
-            XPathParts current = XPathParts.getFrozenInstance(cldrFile.getFullXPath(xpath)).cloneAsThawed();
+            XPathParts current =
+                    XPathParts.getFrozenInstance(cldrFile.getFullXPath(xpath)).cloneAsThawed();
             current.writeDifference(pw, currentFiltered, last, v, tempComments);
             last = current;
         }
@@ -180,22 +186,22 @@ public class CldrXmlWriter {
             return CldrUtility.getCopyrightString();
         } else {
             boolean fe0fNote = false;
-            StringBuilder sb = new StringBuilder(CldrUtility.getCopyrightString()).append(XPathParts.NEWLINE);
+            StringBuilder sb =
+                    new StringBuilder(CldrUtility.getCopyrightString()).append(XPathParts.NEWLINE);
             for (String line : LINE_SPLITTER.split(initialComment)) {
                 if (line.startsWith("Warnings: All cp values have U+FE0F characters removed.")) {
                     fe0fNote = true;
                     continue;
                 }
-                if (
-                    line.contains("Copyright") ||
-                    line.contains("©") ||
-                    line.contains("trademark") ||
-                    line.startsWith("CLDR data files are interpreted") ||
-                    line.startsWith("SPDX-License-Identifier") ||
-                    line.startsWith("For terms of use") ||
-                    line.startsWith("according to the LDML specification") ||
-                    line.startsWith("terms of use, see http://www.unicode.org/copyright.html")
-                ) {
+                if (line.contains("Copyright")
+                        || line.contains("©")
+                        || line.contains("trademark")
+                        || line.startsWith("CLDR data files are interpreted")
+                        || line.startsWith("SPDX-License-Identifier")
+                        || line.startsWith("For terms of use")
+                        || line.startsWith("according to the LDML specification")
+                        || line.startsWith(
+                                "terms of use, see http://www.unicode.org/copyright.html")) {
                     continue;
                 }
                 sb.append(XPathParts.NEWLINE).append(line);
@@ -204,8 +210,7 @@ public class CldrXmlWriter {
                 // Keep this on a separate line.
                 sb.append(XPathParts.NEWLINE);
                 sb.append(
-                    "Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/ for derived annotations."
-                );
+                        "Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/ for derived annotations.");
                 sb.append(XPathParts.NEWLINE);
             }
             return sb.toString();

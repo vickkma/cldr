@@ -10,12 +10,11 @@
  */
 package org.unicode.cldr.icu;
 
+import com.ibm.icu.text.UTF16;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-
-import com.ibm.icu.text.UTF16;
 
 public class ICUResourceWriter {
     private static final String CHARSET = "UTF-8";
@@ -52,9 +51,8 @@ public class ICUResourceWriter {
     public static final String DEPENDENCY = "dependency";
 
     public static final int BIN_ALIGNMENT = 16;
-    /**
-     * This integer is a count of ALL the resources in this tree (not including the root object)
-     */
+
+    /** This integer is a count of ALL the resources in this tree (not including the root object) */
     public static int maxTableLength;
 
     public static class Resource {
@@ -71,42 +69,33 @@ public class ICUResourceWriter {
         String[] note = new String[20];
         int noteLen = 0;
         String translate;
-        /**
-         * This is a comment which will appear on the item.
-         */
+
+        /** This is a comment which will appear on the item. */
         String comment;
-        /**
-         * This is the resource's name, or, 'key'
-         */
+
+        /** This is the resource's name, or, 'key' */
         public String name;
-        /**
-         * This links to the next sibling of this item in the list
-         */
+
+        /** This links to the next sibling of this item in the list */
         public Resource next;
+
         boolean noSort = false;
-        /**
-         * If this item contains other items, this points to the first item in its list
-         */
+
+        /** If this item contains other items, this points to the first item in its list */
         public Resource first = null;
 
-        /**
-         * A counter for how many children there are below this object.
-         */
+        /** A counter for how many children there are below this object. */
         public int numChildren;
 
-        /**
-         * Stores how many bytes are used by the children of this object.
-         */
+        /** Stores how many bytes are used by the children of this object. */
         public int sizeOfChildren;
 
-        /**
-         * Stores how many bytes are used by this resource.
-         */
+        /** Stores how many bytes are used by this resource. */
         public int size;
 
         /**
-         * This integer stores the number of bytes from the beginning of the "key string"
-         * this resources key starts. For more information see the comment in LDML2ICUBinaryWriter above
+         * This integer stores the number of bytes from the beginning of the "key string" this
+         * resources key starts. For more information see the comment in LDML2ICUBinaryWriter above
          * the writeKeyString method.
          */
         public int keyStringOffset;
@@ -115,9 +104,7 @@ public class ICUResourceWriter {
 
         public boolean isTop = false;
 
-        /**
-         * This method will set the size of the resource. Overwritten for each child object
-         */
+        /** This method will set the size of the resource. Overwritten for each child object */
         public void setSize() {
             size = 0;
         }
@@ -142,14 +129,11 @@ public class ICUResourceWriter {
         }
 
         /**
-         * Append to a basic list.
-         * Usage:
-         * Resource list = null; list = Resource.addAfter(list, res1); list = Resource.addAfter(list,res2); ...
+         * Append to a basic list. Usage: Resource list = null; list = Resource.addAfter(list,
+         * res1); list = Resource.addAfter(list,res2); ...
          *
-         * @param list
-         *            the list to append to (could be null)
-         * @param res
-         *            the item to add
+         * @param list the list to append to (could be null)
+         * @param res the item to add
          * @return the beginning of the list
          */
         static final Resource addAfter(Resource list, Resource res) {
@@ -167,8 +151,7 @@ public class ICUResourceWriter {
         /**
          * Appends 'res' to the end of 'this' (next sibling chain)
          *
-         * @param res
-         *            the item (or items) to be added
+         * @param res the item (or items) to be added
          * @return the new beginning of the chain (this)
          */
         public Resource addAfter(Resource res) {
@@ -178,8 +161,7 @@ public class ICUResourceWriter {
         /**
          * Replace the contents (first) of this object with the parameter
          *
-         * @param res
-         *            The object to be replaced
+         * @param res The object to be replaced
          * @return the old contents
          */
         public Resource replaceContents(Resource res) {
@@ -191,8 +173,7 @@ public class ICUResourceWriter {
         /**
          * Append the contents (first) of this object with the parameter
          *
-         * @param res
-         *            the object to be added to the contents
+         * @param res the object to be added to the contents
          * @return the end of the contents chain
          */
         public Resource appendContents(Resource res) {
@@ -217,24 +198,28 @@ public class ICUResourceWriter {
          * @param val
          * @return
          */
-
         public StringBuffer escapeSyntaxChars(String val) {
             // escape the embedded quotes
             if (val == null) {
-                System.err.println("Resource.escapeSyntaxChars: error, resource '" + name
-                    + "': string value is NULL - assuming 'empty'");
-                throw new MalformedResourceError("Resource.escapeSyntaxChars: error, resource '" + name
-                    + "': string value is NULL - assuming 'empty'", this);
+                System.err.println(
+                        "Resource.escapeSyntaxChars: error, resource '"
+                                + name
+                                + "': string value is NULL - assuming 'empty'");
+                throw new MalformedResourceError(
+                        "Resource.escapeSyntaxChars: error, resource '"
+                                + name
+                                + "': string value is NULL - assuming 'empty'",
+                        this);
                 // return new StringBuffer("");
             }
             char[] str = val.toCharArray();
             StringBuffer result = new StringBuffer();
             for (int i = 0; i < str.length; i++) {
                 switch (str[i]) {
-                case '\u0022':
-                    result.append('\\'); // append backslash
-                default:
-                    result.append(str[i]);
+                    case '\u0022':
+                        result.append('\\'); // append backslash
+                    default:
+                        result.append(str[i]);
                 }
             }
             return result;
@@ -291,7 +276,6 @@ public class ICUResourceWriter {
                     write(writer, COMMENTMIDDLE);
                     write(writer, comment);
                     write(writer, LINESEP);
-
                 }
 
                 // terminate the comment
@@ -336,7 +320,7 @@ public class ICUResourceWriter {
         String findResourcePath(Resource res) {
             if (next != null) {
                 throw new IllegalArgumentException(
-                    "Don't call findResourcePath(Resource res) on resources which have siblings");
+                        "Don't call findResourcePath(Resource res) on resources which have siblings");
             }
             StringBuffer str = new StringBuffer();
             if (findResourcePath(str, res)) {
@@ -358,11 +342,19 @@ public class ICUResourceWriter {
         public void write(OutputStream writer, int numIndent, boolean bare) {
             writeComments(writer, numIndent);
             writeIndent(writer, numIndent);
-            String line = ((name == null) ? EMPTY : name) + COLON + ALIAS + OPENBRACE + QUOTE + escapeSyntaxChars(val)
-                + QUOTE + CLOSEBRACE;
+            String line =
+                    ((name == null) ? EMPTY : name)
+                            + COLON
+                            + ALIAS
+                            + OPENBRACE
+                            + QUOTE
+                            + escapeSyntaxChars(val)
+                            + QUOTE
+                            + CLOSEBRACE;
             if (bare == true) {
                 if (name != null) {
-                    throw new RuntimeException("Bare option is set to true but the resource has a name! " + name);
+                    throw new RuntimeException(
+                            "Bare option is set to true but the resource has a name! " + name);
                 }
                 write(writer, line);
             } else {
@@ -371,11 +363,10 @@ public class ICUResourceWriter {
         }
 
         /**
-         * Writes this object to the provided output stream in binary format. Copies formating from Genrb (in ICU4C
-         * tools.
+         * Writes this object to the provided output stream in binary format. Copies formating from
+         * Genrb (in ICU4C tools.
          *
-         * @param out
-         *            A File output stream which has already been set up to write to.
+         * @param out A File output stream which has already been set up to write to.
          */
         @Override
         public int writeBinary(FileOutputStream out, int usedOffset) {
@@ -428,8 +419,7 @@ public class ICUResourceWriter {
             Resource current = first;
             while (current != null) {
                 current.write(writer, numIndent, true);
-                if (current instanceof ResourceTable ||
-                    current instanceof ResourceArray) {
+                if (current instanceof ResourceTable || current instanceof ResourceArray) {
 
                 } else {
                     write(writer, COMMA + LINESEP);
@@ -464,7 +454,8 @@ public class ICUResourceWriter {
             if (current != null) {
                 // start at the first one and loop
                 while (current != null) {
-                    // if it's an int: resources[i] = (current->fType << 28) | (current->u.fIntValue.fValue &
+                    // if it's an int: resources[i] = (current->fType << 28) |
+                    // (current->u.fIntValue.fValue &
                     // 0xFFFFFFF);
                     if (current instanceof ResourceInt) {
                         int value = 0;
@@ -475,27 +466,34 @@ public class ICUResourceWriter {
                             System.err.println("Error converting string to int: " + e.getMessage());
                             System.exit(1);
                         }
-                        resources[count] = LDML2ICUBinaryWriter.URES_INT << 28 | (value & 0xFFFFFFF);
+                        resources[count] =
+                                LDML2ICUBinaryWriter.URES_INT << 28 | (value & 0xFFFFFFF);
                     } else {
                         // write the current object
                         usedOffset = current.writeBinary(out, usedOffset);
 
                         // write 32 bits for identification?
                         if (current instanceof ResourceString) {
-                            resources[count] = LDML2ICUBinaryWriter.URES_STRING << 28 | usedOffset >>> 2;
+                            resources[count] =
+                                    LDML2ICUBinaryWriter.URES_STRING << 28 | usedOffset >>> 2;
                         } else if (current instanceof ResourceTable) {
                             if (((ResourceTable) current).is32Bit()) {
-                                resources[count] = LDML2ICUBinaryWriter.URES_TABLE32 << 28 | usedOffset >>> 2;
+                                resources[count] =
+                                        LDML2ICUBinaryWriter.URES_TABLE32 << 28 | usedOffset >>> 2;
                             } else {
-                                resources[count] = LDML2ICUBinaryWriter.URES_TABLE << 28 | usedOffset >>> 2;
+                                resources[count] =
+                                        LDML2ICUBinaryWriter.URES_TABLE << 28 | usedOffset >>> 2;
                             }
 
                         } else if (current instanceof ResourceAlias) {
-                            resources[count] = LDML2ICUBinaryWriter.URES_ALIAS << 28 | usedOffset >>> 2;
+                            resources[count] =
+                                    LDML2ICUBinaryWriter.URES_ALIAS << 28 | usedOffset >>> 2;
                         } else if (current instanceof ResourceArray) {
-                            resources[count] = LDML2ICUBinaryWriter.URES_ARRAY << 28 | usedOffset >>> 2;
+                            resources[count] =
+                                    LDML2ICUBinaryWriter.URES_ARRAY << 28 | usedOffset >>> 2;
                         } else if (current instanceof ResourceIntVector) {
-                            resources[count] = LDML2ICUBinaryWriter.URES_INT_VECTOR << 28 | usedOffset >>> 2;
+                            resources[count] =
+                                    LDML2ICUBinaryWriter.URES_INT_VECTOR << 28 | usedOffset >>> 2;
                         }
 
                         usedOffset += current.size + pad32(current.size);
@@ -529,12 +527,9 @@ public class ICUResourceWriter {
                 }
             }
             return usedOffset;
-
         }
 
-        /**
-         * This method will set the size of the resource.
-         */
+        /** This method will set the size of the resource. */
         @Override
         public void setSize() {
             // Arrays have children.
@@ -557,7 +552,6 @@ public class ICUResourceWriter {
 
             // pointer to the key + pointer to each member
             size = SIZE_OF_INT + (x * SIZE_OF_INT);
-
         }
     }
 
@@ -568,10 +562,12 @@ public class ICUResourceWriter {
         public void write(OutputStream writer, int numIndent, boolean bare) {
             writeComments(writer, numIndent);
             writeIndent(writer, numIndent);
-            String line = ((name == null) ? EMPTY : name) + COLON + INTS + OPENBRACE + val + CLOSEBRACE;
+            String line =
+                    ((name == null) ? EMPTY : name) + COLON + INTS + OPENBRACE + val + CLOSEBRACE;
             if (bare == true) {
                 if (name != null) {
-                    throw new RuntimeException("Bare option is set to true but the resource has a name: " + name);
+                    throw new RuntimeException(
+                            "Bare option is set to true but the resource has a name: " + name);
                 }
                 write(writer, line);
             } else {
@@ -584,13 +580,10 @@ public class ICUResourceWriter {
             return usedOffset;
         }
 
-        /**
-         * This method will set the size of the resource. Overwritten for each child object
-         */
+        /** This method will set the size of the resource. Overwritten for each child object */
         @Override
         public void setSize() {
             size = 0;
-
         }
     }
 
@@ -647,9 +640,7 @@ public class ICUResourceWriter {
             return usedOffset;
         }
 
-        /**
-         * This method will set the size of the resource. Overwritten for each child object
-         */
+        /** This method will set the size of the resource. Overwritten for each child object */
         @Override
         public void setSize() {
             // has children
@@ -667,8 +658,7 @@ public class ICUResourceWriter {
     }
 
     public static class ResourceString extends Resource {
-        public ResourceString() {
-        }
+        public ResourceString() {}
 
         public ResourceString(String name, String val) {
             this.name = name;
@@ -676,9 +666,8 @@ public class ICUResourceWriter {
         }
 
         public String val;
-        /**
-         * one-line comment following the value. ignored unless in bare mode.
-         */
+
+        /** one-line comment following the value. ignored unless in bare mode. */
         public String smallComment = null;
 
         @Override
@@ -687,7 +676,8 @@ public class ICUResourceWriter {
             writeIndent(writer, numIndent);
             if (bare == true) {
                 if (name != null) {
-                    throw new RuntimeException("Bare option is set to true but the resource has a name! " + name);
+                    throw new RuntimeException(
+                            "Bare option is set to true but the resource has a name! " + name);
                 }
 
                 write(writer, QUOTE + escapeSyntaxChars(val) + QUOTE);
@@ -718,13 +708,16 @@ public class ICUResourceWriter {
                             int firstIndex = str.indexOf("&", startIndex);
 
                             if (firstIndex > -1) {
-                                if (startIndex != (firstIndex - 1) && startIndex != firstIndex && firstIndex < endIndex) {
+                                if (startIndex != (firstIndex - 1)
+                                        && startIndex != firstIndex
+                                        && firstIndex < endIndex) {
                                     if (str.charAt(firstIndex - 1) != 0x27) {
                                         endIndex = firstIndex;
                                     }
                                 }
                                 int nextIndex = 0;
-                                while ((nextIndex = str.indexOf("&", firstIndex + 1)) != -1 && nextIndex < endIndex) {
+                                while ((nextIndex = str.indexOf("&", firstIndex + 1)) != -1
+                                        && nextIndex < endIndex) {
 
                                     if (nextIndex > -1 && firstIndex != nextIndex) {
                                         if (str.charAt(nextIndex - 1) != 0x27) {
@@ -738,9 +731,12 @@ public class ICUResourceWriter {
                             }
                         }
                         int indexOfEsc = 0;
-                        if ((indexOfEsc = str.lastIndexOf("\\u", endIndex)) > -1 && (endIndex - indexOfEsc) < 6 ||
-                            (indexOfEsc = str.lastIndexOf("\\U", endIndex)) > -1 && (endIndex - indexOfEsc) < 10 ||
-                            (indexOfEsc = str.lastIndexOf("'\'", endIndex)) > -1 && (endIndex - indexOfEsc) < 3) {
+                        if ((indexOfEsc = str.lastIndexOf("\\u", endIndex)) > -1
+                                        && (endIndex - indexOfEsc) < 6
+                                || (indexOfEsc = str.lastIndexOf("\\U", endIndex)) > -1
+                                        && (endIndex - indexOfEsc) < 10
+                                || (indexOfEsc = str.lastIndexOf("'\'", endIndex)) > -1
+                                        && (endIndex - indexOfEsc) < 3) {
 
                             endIndex = indexOfEsc;
                         }
@@ -761,9 +757,16 @@ public class ICUResourceWriter {
                     write(writer, CLOSEBRACE + LINESEP);
 
                 } else {
-                    write(writer, name + OPENBRACE + QUOTE + str.toString() + QUOTE + CLOSEBRACE + LINESEP);
+                    write(
+                            writer,
+                            name
+                                    + OPENBRACE
+                                    + QUOTE
+                                    + str.toString()
+                                    + QUOTE
+                                    + CLOSEBRACE
+                                    + LINESEP);
                 }
-
             }
         }
 
@@ -796,7 +799,8 @@ public class ICUResourceWriter {
                     LDML2ICUBinaryWriter.written += padding.length;
                 }
             } catch (UnsupportedEncodingException e) {
-                System.err.print("Problems converting string resource to " + LDML2ICUBinaryWriter.CHARSET16);
+                System.err.print(
+                        "Problems converting string resource to " + LDML2ICUBinaryWriter.CHARSET16);
                 System.exit(1);
             } catch (IOException e) {
                 System.err.print("Problems writing the string resource to file.");
@@ -805,9 +809,7 @@ public class ICUResourceWriter {
             return usedOffset;
         }
 
-        /**
-         * This method will set the size of the resource. Overwritten for each child object
-         */
+        /** This method will set the size of the resource. Overwritten for each child object */
         @Override
         public void setSize() {
             // a pointer to the key + a string
@@ -826,7 +828,16 @@ public class ICUResourceWriter {
             if (annotation == null) {
                 write(writer, name + OPENBRACE + LINESEP);
             } else {
-                write(writer, name + COLON + TABLE + OPENPAREN + annotation + CLOSEPAREN + OPENBRACE + LINESEP);
+                write(
+                        writer,
+                        name
+                                + COLON
+                                + TABLE
+                                + OPENPAREN
+                                + annotation
+                                + CLOSEPAREN
+                                + OPENBRACE
+                                + LINESEP);
             }
             numIndent++;
             Resource current = first;
@@ -856,7 +867,8 @@ public class ICUResourceWriter {
                     // if(x.next == null) {
                     // throw new InternalError("Null NEXT node from " + x.name+","+x.toString());
                     // } else if(x.next.name == null) {
-                    // throw new InternalError("Null NEXT name from " + x.name+","+x.toString()+" -> " +
+                    // throw new InternalError("Null NEXT name from " + x.name+","+x.toString()+" ->
+                    // " +
                     // x.next.toString());
                     // }
                     if (x.next.name.compareTo(t.name) > 0) {
@@ -882,7 +894,6 @@ public class ICUResourceWriter {
                 // }
                 current = current.next;
             }
-
         } // end sort()
 
         public boolean is32Bit() {
@@ -929,7 +940,8 @@ public class ICUResourceWriter {
 
                     // if INT
                     if (current instanceof ResourceInt) {
-                        // resources[i] = (current->fType << 28) | (current->u.fIntValue.fValue & 0xFFFFFFF);
+                        // resources[i] = (current->fType << 28) | (current->u.fIntValue.fValue &
+                        // 0xFFFFFFF);
                         int value = 0;
 
                         try {
@@ -938,7 +950,8 @@ public class ICUResourceWriter {
                             System.err.println("Error converting string to int: " + e.getMessage());
                             System.exit(1);
                         }
-                        resources[count] = LDML2ICUBinaryWriter.URES_INT << 28 | (value & 0xFFFFFFF);
+                        resources[count] =
+                                LDML2ICUBinaryWriter.URES_INT << 28 | (value & 0xFFFFFFF);
 
                     } else {
                         // write the current object
@@ -946,15 +959,20 @@ public class ICUResourceWriter {
 
                         // write 32 bits for identification?
                         if (current instanceof ResourceString) {
-                            resources[count] = LDML2ICUBinaryWriter.URES_STRING << 28 | usedOffset >>> 2;
+                            resources[count] =
+                                    LDML2ICUBinaryWriter.URES_STRING << 28 | usedOffset >>> 2;
                         } else if (current instanceof ResourceTable) {
-                            resources[count] = LDML2ICUBinaryWriter.URES_TABLE << 28 | usedOffset >>> 2;
+                            resources[count] =
+                                    LDML2ICUBinaryWriter.URES_TABLE << 28 | usedOffset >>> 2;
                         } else if (current instanceof ResourceAlias) {
-                            resources[count] = LDML2ICUBinaryWriter.URES_ALIAS << 28 | usedOffset >>> 2;
+                            resources[count] =
+                                    LDML2ICUBinaryWriter.URES_ALIAS << 28 | usedOffset >>> 2;
                         } else if (current instanceof ResourceArray) {
-                            resources[count] = LDML2ICUBinaryWriter.URES_ARRAY << 28 | usedOffset >>> 2;
+                            resources[count] =
+                                    LDML2ICUBinaryWriter.URES_ARRAY << 28 | usedOffset >>> 2;
                         } else if (current instanceof ResourceIntVector) {
-                            resources[count] = LDML2ICUBinaryWriter.URES_INT_VECTOR << 28 | usedOffset >>> 2;
+                            resources[count] =
+                                    LDML2ICUBinaryWriter.URES_INT_VECTOR << 28 | usedOffset >>> 2;
                         }
 
                         usedOffset += current.size + pad32(current.size);
@@ -1003,7 +1021,6 @@ public class ICUResourceWriter {
                     } catch (IOException e) {
                         errIO();
                     }
-
                 }
             } else // else (the table is empty)
             {
@@ -1029,9 +1046,7 @@ public class ICUResourceWriter {
             return usedOffset;
         }
 
-        /**
-         * This method will set the size of the resource. Overwritten for each child object
-         */
+        /** This method will set the size of the resource. Overwritten for each child object */
         @Override
         public void setSize() {
             // Tables have children.
@@ -1054,10 +1069,12 @@ public class ICUResourceWriter {
             }
 
             if (this.is32Bit()) {
-                // this resources key offset + a key offset for each child + a pointer to their resource object.
+                // this resources key offset + a key offset for each child + a pointer to their
+                // resource object.
                 size = SIZE_OF_INT + (x * 2 * SIZE_OF_INT);
             } else {
-                // this resources key offset + a pointer to each childs resource + a 16 bit pointer to each childs key
+                // this resources key offset + a pointer to each childs resource + a 16 bit pointer
+                // to each childs key
                 size = SIZE_OF_INT / 2 + (x * (SIZE_OF_INT + (SIZE_OF_INT / 2)));
             }
         }
@@ -1074,12 +1091,26 @@ public class ICUResourceWriter {
             writeComments(writer, numIndent);
             writeIndent(writer, numIndent);
             if (internal == null) {
-                String line = ((name == null) ? EMPTY : name) + COLON + IMPORT + OPENBRACE + QUOTE + external + QUOTE
-                    + CLOSEBRACE + ((bare == true) ? EMPTY : LINESEP);
+                String line =
+                        ((name == null) ? EMPTY : name)
+                                + COLON
+                                + IMPORT
+                                + OPENBRACE
+                                + QUOTE
+                                + external
+                                + QUOTE
+                                + CLOSEBRACE
+                                + ((bare == true) ? EMPTY : LINESEP);
                 write(writer, line);
             } else {
-                String line = ((name == null) ? EMPTY : name) + COLON + BIN + OPENBRACE + internal + CLOSEBRACE
-                    + ((bare == true) ? EMPTY : LINESEP);
+                String line =
+                        ((name == null) ? EMPTY : name)
+                                + COLON
+                                + BIN
+                                + OPENBRACE
+                                + internal
+                                + CLOSEBRACE
+                                + ((bare == true) ? EMPTY : LINESEP);
                 write(writer, line);
             }
         }
@@ -1130,11 +1161,22 @@ public class ICUResourceWriter {
         public void write(OutputStream writer, int numIndent, boolean bare) {
             writeComments(writer, numIndent);
             writeIndent(writer, numIndent);
-            String line = ((name == null) ? EMPTY : name) + COLON + PROCESS +
-                OPENPAREN + ext + CLOSEPAREN + OPENBRACE + QUOTE + escapeSyntaxChars(val) + QUOTE + CLOSEBRACE;
+            String line =
+                    ((name == null) ? EMPTY : name)
+                            + COLON
+                            + PROCESS
+                            + OPENPAREN
+                            + ext
+                            + CLOSEPAREN
+                            + OPENBRACE
+                            + QUOTE
+                            + escapeSyntaxChars(val)
+                            + QUOTE
+                            + CLOSEBRACE;
             if (bare == true) {
                 if (name != null) {
-                    throw new RuntimeException("Bare option is set to true but the resource has a name! " + name);
+                    throw new RuntimeException(
+                            "Bare option is set to true but the resource has a name! " + name);
                 }
                 write(writer, line);
             } else {
@@ -1164,11 +1206,19 @@ public class ICUResourceWriter {
         public void write(OutputStream writer, int numIndent, boolean bare) {
             writeComments(writer, numIndent);
             writeIndent(writer, numIndent);
-            String line = ((name == null) ? EMPTY : name) + COLON + IMPORT + OPENBRACE + QUOTE + escapeSyntaxChars(val)
-                + QUOTE + CLOSEBRACE;
+            String line =
+                    ((name == null) ? EMPTY : name)
+                            + COLON
+                            + IMPORT
+                            + OPENBRACE
+                            + QUOTE
+                            + escapeSyntaxChars(val)
+                            + QUOTE
+                            + CLOSEBRACE;
             if (bare == true) {
                 if (name != null) {
-                    throw new RuntimeException("Bare option is set to true but the resource has a name! " + name);
+                    throw new RuntimeException(
+                            "Bare option is set to true but the resource has a name! " + name);
                 }
                 write(writer, line);
             } else {
@@ -1185,11 +1235,19 @@ public class ICUResourceWriter {
         public void write(OutputStream writer, int numIndent, boolean bare) {
             writeComments(writer, numIndent);
             writeIndent(writer, numIndent);
-            String line = ((name == null) ? EMPTY : name) + COLON + INCLUDE + OPENBRACE + QUOTE
-                + escapeSyntaxChars(val) + QUOTE + CLOSEBRACE;
+            String line =
+                    ((name == null) ? EMPTY : name)
+                            + COLON
+                            + INCLUDE
+                            + OPENBRACE
+                            + QUOTE
+                            + escapeSyntaxChars(val)
+                            + QUOTE
+                            + CLOSEBRACE;
             if (bare == true) {
                 if (name != null) {
-                    throw new RuntimeException("Bare option is set to true but the resource has a name! " + name);
+                    throw new RuntimeException(
+                            "Bare option is set to true but the resource has a name! " + name);
                 }
                 write(writer, line);
             } else {
@@ -1232,10 +1290,7 @@ public class ICUResourceWriter {
         return ((x % 16) == 0) ? 0 : (16 - (x % 16));
     }
 
-    /**
-     * Takes a 32 bit integer and returns an array of 4 bytes.
-     *
-     */
+    /** Takes a 32 bit integer and returns an array of 4 bytes. */
     private static byte[] intToBytes(int x) {
         byte[] b = new byte[4];
         b[3] = (byte) (x); // just the last byte
@@ -1289,7 +1344,8 @@ public class ICUResourceWriter {
     private static byte[] shortToBytes(short x) {
         byte[] b = new byte[2];
         b[1] = (byte) (x); // bitwise AND with the lower byte
-        b[0] = (byte) (x >>> 8); // shift four bits to the right and fill with zeros, and then bitwise and with the
+        b[0] = (byte) (x >>> 8); // shift four bits to the right and fill with zeros, and
+        // then bitwise and with the
         // lower byte
         return b;
     }
@@ -1316,5 +1372,4 @@ public class ICUResourceWriter {
 
         return b;
     }
-
 }

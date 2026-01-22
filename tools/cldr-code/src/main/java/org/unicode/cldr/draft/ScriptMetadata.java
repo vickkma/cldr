@@ -1,5 +1,12 @@
 package org.unicode.cldr.draft;
 
+import com.google.common.base.Joiner;
+import com.ibm.icu.impl.Relation;
+import com.ibm.icu.lang.UScript;
+import com.ibm.icu.text.Transform;
+import com.ibm.icu.text.UTF16;
+import com.ibm.icu.util.ICUException;
+import com.ibm.icu.util.VersionInfo;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,39 +18,45 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-
 import org.unicode.cldr.tool.CountryCodeConverter;
 import org.unicode.cldr.util.CldrUtility;
 import org.unicode.cldr.util.Containment;
 import org.unicode.cldr.util.SemiFileReader;
 import org.unicode.cldr.util.StandardCodes;
+import org.unicode.cldr.util.StandardCodes.LstrType;
+import org.unicode.cldr.util.Validity;
+import org.unicode.cldr.util.Validity.Status;
 import org.unicode.cldr.util.With;
-
-import com.google.common.base.Joiner;
-import com.ibm.icu.impl.Relation;
-import com.ibm.icu.lang.UScript;
-import com.ibm.icu.text.Transform;
-import com.ibm.icu.text.UTF16;
-import com.ibm.icu.util.ICUException;
-import com.ibm.icu.util.VersionInfo;
 
 public class ScriptMetadata {
     private static final int MAX_RANK = 33;
     private static final String DATA_FILE = "/org/unicode/cldr/util/data/Script_Metadata.csv";
-    private static final VersionInfo UNICODE_VERSION = VersionInfo.getInstance(
-        CldrUtility.getProperty("SCRIPT_UNICODE_VERSION", "15"));
+    private static final VersionInfo UNICODE_VERSION =
+            VersionInfo.getInstance(CldrUtility.getProperty("SCRIPT_UNICODE_VERSION", "17"));
 
     // To get the data, go do the Script MetaData spreadsheet
     // Download As Comma Separated Items into DATA_FILE
-    // Set the last string in the UNICODE_VERSION line above to the right Unicode Version (for Unicode beta).
+    // Set the last string in the UNICODE_VERSION line above to the right Unicode Version (for
+    // Unicode beta).
     // Run TestScriptMetadata.
     // Then run GenerateScriptMetadata.
     // See http://cldr.unicode.org/development/updating-codes/updating-script-metadata
     private enum Column {
-        // must match the spreadsheet header (caseless compare) or have the alternate header as an argument.
+        // must match the spreadsheet header (caseless compare) or have the alternate header as an
+        // argument.
         // doesn't have to be in order
-        WR, AGE, SAMPLE_CODE, ID_USAGE("ID Usage (UAX31)"), RTL("RTL?"), LB_LETTERS("LB letters?"), SHAPING_REQ("Shaping Req?"), IME("IME?"), ORIGIN_COUNTRY(
-            "Origin Country"), DENSITY("~Density"), LANG_CODE, HAS_CASE("Has Case?");
+        WR,
+        AGE,
+        SAMPLE_CODE,
+        ID_USAGE("ID Usage (UAX31)"),
+        RTL("RTL?"),
+        LB_LETTERS("LB letters?"),
+        SHAPING_REQ("Shaping Req?"),
+        IME("IME?"),
+        ORIGIN_COUNTRY("Origin Country"),
+        DENSITY("~Density"),
+        LANG_CODE,
+        HAS_CASE("Has Case?");
 
         int columnNumber = -1;
         final Set<String> names = new HashSet<>();
@@ -66,8 +79,8 @@ public class ScriptMetadata {
             }
             for (Column v : values()) {
                 if (v.columnNumber == -1) {
-                    throw new IllegalArgumentException("Missing field for " + v
-                        + ", may need to add additional column alias");
+                    throw new IllegalArgumentException(
+                            "Missing field for " + v + ", may need to add additional column alias");
                 }
             }
         }
@@ -78,12 +91,18 @@ public class ScriptMetadata {
 
         int getInt(String[] items, int defaultValue) {
             final String item = getItem(items);
-            return item.isEmpty() || item.equalsIgnoreCase("n/a") ? defaultValue : Integer.parseInt(item);
+            return item.isEmpty() || item.equalsIgnoreCase("n/a")
+                    ? defaultValue
+                    : Integer.parseInt(item);
         }
     }
 
     public enum IdUsage {
-        UNKNOWN("Other"), EXCLUSION("Historic"), LIMITED_USE("Limited Use"), ASPIRATIONAL("Aspirational"), RECOMMENDED("Major Use");
+        UNKNOWN("Other"),
+        EXCLUSION("Historic"),
+        LIMITED_USE("Limited Use"),
+        ASPIRATIONAL("Aspirational"),
+        RECOMMENDED("Major Use");
 
         public final String name;
 
@@ -93,33 +112,25 @@ public class ScriptMetadata {
     }
 
     public enum Trinary {
-        UNKNOWN, NO, YES
+        UNKNOWN,
+        NO,
+        YES
     }
 
     public enum Shaping {
-        UNKNOWN, NO, MIN, YES
+        UNKNOWN,
+        NO,
+        MIN,
+        YES
     }
 
     static StandardCodes SC = StandardCodes.make();
-    // static HashMap<String,String> NAME_TO_REGION_CODE = new HashMap<String,String>();
-    // static HashMap<String,String> NAME_TO_LANGUAGE_CODE = new HashMap<String,String>();
-    static EnumLookup<Shaping> shapingLookup = EnumLookup.of(Shaping.class, null, "n/a", Shaping.UNKNOWN);
-    static EnumLookup<Trinary> trinaryLookup = EnumLookup.of(Trinary.class, null, "n/a", Trinary.UNKNOWN);
-    static EnumLookup<IdUsage> idUsageLookup = EnumLookup.of(IdUsage.class, null, "n/a", IdUsage.UNKNOWN);
-    static {
-        // addNameToCode("language", NAME_TO_LANGUAGE_CODE);
-        // // NAME_TO_LANGUAGE_CODE.put("", "und");
-        // NAME_TO_LANGUAGE_CODE.put("N/A", "und");
-        // addSynonym(NAME_TO_LANGUAGE_CODE, "Ancient Greek", "Ancient Greek (to 1453)");
-        // //addSynonym(NAME_TO_LANGUAGE_CODE, "Khmer", "Cambodian");
-        // addSynonym(NAME_TO_LANGUAGE_CODE, "Old Irish", "Old Irish (to 900)");
-
-        // addNameToCode("region", NAME_TO_REGION_CODE);
-        // // NAME_TO_REGION_CODE.put("UNKNOWN", "ZZ");
-        // // NAME_TO_REGION_CODE.put("", "ZZ");
-        // NAME_TO_REGION_CODE.put("N/A", "ZZ");
-        // addSynonym(NAME_TO_REGION_CODE, "Laos", "Lao People's Democratic Republic");
-    }
+    static EnumLookup<Shaping> shapingLookup =
+            EnumLookup.of(Shaping.class, null, "n/a", Shaping.UNKNOWN);
+    static EnumLookup<Trinary> trinaryLookup =
+            EnumLookup.of(Trinary.class, null, "n/a", Trinary.UNKNOWN);
+    static EnumLookup<IdUsage> idUsageLookup =
+            EnumLookup.of(IdUsage.class, null, "n/a", IdUsage.UNKNOWN);
 
     public static void addNameToCode(String type, Map<String, String> hashMap) {
         for (String language : SC.getAvailableCodes(type)) {
@@ -129,13 +140,13 @@ public class ScriptMetadata {
         }
     }
 
-    public static void addSynonym(Map<String, String> map, String newTerm, String oldTerm) {
-        String code = map.get(oldTerm.toUpperCase(Locale.ENGLISH));
-        map.put(newTerm.toUpperCase(Locale.ENGLISH), code);
-    }
+    public static final class SkipNewUnicodeException extends ICUException {}
 
-    public static final class SkipNewUnicodeException extends ICUException {
-    }
+    /**
+     * Scripts that either have no known languages as yet (Cpmn) or are used for any language
+     * (Brai).
+     */
+    public static final Set<String> SCRIPTS_WITH_NO_LANGUAGES = Set.of("Brai", "Cpmn");
 
     public static class Info implements Comparable<Info> {
         public final int rank;
@@ -158,7 +169,8 @@ public class ScriptMetadata {
             if (age.compareTo(UNICODE_VERSION) > 0) {
                 throw new SkipNewUnicodeException();
             }
-            // Parse the code point of the sample character, rather than the sample character itself.
+            // Parse the code point of the sample character, rather than the sample character
+            // itself.
             // The code point is more reliable, especially when the spreadsheet has a bug
             // for supplementary characters.
             int sampleCode = Integer.parseInt(Column.SAMPLE_CODE.getItem(items), 16);
@@ -170,12 +182,17 @@ public class ScriptMetadata {
             ime = trinaryLookup.forString(Column.IME.getItem(items));
             hasCase = trinaryLookup.forString(Column.HAS_CASE.getItem(items));
             density = Column.DENSITY.getInt(items, -1);
+            String script = items[2];
 
             final String countryRaw = Column.ORIGIN_COUNTRY.getItem(items);
             String country = CountryCodeConverter.getCodeFromName(countryRaw, false);
-            // NAME_TO_REGION_CODE.get(countryRaw.toUpperCase(Locale.ENGLISH));
             if (country == null) {
-                errors.add("Can't map " + countryRaw + " to country/region");
+                // Give context when throwing an error. Because this is run in a static init
+                // context, the stack trace is typically incorrect when something goes wrong.
+                errors.add(
+                        "ScriptMetadata.java: Can't map "
+                                + countryRaw
+                                + " to country/region. Try updating external/alternate_country_names.txt");
             }
             originCountry = country == null ? "ZZ" : country;
 
@@ -184,6 +201,39 @@ public class ScriptMetadata {
                 langCode = null;
             }
             likelyLanguage = langCode == null ? "und" : langCode;
+
+            // check for bad countries, bad languages
+
+            final Status scriptStatus =
+                    Validity.getInstance().getCodeToStatus(LstrType.script).get(script);
+            if (!(scriptStatus == Status.special || scriptStatus == Status.unknown)) {
+                final Status countryStatus =
+                        Validity.getInstance().getCodeToStatus(LstrType.region).get(originCountry);
+                if (countryStatus != Status.regular) {
+                    errors.add(
+                            "ScriptMetadata.java: the country ("
+                                    + originCountry
+                                    + ") for "
+                                    + script
+                                    + " is not valid: "
+                                    + countryStatus);
+                }
+                final Status languageStatus =
+                        Validity.getInstance()
+                                .getCodeToStatus(LstrType.language)
+                                .get(likelyLanguage);
+                if (languageStatus != Status.regular
+                        // make exception for scripts that has no known languages
+                        && !SCRIPTS_WITH_NO_LANGUAGES.contains(script)) {
+                    errors.add(
+                            "ScriptMetadata.java: the likely language ("
+                                    + likelyLanguage
+                                    + ") for "
+                                    + script
+                                    + " is not valid: "
+                                    + languageStatus);
+                }
+            }
         }
 
         public Info(Info other, String string, String sampleCharacter) {
@@ -205,23 +255,41 @@ public class ScriptMetadata {
         // return Trinary.valueOf(fix(title.getItem(items)).toUpperCase(Locale.ENGLISH));
         // }
         String fix(String in) {
-            return in.toUpperCase(Locale.ENGLISH).replace("N/A", "UNKNOWN").replace("?", "UNKNOWN")
-                .replace("RTL", "YES");
+            return in.toUpperCase(Locale.ENGLISH)
+                    .replace("N/A", "UNKNOWN")
+                    .replace("?", "UNKNOWN")
+                    .replace("RTL", "YES");
         }
 
         @Override
         public String toString() {
             return rank
-                + "\tSample: " + sampleChar
-                + "\tCountry: " + getName("territory", originCountry) + " (" + originCountry + ")"
-                + "\tLanguage: " + getName("language", likelyLanguage) + " (" + likelyLanguage + ")"
-                + "\tId: " + idUsage
-                + "\tRtl: " + rtl
-                + "\tLb: " + lbLetters
-                + "\tShape: " + shapingReq
-                + "\tIme: " + ime
-                + "\tCase: " + hasCase
-                + "\tDensity: " + density;
+                    + "\tSample: "
+                    + sampleChar
+                    + "\tCountry: "
+                    + getName("territory", originCountry)
+                    + " ("
+                    + originCountry
+                    + ")"
+                    + "\tLanguage: "
+                    + getName("language", likelyLanguage)
+                    + " ("
+                    + likelyLanguage
+                    + ")"
+                    + "\tId: "
+                    + idUsage
+                    + "\tRtl: "
+                    + rtl
+                    + "\tLb: "
+                    + lbLetters
+                    + "\tShape: "
+                    + shapingReq
+                    + "\tIme: "
+                    + ime
+                    + "\tCase: "
+                    + hasCase
+                    + "\tDensity: "
+                    + density;
         }
 
         public Object getName(String type, String code) {
@@ -234,7 +302,8 @@ public class ScriptMetadata {
 
         @Override
         public int compareTo(Info o) {
-            // we don't actually care what the comparison value is, as long as it is transitive and consistent with equals.
+            // we don't actually care what the comparison value is, as long as it is transitive and
+            // consistent with equals.
             return toString().compareTo(o.toString());
         }
     }
@@ -270,7 +339,12 @@ public class ScriptMetadata {
             } catch (SkipNewUnicodeException e) {
                 return true;
             } catch (Exception e) {
-                errors.add(e.getClass().getName() + "\t" + e.getMessage() + "\t" + Arrays.asList(items));
+                errors.add(
+                        e.getClass().getName()
+                                + "\t"
+                                + e.getMessage()
+                                + "\t"
+                                + Arrays.asList(items));
                 return true;
             }
 
@@ -314,14 +388,16 @@ public class ScriptMetadata {
         SOUTHEAST_ASIAN("035"),
         EAST_ASIAN("030"),
         AFRICAN("002"),
-        AMERICAN("019"),;
+        AMERICAN("019"),
+        ;
         public final Set<String> scripts;
 
         private Groupings(String... regions) {
-            scripts = With
-                .in(getScripts())
-                .toUnmodifiableCollection(
-                    new ScriptMetadata.RegionFilter(regions), new TreeSet<String>());
+            scripts =
+                    With.in(getScripts())
+                            .toUnmodifiableCollection(
+                                    new ScriptMetadata.RegionFilter(regions),
+                                    new TreeSet<String>());
         }
     }
 
@@ -349,7 +425,9 @@ public class ScriptMetadata {
         }
     }
 
-    static Relation<String, String> EXTRAS = Relation.of(new HashMap<String, Set<String>>(), HashSet.class);
+    static Relation<String, String> EXTRAS =
+            Relation.of(new HashMap<String, Set<String>>(), HashSet.class);
+
     static {
         EXTRAS.put("Hani", "Hans");
         EXTRAS.put("Hani", "Hant");
@@ -359,8 +437,9 @@ public class ScriptMetadata {
         EXTRAS.put("Hira", "Jpan");
         EXTRAS.freeze();
     }
-    static final Map<String, Info> data = new MyFileReader()
-        .process(ScriptMetadata.class, DATA_FILE).getData();
+
+    static final Map<String, Info> data =
+            new MyFileReader().process(ScriptMetadata.class, DATA_FILE).getData();
 
     public static Info getInfo(String s) {
         Info result = data.get(s);
@@ -388,22 +467,25 @@ public class ScriptMetadata {
 
     /**
      * Specialized scripts
+     *
      * @return
      */
     public static Set<String> getExtras() {
         return EXTRAS.values();
     }
 
-    public static Transform<String, String> TO_SHORT_SCRIPT = new Transform<String, String>() {
-        @Override
-        public String transform(String source) {
-            return UScript.getShortName(UScript.getCodeFromName(source));
-        }
-    };
-    public static Transform<String, String> TO_LONG_SCRIPT = new Transform<String, String>() {
-        @Override
-        public String transform(String source) {
-            return UScript.getName(UScript.getCodeFromName(source));
-        }
-    };
+    public static Transform<String, String> TO_SHORT_SCRIPT =
+            new Transform<>() {
+                @Override
+                public String transform(String source) {
+                    return UScript.getShortName(UScript.getCodeFromName(source));
+                }
+            };
+    public static Transform<String, String> TO_LONG_SCRIPT =
+            new Transform<>() {
+                @Override
+                public String transform(String source) {
+                    return UScript.getName(UScript.getCodeFromName(source));
+                }
+            };
 }

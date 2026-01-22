@@ -5,16 +5,18 @@ const { DefinePlugin } = require("webpack");
 module.exports = {
   entry: "./test/index.js",
   output: {
-    filename: "cldrTestBundle.js",
+    filename: "cldrTestBundle.mjs",
     path: path.resolve(__dirname, "test", "dist"),
     library: "cldrTestBundle",
     libraryTarget: "var",
     libraryExport: "default",
+    hashFunction: "xxhash64"
   },
   mode: "development",
   devtool: "source-map",
   module: {
     rules: [
+      // keep in sync with webpack.config.js
       {
         test: /\.css$/i,
         use: ["style-loader", "css-loader"],
@@ -23,7 +25,11 @@ module.exports = {
         test: /\.vue$/,
         loader: "vue-loader",
       },
-    ],
+      {
+        test: /\.md$/,
+        type: 'asset/source',
+      },
+  ],
   },
   plugins: [
     new VueLoaderPlugin(),

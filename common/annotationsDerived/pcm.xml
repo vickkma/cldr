@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
-<!-- Copyright © 1991-2022 Unicode, Inc.
+<!-- Copyright © 1991-2025 Unicode, Inc.
 For terms of use, see http://www.unicode.org/copyright.html
-SPDX-License-Identifier: Unicode-DFS-2016
+SPDX-License-Identifier: Unicode-3.0
 CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
+
+Derived short names and annotations, using GenerateDerivedAnnotations.java. See warnings in /annotations/ file.
 -->
-<!-- Derived short names and annotations, using GenerateDerivedAnnotations.java. See warnings in /annotations/ file. -->
 <ldml>
 	<identity>
 		<version number="$Revision$"/>
@@ -142,6 +143,26 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🫴🏾" type="tts">Hand Wé De Pọínt Ọp: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🫴🏿">Dák Skín Ton | Giv | Hand Wé De Fés Ọp | Hand Wé De Pọínt Ọp | Kach | Kọm | Ték Hand Gív Pẹ́sin Sain Mék I Kọm</annotation>
 		<annotation cp="🫴🏿" type="tts">Hand Wé De Pọínt Ọp: Dák Skín Ton</annotation>
+		<annotation cp="🫷🏻">Haí Faif | Hand Wé De Púsh Gó Lẹ́ft Said | Laít Skín Ton | Lẹ́ft Said | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
+		<annotation cp="🫷🏻" type="tts">Hand Wé De Púsh Gó Lẹ́ft Said: Laít Skín Ton</annotation>
+		<annotation cp="🫷🏼">Haí Faif | Hand Wé De Púsh Gó Lẹ́ft Said | Lẹ́ft Said | Mídíọ́m-Laít Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
+		<annotation cp="🫷🏼" type="tts">Hand Wé De Púsh Gó Lẹ́ft Said: Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🫷🏽">Haí Faif | Hand Wé De Púsh Gó Lẹ́ft Said | Lẹ́ft Said | Mídíọ́m Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
+		<annotation cp="🫷🏽" type="tts">Hand Wé De Púsh Gó Lẹ́ft Said: Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🫷🏾">Haí Faif | Hand Wé De Púsh Gó Lẹ́ft Said | Lẹ́ft Said | Mídíọ́m Dák Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
+		<annotation cp="🫷🏾" type="tts">Hand Wé De Púsh Gó Lẹ́ft Said: Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🫷🏿">Dák Skín Ton | Haí Faif | Hand Wé De Púsh Gó Lẹ́ft Said | Lẹ́ft Said | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
+		<annotation cp="🫷🏿" type="tts">Hand Wé De Púsh Gó Lẹ́ft Said: Dák Skín Ton</annotation>
+		<annotation cp="🫸🏻">Haí Faif | Hand Wé De Púsh Gó Raít Said | Laít Skín Ton | Lẹ́ft Said | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
+		<annotation cp="🫸🏻" type="tts">Hand Wé De Púsh Gó Raít Said: Laít Skín Ton</annotation>
+		<annotation cp="🫸🏼">Haí Faif | Hand Wé De Púsh Gó Raít Said | Lẹ́ft Said | Mídíọ́m-Laít Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
+		<annotation cp="🫸🏼" type="tts">Hand Wé De Púsh Gó Raít Said: Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🫸🏽">Haí Faif | Hand Wé De Púsh Gó Raít Said | Lẹ́ft Said | Mídíọ́m Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
+		<annotation cp="🫸🏽" type="tts">Hand Wé De Púsh Gó Raít Said: Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🫸🏾">Haí Faif | Hand Wé De Púsh Gó Raít Said | Lẹ́ft Said | Mídíọ́m Dák Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
+		<annotation cp="🫸🏾" type="tts">Hand Wé De Púsh Gó Raít Said: Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🫸🏿">Dák Skín Ton | Haí Faif | Hand Wé De Púsh Gó Raít Said | Lẹ́ft Said | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
+		<annotation cp="🫸🏿" type="tts">Hand Wé De Púsh Gó Raít Said: Dák Skín Ton</annotation>
 		<annotation cp="👌🏻">Hand | Laít Skín Ton | OK</annotation>
 		<annotation cp="👌🏻" type="tts">OK Hand: Laít Skín Ton</annotation>
 		<annotation cp="👌🏼">Hand | Mídíọ́m-Laít Skín Ton | OK</annotation>
@@ -432,26 +453,6 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🙏🏾" type="tts">Hand-dẹm Wé Dẹm Fold: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🙏🏿">Abẹg | Aks | Dák Skín Ton | Hand | Hand-dẹm Wé Dẹm Fold | Prè | Tánk-io</annotation>
 		<annotation cp="🙏🏿" type="tts">Hand-dẹm Wé Dẹm Fold: Dák Skín Ton</annotation>
-		<annotation cp="🫷🏻">Haí Faif | Hand Wé De Púsh Gó Lẹ́ft Said | Laít Skín Ton | Lẹ́ft Said | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
-		<annotation cp="🫷🏻" type="tts">Hand Wé De Púsh Gó Lẹ́ft Said: Laít Skín Ton</annotation>
-		<annotation cp="🫷🏼">Haí Faif | Hand Wé De Púsh Gó Lẹ́ft Said | Lẹ́ft Said | Mídíọ́m-Laít Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
-		<annotation cp="🫷🏼" type="tts">Hand Wé De Púsh Gó Lẹ́ft Said: Mídíọ́m-Laít Skín Ton</annotation>
-		<annotation cp="🫷🏽">Haí Faif | Hand Wé De Púsh Gó Lẹ́ft Said | Lẹ́ft Said | Mídíọ́m Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
-		<annotation cp="🫷🏽" type="tts">Hand Wé De Púsh Gó Lẹ́ft Said: Mídíọ́m Skín Ton</annotation>
-		<annotation cp="🫷🏾">Haí Faif | Hand Wé De Púsh Gó Lẹ́ft Said | Lẹ́ft Said | Mídíọ́m Dák Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
-		<annotation cp="🫷🏾" type="tts">Hand Wé De Púsh Gó Lẹ́ft Said: Mídíọ́m Dák Skín Ton</annotation>
-		<annotation cp="🫷🏿">Dák Skín Ton | Haí Faif | Hand Wé De Púsh Gó Lẹ́ft Said | Lẹ́ft Said | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
-		<annotation cp="🫷🏿" type="tts">Hand Wé De Púsh Gó Lẹ́ft Said: Dák Skín Ton</annotation>
-		<annotation cp="🫸🏻">Haí Faif | Hand Wé De Púsh Gó Raít Said | Laít Skín Ton | Lẹ́ft Said | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
-		<annotation cp="🫸🏻" type="tts">Hand Wé De Púsh Gó Raít Said: Laít Skín Ton</annotation>
-		<annotation cp="🫸🏼">Haí Faif | Hand Wé De Púsh Gó Raít Said | Lẹ́ft Said | Mídíọ́m-Laít Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
-		<annotation cp="🫸🏼" type="tts">Hand Wé De Púsh Gó Raít Said: Mídíọ́m-Laít Skín Ton</annotation>
-		<annotation cp="🫸🏽">Haí Faif | Hand Wé De Púsh Gó Raít Said | Lẹ́ft Said | Mídíọ́m Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
-		<annotation cp="🫸🏽" type="tts">Hand Wé De Púsh Gó Raít Said: Mídíọ́m Skín Ton</annotation>
-		<annotation cp="🫸🏾">Haí Faif | Hand Wé De Púsh Gó Raít Said | Lẹ́ft Said | Mídíọ́m Dák Skín Ton | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
-		<annotation cp="🫸🏾" type="tts">Hand Wé De Púsh Gó Raít Said: Mídíọ́m Dák Skín Ton</annotation>
-		<annotation cp="🫸🏿">Dák Skín Ton | Haí Faif | Hand Wé De Púsh Gó Raít Said | Lẹ́ft Said | Nọ́ Gri | Push | Rifiuz | Weet</annotation>
-		<annotation cp="🫸🏿" type="tts">Hand Wé De Púsh Gó Raít Said: Dák Skín Ton</annotation>
 		<annotation cp="✍🏻">Hand | Hand Wé De Raít Sọ́mtin | Laít Skín Ton | Rait</annotation>
 		<annotation cp="✍🏻" type="tts">Hand Wé De Raít Sọ́mtin: Laít Skín Ton</annotation>
 		<annotation cp="✍🏼">Hand | Hand Wé De Raít Sọ́mtin | Mídíọ́m-Laít Skín Ton | Rait</annotation>
@@ -602,6 +603,46 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👱🏾" type="tts">Pẹ́sin Wé Gẹ́t Blọ́nd Hea: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👱🏿">Blọnd | Dák Skín Ton | Hea | Pẹ́sin Wé Gẹ́t Blọ́nd Hea | Pẹ́sin: Blọ́nd Hea</annotation>
 		<annotation cp="👱🏿" type="tts">Pẹ́sin Wé Gẹ́t Blọ́nd Hea: Dák Skín Ton</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏼">Laít Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏼" type="tts">Pípul Wé De Rẹ́sul: Laít Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏽">Laít Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏽" type="tts">Pípul Wé De Rẹ́sul: Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏾">Laít Skín Ton | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏾" type="tts">Pípul Wé De Rẹ́sul: Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏿">Dák Skín Ton | Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏻‍🫯‍🧑🏿" type="tts">Pípul Wé De Rẹ́sul: Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏻">Laít Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏻" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏽">Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏽" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏾">Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏾" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏿">Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏼‍🫯‍🧑🏿" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏻">Laít Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏻" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏼">Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏼" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏾">Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏾" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏿">Dák Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏽‍🫯‍🧑🏿" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏻">Laít Skín Ton | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏻" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏼">Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏼" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏽">Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏽" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏿">Dák Skín Ton | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏾‍🫯‍🧑🏿" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏻">Dák Skín Ton | Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏻" type="tts">Pípul Wé De Rẹ́sul: Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏼">Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏼" type="tts">Pípul Wé De Rẹ́sul: Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏽">Dák Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏽" type="tts">Pípul Wé De Rẹ́sul: Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏾">Dák Skín Ton | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🧑🏿‍🫯‍🧑🏾" type="tts">Pípul Wé De Rẹ́sul: Dák Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🧑🏻‍❤‍💋‍🧑🏼">Kis | Laít Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin | Tuú Pípul</annotation>
 		<annotation cp="🧑🏻‍❤‍💋‍🧑🏼" type="tts">Kis: Pẹ́sin, Pẹ́sin, Laít Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
 		<annotation cp="🧑🏻‍❤‍💋‍🧑🏽">Kis | Laít Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin | Tuú Pípul</annotation>
@@ -730,6 +771,56 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🧑🏾‍🦲" type="tts">Pẹ́sin: Mídíọ́m Dák Skín Ton, Bọld</annotation>
 		<annotation cp="🧑🏿‍🦲">Bọld | Dák Skín Ton | Machọ́ Pẹ́sin | Pẹ́sin | Pẹ́sin Wé Dẹm Nó Tọk Wẹ́dá Na Man Ọ Wúman | Pẹ́sin Wé Nọ́ Bi Man Ọ Wúman</annotation>
 		<annotation cp="🧑🏿‍🦲" type="tts">Pẹ́sin: Dák Skín Ton, Bọld</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏼">Dánsa | Laít Skín Ton | Mídíọ́m-Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏼" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Laít Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏽">Dánsa | Laít Skín Ton | Mídíọ́m Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏽" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏾">Dánsa | Laít Skín Ton | Mídíọ́m Dák Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏾" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏿">Dák Skín Ton | Dánsa | Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏻‍🐰‍🧑🏿" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏻">Dánsa | Laít Skín Ton | Mídíọ́m-Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏻" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m-Laít Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏽">Dánsa | Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏽" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m-Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏾">Dánsa | Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏾" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m-Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏿">Dák Skín Ton | Dánsa | Mídíọ́m-Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏼‍🐰‍🧑🏿" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m-Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏻">Dánsa | Laít Skín Ton | Mídíọ́m Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏻" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏼">Dánsa | Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏼" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏾">Dánsa | Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏾" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏿">Dák Skín Ton | Dánsa | Mídíọ́m Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏽‍🐰‍🧑🏿" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏻">Dánsa | Laít Skín Ton | Mídíọ́m Dák Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏻" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏼">Dánsa | Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏼" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏽">Dánsa | Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏽" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏿">Dák Skín Ton | Dánsa | Mídíọ́m Dák Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏾‍🐰‍🧑🏿" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m Dák Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏻">Dák Skín Ton | Dánsa | Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏻" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏼">Dák Skín Ton | Dánsa | Mídíọ́m-Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏼" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏽">Dák Skín Ton | Dánsa | Mídíọ́m Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏽" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏾">Dák Skín Ton | Dánsa | Mídíọ́m Dák Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="🧑🏿‍🐰‍🧑🏾" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Dák Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🧑🏻‍🩰">bálẹ dánsá | Laít Skín Ton</annotation>
+		<annotation cp="🧑🏻‍🩰" type="tts">bálẹ dánsá: Laít Skín Ton</annotation>
+		<annotation cp="🧑🏼‍🩰">bálẹ dánsá | Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🧑🏼‍🩰" type="tts">bálẹ dánsá: Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🧑🏽‍🩰">bálẹ dánsá | Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🧑🏽‍🩰" type="tts">bálẹ dánsá: Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🧑🏾‍🩰">bálẹ dánsá | Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🧑🏾‍🩰" type="tts">bálẹ dánsá: Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🧑🏿‍🩰">bálẹ dánsá | Dák Skín Ton</annotation>
+		<annotation cp="🧑🏿‍🩰" type="tts">bálẹ dánsá: Dák Skín Ton</annotation>
 		<annotation cp="👨🏻">Laít Skín Ton | Machọ́ Pẹ́sin | Man</annotation>
 		<annotation cp="👨🏻" type="tts">Man: Laít Skín Ton</annotation>
 		<annotation cp="👨🏼">Machọ́ Pẹ́sin | Man | Mídíọ́m-Laít Skín Ton</annotation>
@@ -770,6 +861,46 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👱🏾‍♂" type="tts">Man Wé Gẹ́t Blọ́nd Hea: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👱🏿‍♂">Blọnd | Dák Skín Ton | Hea | Man | Man Wé Gẹ́t Blọ́nd Hea | Man: Blọ́nd Hea</annotation>
 		<annotation cp="👱🏿‍♂" type="tts">Man Wé Gẹ́t Blọ́nd Hea: Dák Skín Ton</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏼">Laít Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m-Laít Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏼" type="tts">Mẹn Wé De Rẹ́sul: Laít Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏽">Laít Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏽" type="tts">Mẹn Wé De Rẹ́sul: Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏾">Laít Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Dák Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏾" type="tts">Mẹn Wé De Rẹ́sul: Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏿">Dák Skín Ton | Laít Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Rẹ́sul</annotation>
+		<annotation cp="👨🏻‍🫯‍👨🏿" type="tts">Mẹn Wé De Rẹ́sul: Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏻">Laít Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m-Laít Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏻" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏽">Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏽" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏾">Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏾" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏿">Dák Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m-Laít Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏼‍🫯‍👨🏿" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏻">Laít Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏻" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏼">Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏼" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏾">Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏾" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏿">Dák Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏽‍🫯‍👨🏿" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏻">Laít Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Dák Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏻" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏼">Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏼" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏽">Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏽" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏿">Dák Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Dák Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏾‍🫯‍👨🏿" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏻">Dák Skín Ton | Laít Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Rẹ́sul</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏻" type="tts">Mẹn Wé De Rẹ́sul: Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏼">Dák Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m-Laít Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏼" type="tts">Mẹn Wé De Rẹ́sul: Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏽">Dák Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏽" type="tts">Mẹn Wé De Rẹ́sul: Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏾">Dák Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Dák Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="👨🏿‍🫯‍👨🏾" type="tts">Mẹn Wé De Rẹ́sul: Dák Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👨🏻‍❤‍💋‍👨🏻">Kis | Laít Skín Ton | Man | Tuú Pípul</annotation>
 		<annotation cp="👨🏻‍❤‍💋‍👨🏻" type="tts">Kis: Man, Man, Laít Skín Ton</annotation>
 		<annotation cp="👨🏻‍❤‍💋‍👨🏼">Kis | Laít Skín Ton | Man | Mídíọ́m-Laít Skín Ton | Tuú Pípul</annotation>
@@ -918,6 +1049,46 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👨🏾‍🦲" type="tts">Man: Mídíọ́m Dák Skín Ton, Bọld</annotation>
 		<annotation cp="👨🏿‍🦲">Bọld | Dák Skín Ton | Machọ́ Pẹ́sin | Man</annotation>
 		<annotation cp="👨🏿‍🦲" type="tts">Man: Dák Skín Ton, Bọld</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏼">Dánsa | Laít Skín Ton | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏼" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Laít Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏽">Dánsa | Laít Skín Ton | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏽" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏾">Dánsa | Laít Skín Ton | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏾" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏿">Dák Skín Ton | Dánsa | Laít Skín Ton | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏻‍🐰‍👨🏿" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏻">Dánsa | Laít Skín Ton | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏻" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m-Laít Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏽">Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏽" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m-Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏾">Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏾" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m-Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏿">Dák Skín Ton | Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏼‍🐰‍👨🏿" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m-Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏻">Dánsa | Laít Skín Ton | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏻" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏼">Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏼" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏾">Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏾" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏿">Dák Skín Ton | Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏽‍🐰‍👨🏿" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏻">Dánsa | Laít Skín Ton | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏻" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏼">Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏼" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏽">Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏽" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏿">Dák Skín Ton | Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏾‍🐰‍👨🏿" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Dák Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏻">Dák Skín Ton | Dánsa | Laít Skín Ton | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏻" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏼">Dák Skín Ton | Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏼" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏽">Dák Skín Ton | Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏽" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏾">Dák Skín Ton | Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👨🏿‍🐰‍👨🏾" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Dák Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👩🏻">Laít Skín Ton | Machọ́ Pẹ́sin | Wúman</annotation>
 		<annotation cp="👩🏻" type="tts">Wúman: Laít Skín Ton</annotation>
 		<annotation cp="👩🏼">Machọ́ Pẹ́sin | Mídíọ́m-Laít Skín Ton | Wúman</annotation>
@@ -948,6 +1119,46 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👱🏾‍♀" type="tts">Wúman Wé Gẹ́t Blọ́nd Hea: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👱🏿‍♀">Blọnd Hea | Dák Skín Ton | Wúman Wé Gẹ́t Blọ́nd Hea | Wúman: Blọ́nd Hea</annotation>
 		<annotation cp="👱🏿‍♀" type="tts">Wúman Wé Gẹ́t Blọ́nd Hea: Dák Skín Ton</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏼">Laít Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏼" type="tts">Wímẹn Wé De Rẹ́sul: Laít Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏽">Laít Skín Ton | Mídíọ́m Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏽" type="tts">Wímẹn Wé De Rẹ́sul: Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏾">Laít Skín Ton | Mídíọ́m Dák Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏾" type="tts">Wímẹn Wé De Rẹ́sul: Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏿">Dák Skín Ton | Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏻‍🫯‍👩🏿" type="tts">Wímẹn Wé De Rẹ́sul: Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏻">Laít Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏻" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏽">Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏽" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏾">Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏾" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏿">Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏼‍🫯‍👩🏿" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏻">Laít Skín Ton | Mídíọ́m Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏻" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏼">Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏼" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏾">Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏾" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏿">Dák Skín Ton | Mídíọ́m Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏽‍🫯‍👩🏿" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏻">Laít Skín Ton | Mídíọ́m Dák Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏻" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏼">Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏼" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏽">Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏽" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏿">Dák Skín Ton | Mídíọ́m Dák Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏾‍🫯‍👩🏿" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏻">Dák Skín Ton | Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏻" type="tts">Wímẹn Wé De Rẹ́sul: Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏼">Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏼" type="tts">Wímẹn Wé De Rẹ́sul: Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏽">Dák Skín Ton | Mídíọ́m Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏽" type="tts">Wímẹn Wé De Rẹ́sul: Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏾">Dák Skín Ton | Mídíọ́m Dák Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="👩🏿‍🫯‍👩🏾" type="tts">Wímẹn Wé De Rẹ́sul: Dák Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👩🏻‍❤‍💋‍👨🏻">Kis | Laít Skín Ton | Man | Tuú Pípul | Wúman</annotation>
 		<annotation cp="👩🏻‍❤‍💋‍👨🏻" type="tts">Kis: Wúman, Man, Laít Skín Ton</annotation>
 		<annotation cp="👩🏻‍❤‍💋‍👨🏼">Kis | Laít Skín Ton | Man | Mídíọ́m-Laít Skín Ton | Tuú Pípul | Wúman</annotation>
@@ -1196,6 +1407,46 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👩🏾‍🦲" type="tts">Wúman: Mídíọ́m Dák Skín Ton, Bọld</annotation>
 		<annotation cp="👩🏿‍🦲">Bọld | Dák Skín Ton | Machọ́ Pẹ́sin | Wúman</annotation>
 		<annotation cp="👩🏿‍🦲" type="tts">Wúman: Dák Skín Ton, Bọld</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏼">Dánsa | Laít Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏼" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Laít Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏽">Dánsa | Laít Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏽" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏾">Dánsa | Laít Skín Ton | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏾" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏿">Dák Skín Ton | Dánsa | Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏻‍🐰‍👩🏿" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏻">Dánsa | Laít Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏻" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m-Laít Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏽">Dánsa | Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏽" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m-Laít Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏾">Dánsa | Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏾" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m-Laít Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏿">Dák Skín Ton | Dánsa | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏼‍🐰‍👩🏿" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m-Laít Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏻">Dánsa | Laít Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏻" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏼">Dánsa | Mídíọ́m Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏼" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏾">Dánsa | Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏾" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏿">Dák Skín Ton | Dánsa | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏽‍🐰‍👩🏿" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏻">Dánsa | Laít Skín Ton | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏻" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏼">Dánsa | Mídíọ́m Dák Skín Ton | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏼" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏽">Dánsa | Mídíọ́m Dák Skín Ton | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏽" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏿">Dák Skín Ton | Dánsa | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏾‍🐰‍👩🏿" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Dák Skín Ton, Dák Skín Ton</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏻">Dák Skín Ton | Dánsa | Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏻" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Dák Skín Ton, Laít Skín Ton</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏼">Dák Skín Ton | Dánsa | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏼" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Dák Skín Ton, Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏽">Dák Skín Ton | Dánsa | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏽" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Dák Skín Ton, Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏾">Dák Skín Ton | Dánsa | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👩🏿‍🐰‍👩🏾" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Dák Skín Ton, Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🧓🏻">Laít Skín Ton | Machọ́ Pẹ́sin | Old | Pẹ́sin Wé Dẹm Nó Tọk Wẹ́dá Na Man Ọ Wúman | Pẹ́sin Wé Nọ́ Bi Man Ọ Wúman | Síniọ́ Pẹ́sin</annotation>
 		<annotation cp="🧓🏻" type="tts">Síniọ́ Pẹ́sin: Laít Skín Ton</annotation>
 		<annotation cp="🧓🏼">Machọ́ Pẹ́sin | Mídíọ́m-Laít Skín Ton | Old | Pẹ́sin Wé Dẹm Nó Tọk Wẹ́dá Na Man Ọ Wúman | Pẹ́sin Wé Nọ́ Bi Man Ọ Wúman | Síniọ́ Pẹ́sin</annotation>
@@ -2376,15 +2627,15 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🤶🏾" type="tts">Misis Klọz: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🤶🏿">Dák Skín Ton | Klọz | Krísmas | Mamá | Misis | Mọ́da | Sẹlibréshọn</annotation>
 		<annotation cp="🤶🏿" type="tts">Misis Klọz: Dák Skín Ton</annotation>
-		<annotation cp="🧑🏻‍🎄">Klọz, Krísmas | Laít Skín Ton | Mx Klọz</annotation>
+		<annotation cp="🧑🏻‍🎄">Klọz | Krísmas | Laít Skín Ton | Mx Klọz</annotation>
 		<annotation cp="🧑🏻‍🎄" type="tts">Mx Klọz: Laít Skín Ton</annotation>
-		<annotation cp="🧑🏼‍🎄">Klọz, Krísmas | Mídíọ́m-Laít Skín Ton | Mx Klọz</annotation>
+		<annotation cp="🧑🏼‍🎄">Klọz | Krísmas | Mídíọ́m-Laít Skín Ton | Mx Klọz</annotation>
 		<annotation cp="🧑🏼‍🎄" type="tts">Mx Klọz: Mídíọ́m-Laít Skín Ton</annotation>
-		<annotation cp="🧑🏽‍🎄">Klọz, Krísmas | Mídíọ́m Skín Ton | Mx Klọz</annotation>
+		<annotation cp="🧑🏽‍🎄">Klọz | Krísmas | Mídíọ́m Skín Ton | Mx Klọz</annotation>
 		<annotation cp="🧑🏽‍🎄" type="tts">Mx Klọz: Mídíọ́m Skín Ton</annotation>
-		<annotation cp="🧑🏾‍🎄">Klọz, Krísmas | Mídíọ́m Dák Skín Ton | Mx Klọz</annotation>
+		<annotation cp="🧑🏾‍🎄">Klọz | Krísmas | Mídíọ́m Dák Skín Ton | Mx Klọz</annotation>
 		<annotation cp="🧑🏾‍🎄" type="tts">Mx Klọz: Mídíọ́m Dák Skín Ton</annotation>
-		<annotation cp="🧑🏿‍🎄">Dák Skín Ton | Klọz, Krísmas | Mx Klọz</annotation>
+		<annotation cp="🧑🏿‍🎄">Dák Skín Ton | Klọz | Krísmas | Mx Klọz</annotation>
 		<annotation cp="🧑🏿‍🎄" type="tts">Mx Klọz: Dák Skín Ton</annotation>
 		<annotation cp="🦸🏻">Bẹtá | Gud | Híro | Laít Skín Ton | Supahíro | Supapáwa | Wúmán Híro</annotation>
 		<annotation cp="🦸🏻" type="tts">Supahíro: Laít Skín Ton</annotation>
@@ -2686,6 +2937,42 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🚶🏾‍♀" type="tts">Wúman Wé De Waká: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🚶🏿‍♀">Dák Skín Ton | To Waká | To Waká Gó Faa Fọ Bush | Wúman | Wúman Wé De Waká</annotation>
 		<annotation cp="🚶🏿‍♀" type="tts">Wúman Wé De Waká: Dák Skín Ton</annotation>
+		<annotation cp="🚶‍➡">De Waká | Fẹsin | Pẹ́sin Wé De Waká | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶‍➡" type="tts">Pẹ́sin Wé De Waká: Fẹsin ráít</annotation>
+		<annotation cp="🚶🏻‍➡">De Waká | Fẹsin | Laít Skín Ton | Pẹ́sin Wé De Waká | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶🏻‍➡" type="tts">Pẹ́sin Wé De Waká: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏼‍➡">De Waká | Fẹsin | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Waká | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶🏼‍➡" type="tts">Pẹ́sin Wé De Waká: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏽‍➡">De Waká | Fẹsin | Mídíọ́m Skín Ton | Pẹ́sin Wé De Waká | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶🏽‍➡" type="tts">Pẹ́sin Wé De Waká: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏾‍➡">De Waká | Fẹsin | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Waká | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶🏾‍➡" type="tts">Pẹ́sin Wé De Waká: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏿‍➡">Dák Skín Ton | De Waká | Fẹsin | Pẹ́sin Wé De Waká | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶🏿‍➡" type="tts">Pẹ́sin Wé De Waká: Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶‍♀‍➡">Fẹsin | ráít | To Waká | To Waká Gó Faa Fọ Bush | Wúman | Wúman Wé De Waká</annotation>
+		<annotation cp="🚶‍♀‍➡" type="tts">Wúman Wé De Waká: Fẹsin ráít</annotation>
+		<annotation cp="🚶🏻‍♀‍➡">Fẹsin | Laít Skín Ton | ráít | To Waká | To Waká Gó Faa Fọ Bush | Wúman | Wúman Wé De Waká</annotation>
+		<annotation cp="🚶🏻‍♀‍➡" type="tts">Wúman Wé De Waká: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏼‍♀‍➡">Fẹsin | Mídíọ́m-Laít Skín Ton | ráít | To Waká | To Waká Gó Faa Fọ Bush | Wúman | Wúman Wé De Waká</annotation>
+		<annotation cp="🚶🏼‍♀‍➡" type="tts">Wúman Wé De Waká: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏽‍♀‍➡">Fẹsin | Mídíọ́m Skín Ton | ráít | To Waká | To Waká Gó Faa Fọ Bush | Wúman | Wúman Wé De Waká</annotation>
+		<annotation cp="🚶🏽‍♀‍➡" type="tts">Wúman Wé De Waká: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏾‍♀‍➡">Fẹsin | Mídíọ́m Dák Skín Ton | ráít | To Waká | To Waká Gó Faa Fọ Bush | Wúman | Wúman Wé De Waká</annotation>
+		<annotation cp="🚶🏾‍♀‍➡" type="tts">Wúman Wé De Waká: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏿‍♀‍➡">Dák Skín Ton | Fẹsin | ráít | To Waká | To Waká Gó Faa Fọ Bush | Wúman | Wúman Wé De Waká</annotation>
+		<annotation cp="🚶🏿‍♀‍➡" type="tts">Wúman Wé De Waká: Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶‍♂‍➡">Fẹsin | Man | Man Wé De Waká | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶‍♂‍➡" type="tts">Man Wé De Waká: Fẹsin ráít</annotation>
+		<annotation cp="🚶🏻‍♂‍➡">Fẹsin | Laít Skín Ton | Man | Man Wé De Waká | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶🏻‍♂‍➡" type="tts">Man Wé De Waká: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏼‍♂‍➡">Fẹsin | Man | Man Wé De Waká | Mídíọ́m-Laít Skín Ton | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶🏼‍♂‍➡" type="tts">Man Wé De Waká: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏽‍♂‍➡">Fẹsin | Man | Man Wé De Waká | Mídíọ́m Skín Ton | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶🏽‍♂‍➡" type="tts">Man Wé De Waká: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏾‍♂‍➡">Fẹsin | Man | Man Wé De Waká | Mídíọ́m Dák Skín Ton | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶🏾‍♂‍➡" type="tts">Man Wé De Waká: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🚶🏿‍♂‍➡">Dák Skín Ton | Fẹsin | Man | Man Wé De Waká | ráít | To Waká | To Waká Gó Faa Fọ Bush</annotation>
+		<annotation cp="🚶🏿‍♂‍➡" type="tts">Man Wé De Waká: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="🧍🏻">De Stánd Ọp | Laít Skín Ton | Pẹ́sín Wé De Stánd Ọp | To Stánd Ọp</annotation>
 		<annotation cp="🧍🏻" type="tts">Pẹ́sín Wé De Stánd Ọp: Laít Skín Ton</annotation>
 		<annotation cp="🧍🏼">De Stánd Ọp | Mídíọ́m-Laít Skín Ton | Pẹ́sín Wé De Stánd Ọp | To Stánd Ọp</annotation>
@@ -2746,6 +3033,42 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🧎🏾‍♀" type="tts">Wúman Wé Níl Daun: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🧎🏿‍♀">Dák Skín Ton | De Níl Daun | Wúman | Wúman Wé Níl Daun</annotation>
 		<annotation cp="🧎🏿‍♀" type="tts">Wúman Wé Níl Daun: Dák Skín Ton</annotation>
+		<annotation cp="🧎‍➡">De Níl Daun | Fẹsin | Pẹ́sin Wé Níl Daun | ráít | To Níl Daun</annotation>
+		<annotation cp="🧎‍➡" type="tts">Pẹ́sin Wé Níl Daun: Fẹsin ráít</annotation>
+		<annotation cp="🧎🏻‍➡">De Níl Daun | Fẹsin | Laít Skín Ton | Pẹ́sin Wé Níl Daun | ráít | To Níl Daun</annotation>
+		<annotation cp="🧎🏻‍➡" type="tts">Pẹ́sin Wé Níl Daun: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏼‍➡">De Níl Daun | Fẹsin | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé Níl Daun | ráít | To Níl Daun</annotation>
+		<annotation cp="🧎🏼‍➡" type="tts">Pẹ́sin Wé Níl Daun: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏽‍➡">De Níl Daun | Fẹsin | Mídíọ́m Skín Ton | Pẹ́sin Wé Níl Daun | ráít | To Níl Daun</annotation>
+		<annotation cp="🧎🏽‍➡" type="tts">Pẹ́sin Wé Níl Daun: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏾‍➡">De Níl Daun | Fẹsin | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé Níl Daun | ráít | To Níl Daun</annotation>
+		<annotation cp="🧎🏾‍➡" type="tts">Pẹ́sin Wé Níl Daun: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏿‍➡">Dák Skín Ton | De Níl Daun | Fẹsin | Pẹ́sin Wé Níl Daun | ráít | To Níl Daun</annotation>
+		<annotation cp="🧎🏿‍➡" type="tts">Pẹ́sin Wé Níl Daun: Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎‍♀‍➡">De Níl Daun | Fẹsin | ráít | Wúman | Wúman Wé Níl Daun</annotation>
+		<annotation cp="🧎‍♀‍➡" type="tts">Wúman Wé Níl Daun: Fẹsin ráít</annotation>
+		<annotation cp="🧎🏻‍♀‍➡">De Níl Daun | Fẹsin | Laít Skín Ton | ráít | Wúman | Wúman Wé Níl Daun</annotation>
+		<annotation cp="🧎🏻‍♀‍➡" type="tts">Wúman Wé Níl Daun: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏼‍♀‍➡">De Níl Daun | Fẹsin | Mídíọ́m-Laít Skín Ton | ráít | Wúman | Wúman Wé Níl Daun</annotation>
+		<annotation cp="🧎🏼‍♀‍➡" type="tts">Wúman Wé Níl Daun: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏽‍♀‍➡">De Níl Daun | Fẹsin | Mídíọ́m Skín Ton | ráít | Wúman | Wúman Wé Níl Daun</annotation>
+		<annotation cp="🧎🏽‍♀‍➡" type="tts">Wúman Wé Níl Daun: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏾‍♀‍➡">De Níl Daun | Fẹsin | Mídíọ́m Dák Skín Ton | ráít | Wúman | Wúman Wé Níl Daun</annotation>
+		<annotation cp="🧎🏾‍♀‍➡" type="tts">Wúman Wé Níl Daun: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏿‍♀‍➡">Dák Skín Ton | De Níl Daun | Fẹsin | ráít | Wúman | Wúman Wé Níl Daun</annotation>
+		<annotation cp="🧎🏿‍♀‍➡" type="tts">Wúman Wé Níl Daun: Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎‍♂‍➡">De Níl Daun | Fẹsin | Man | Man Wé Níl Daun | ráít</annotation>
+		<annotation cp="🧎‍♂‍➡" type="tts">Man Wé Níl Daun: Fẹsin ráít</annotation>
+		<annotation cp="🧎🏻‍♂‍➡">De Níl Daun | Fẹsin | Laít Skín Ton | Man | Man Wé Níl Daun | ráít</annotation>
+		<annotation cp="🧎🏻‍♂‍➡" type="tts">Man Wé Níl Daun: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏼‍♂‍➡">De Níl Daun | Fẹsin | Man | Man Wé Níl Daun | Mídíọ́m-Laít Skín Ton | ráít</annotation>
+		<annotation cp="🧎🏼‍♂‍➡" type="tts">Man Wé Níl Daun: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏽‍♂‍➡">De Níl Daun | Fẹsin | Man | Man Wé Níl Daun | Mídíọ́m Skín Ton | ráít</annotation>
+		<annotation cp="🧎🏽‍♂‍➡" type="tts">Man Wé Níl Daun: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏾‍♂‍➡">De Níl Daun | Fẹsin | Man | Man Wé Níl Daun | Mídíọ́m Dák Skín Ton | ráít</annotation>
+		<annotation cp="🧎🏾‍♂‍➡" type="tts">Man Wé Níl Daun: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧎🏿‍♂‍➡">Dák Skín Ton | De Níl Daun | Fẹsin | Man | Man Wé Níl Daun | ráít</annotation>
+		<annotation cp="🧎🏿‍♂‍➡" type="tts">Man Wé Níl Daun: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="🧑🏻‍🦯">Blaind | Ízí To Yuz | Laít Skín Ton | Pẹ́sin Wit Waít Wọkín-Stik</annotation>
 		<annotation cp="🧑🏻‍🦯" type="tts">Pẹ́sin Wit Waít Wọkín-Stik: Laít Skín Ton</annotation>
 		<annotation cp="🧑🏼‍🦯">Blaind | Ízí To Yuz | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wit Waít Wọkín-Stik</annotation>
@@ -2756,6 +3079,18 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🧑🏾‍🦯" type="tts">Pẹ́sin Wit Waít Wọkín-Stik: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🧑🏿‍🦯">Blaind | Dák Skín Ton | Ízí To Yuz | Pẹ́sin Wit Waít Wọkín-Stik</annotation>
 		<annotation cp="🧑🏿‍🦯" type="tts">Pẹ́sin Wit Waít Wọkín-Stik: Dák Skín Ton</annotation>
+		<annotation cp="🧑‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Pẹ́sin Wit Waít Wọkín-Stik | ráít</annotation>
+		<annotation cp="🧑‍🦯‍➡" type="tts">Pẹ́sin Wit Waít Wọkín-Stik: Fẹsin ráít</annotation>
+		<annotation cp="🧑🏻‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Laít Skín Ton | Pẹ́sin Wit Waít Wọkín-Stik | ráít</annotation>
+		<annotation cp="🧑🏻‍🦯‍➡" type="tts">Pẹ́sin Wit Waít Wọkín-Stik: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏼‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wit Waít Wọkín-Stik | ráít</annotation>
+		<annotation cp="🧑🏼‍🦯‍➡" type="tts">Pẹ́sin Wit Waít Wọkín-Stik: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏽‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Mídíọ́m Skín Ton | Pẹ́sin Wit Waít Wọkín-Stik | ráít</annotation>
+		<annotation cp="🧑🏽‍🦯‍➡" type="tts">Pẹ́sin Wit Waít Wọkín-Stik: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏾‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Mídíọ́m Dák Skín Ton | Pẹ́sin Wit Waít Wọkín-Stik | ráít</annotation>
+		<annotation cp="🧑🏾‍🦯‍➡" type="tts">Pẹ́sin Wit Waít Wọkín-Stik: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏿‍🦯‍➡">Blaind | Dák Skín Ton | Fẹsin | Ízí To Yuz | Pẹ́sin Wit Waít Wọkín-Stik | ráít</annotation>
+		<annotation cp="🧑🏿‍🦯‍➡" type="tts">Pẹ́sin Wit Waít Wọkín-Stik: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="👨🏻‍🦯">Blaind | Ízí To Yuz | Laít Skín Ton | Man | Man Wit Waít Wọkín-Stik</annotation>
 		<annotation cp="👨🏻‍🦯" type="tts">Man Wit Waít Wọkín-Stik: Laít Skín Ton</annotation>
 		<annotation cp="👨🏼‍🦯">Blaind | Ízí To Yuz | Man | Man Wit Waít Wọkín-Stik | Mídíọ́m-Laít Skín Ton</annotation>
@@ -2766,6 +3101,18 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👨🏾‍🦯" type="tts">Man Wit Waít Wọkín-Stik: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👨🏿‍🦯">Blaind | Dák Skín Ton | Ízí To Yuz | Man | Man Wit Waít Wọkín-Stik</annotation>
 		<annotation cp="👨🏿‍🦯" type="tts">Man Wit Waít Wọkín-Stik: Dák Skín Ton</annotation>
+		<annotation cp="👨‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Man | Man Wit Waít Wọkín-Stik | ráít</annotation>
+		<annotation cp="👨‍🦯‍➡" type="tts">Man Wit Waít Wọkín-Stik: Fẹsin ráít</annotation>
+		<annotation cp="👨🏻‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Laít Skín Ton | Man | Man Wit Waít Wọkín-Stik | ráít</annotation>
+		<annotation cp="👨🏻‍🦯‍➡" type="tts">Man Wit Waít Wọkín-Stik: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏼‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Man | Man Wit Waít Wọkín-Stik | Mídíọ́m-Laít Skín Ton | ráít</annotation>
+		<annotation cp="👨🏼‍🦯‍➡" type="tts">Man Wit Waít Wọkín-Stik: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏽‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Man | Man Wit Waít Wọkín-Stik | Mídíọ́m Skín Ton | ráít</annotation>
+		<annotation cp="👨🏽‍🦯‍➡" type="tts">Man Wit Waít Wọkín-Stik: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏾‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Man | Man Wit Waít Wọkín-Stik | Mídíọ́m Dák Skín Ton | ráít</annotation>
+		<annotation cp="👨🏾‍🦯‍➡" type="tts">Man Wit Waít Wọkín-Stik: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏿‍🦯‍➡">Blaind | Dák Skín Ton | Fẹsin | Ízí To Yuz | Man | Man Wit Waít Wọkín-Stik | ráít</annotation>
+		<annotation cp="👨🏿‍🦯‍➡" type="tts">Man Wit Waít Wọkín-Stik: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="👩🏻‍🦯">Blaind | Ízí To Yuz | Laít Skín Ton | Wúman | Wúman Wit Waít Wọkín-Stik</annotation>
 		<annotation cp="👩🏻‍🦯" type="tts">Wúman Wit Waít Wọkín-Stik: Laít Skín Ton</annotation>
 		<annotation cp="👩🏼‍🦯">Blaind | Ízí To Yuz | Mídíọ́m-Laít Skín Ton | Wúman | Wúman Wit Waít Wọkín-Stik</annotation>
@@ -2776,6 +3123,18 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👩🏾‍🦯" type="tts">Wúman Wit Waít Wọkín-Stik: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👩🏿‍🦯">Blaind | Dák Skín Ton | Ízí To Yuz | Wúman | Wúman Wit Waít Wọkín-Stik</annotation>
 		<annotation cp="👩🏿‍🦯" type="tts">Wúman Wit Waít Wọkín-Stik: Dák Skín Ton</annotation>
+		<annotation cp="👩‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | ráít | Wúman | Wúman Wit Waít Wọkín-Stik</annotation>
+		<annotation cp="👩‍🦯‍➡" type="tts">Wúman Wit Waít Wọkín-Stik: Fẹsin ráít</annotation>
+		<annotation cp="👩🏻‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Laít Skín Ton | ráít | Wúman | Wúman Wit Waít Wọkín-Stik</annotation>
+		<annotation cp="👩🏻‍🦯‍➡" type="tts">Wúman Wit Waít Wọkín-Stik: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏼‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Mídíọ́m-Laít Skín Ton | ráít | Wúman | Wúman Wit Waít Wọkín-Stik</annotation>
+		<annotation cp="👩🏼‍🦯‍➡" type="tts">Wúman Wit Waít Wọkín-Stik: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏽‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Mídíọ́m Skín Ton | ráít | Wúman | Wúman Wit Waít Wọkín-Stik</annotation>
+		<annotation cp="👩🏽‍🦯‍➡" type="tts">Wúman Wit Waít Wọkín-Stik: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏾‍🦯‍➡">Blaind | Fẹsin | Ízí To Yuz | Mídíọ́m Dák Skín Ton | ráít | Wúman | Wúman Wit Waít Wọkín-Stik</annotation>
+		<annotation cp="👩🏾‍🦯‍➡" type="tts">Wúman Wit Waít Wọkín-Stik: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏿‍🦯‍➡">Blaind | Dák Skín Ton | Fẹsin | Ízí To Yuz | ráít | Wúman | Wúman Wit Waít Wọkín-Stik</annotation>
+		<annotation cp="👩🏿‍🦯‍➡" type="tts">Wúman Wit Waít Wọkín-Stik: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="🧑🏻‍🦼">Ízí To Yuz | Laít Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | Wílchia</annotation>
 		<annotation cp="🧑🏻‍🦼" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Laít Skín Ton</annotation>
 		<annotation cp="🧑🏼‍🦼">Ízí To Yuz | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | Wílchia</annotation>
@@ -2786,6 +3145,18 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🧑🏾‍🦼" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🧑🏿‍🦼">Dák Skín Ton | Ízí To Yuz | Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | Wílchia</annotation>
 		<annotation cp="🧑🏿‍🦼" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Dák Skín Ton</annotation>
+		<annotation cp="🧑‍🦼‍➡">Fẹsin | Ízí To Yuz | Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑‍🦼‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Fẹsin ráít</annotation>
+		<annotation cp="🧑🏻‍🦼‍➡">Fẹsin | Ízí To Yuz | Laít Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑🏻‍🦼‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏼‍🦼‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑🏼‍🦼‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏽‍🦼‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑🏽‍🦼‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏾‍🦼‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑🏾‍🦼‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏿‍🦼‍➡">Dák Skín Ton | Fẹsin | Ízí To Yuz | Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑🏿‍🦼‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="👨🏻‍🦼">Ízí To Yuz | Laít Skín Ton | Man | Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | Wílchia</annotation>
 		<annotation cp="👨🏻‍🦼" type="tts">Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Laít Skín Ton</annotation>
 		<annotation cp="👨🏼‍🦼">Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | Mídíọ́m-Laít Skín Ton | Wílchia</annotation>
@@ -2796,6 +3167,18 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👨🏾‍🦼" type="tts">Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👨🏿‍🦼">Dák Skín Ton | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | Wílchia</annotation>
 		<annotation cp="👨🏿‍🦼" type="tts">Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Dák Skín Ton</annotation>
+		<annotation cp="👨‍🦼‍➡">Fẹsin | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="👨‍🦼‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Fẹsin ráít</annotation>
+		<annotation cp="👨🏻‍🦼‍➡">Fẹsin | Ízí To Yuz | Laít Skín Ton | Man | Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="👨🏻‍🦼‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏼‍🦼‍➡">Fẹsin | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | Mídíọ́m-Laít Skín Ton | ráít | Wílchia</annotation>
+		<annotation cp="👨🏼‍🦼‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏽‍🦼‍➡">Fẹsin | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | Mídíọ́m Skín Ton | ráít | Wílchia</annotation>
+		<annotation cp="👨🏽‍🦼‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏾‍🦼‍➡">Fẹsin | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | Mídíọ́m Dák Skín Ton | ráít | Wílchia</annotation>
+		<annotation cp="👨🏾‍🦼‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏿‍🦼‍➡">Dák Skín Ton | Fẹsin | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="👨🏿‍🦼‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="👩🏻‍🦼">Ízí To Yuz | Laít Skín Ton | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin</annotation>
 		<annotation cp="👩🏻‍🦼" type="tts">Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Laít Skín Ton</annotation>
 		<annotation cp="👩🏼‍🦼">Ízí To Yuz | Mídíọ́m-Laít Skín Ton | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin</annotation>
@@ -2806,6 +3189,18 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👩🏾‍🦼" type="tts">Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👩🏿‍🦼">Dák Skín Ton | Ízí To Yuz | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin</annotation>
 		<annotation cp="👩🏿‍🦼" type="tts">Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Dák Skín Ton</annotation>
+		<annotation cp="👩‍🦼‍➡">Fẹsin | Ízí To Yuz | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩‍🦼‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Fẹsin ráít</annotation>
+		<annotation cp="👩🏻‍🦼‍➡">Fẹsin | Ízí To Yuz | Laít Skín Ton | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩🏻‍🦼‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏼‍🦼‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m-Laít Skín Ton | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩🏼‍🦼‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏽‍🦼‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m Skín Ton | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩🏽‍🦼‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏾‍🦼‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m Dák Skín Ton | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩🏾‍🦼‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏿‍🦼‍➡">Dák Skín Ton | Fẹsin | Ízí To Yuz | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩🏿‍🦼‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Gẹ́t Ẹ́njin: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="🧑🏻‍🦽">Ízí To Yuz | Laít Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | Wílchia</annotation>
 		<annotation cp="🧑🏻‍🦽" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Laít Skín Ton</annotation>
 		<annotation cp="🧑🏼‍🦽">Ízí To Yuz | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | Wílchia</annotation>
@@ -2816,6 +3211,18 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🧑🏾‍🦽" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🧑🏿‍🦽">Dák Skín Ton | Ízí To Yuz | Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | Wílchia</annotation>
 		<annotation cp="🧑🏿‍🦽" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Dák Skín Ton</annotation>
+		<annotation cp="🧑‍🦽‍➡">Fẹsin | Ízí To Yuz | Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑‍🦽‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Fẹsin ráít</annotation>
+		<annotation cp="🧑🏻‍🦽‍➡">Fẹsin | Ízí To Yuz | Laít Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑🏻‍🦽‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏼‍🦽‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑🏼‍🦽‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏽‍🦽‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑🏽‍🦽‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏾‍🦽‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑🏾‍🦽‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🧑🏿‍🦽‍➡">Dák Skín Ton | Fẹsin | Ízí To Yuz | Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="🧑🏿‍🦽‍➡" type="tts">Pẹ́sin Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="👨🏻‍🦽">Ízí To Yuz | Laít Skín Ton | Man | Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | Wílchia</annotation>
 		<annotation cp="👨🏻‍🦽" type="tts">Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Laít Skín Ton</annotation>
 		<annotation cp="👨🏼‍🦽">Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | Mídíọ́m-Laít Skín Ton | Wílchia</annotation>
@@ -2826,6 +3233,18 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👨🏾‍🦽" type="tts">Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👨🏿‍🦽">Dák Skín Ton | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | Wílchia</annotation>
 		<annotation cp="👨🏿‍🦽" type="tts">Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Dák Skín Ton</annotation>
+		<annotation cp="👨‍🦽‍➡">Fẹsin | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="👨‍🦽‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Fẹsin ráít</annotation>
+		<annotation cp="👨🏻‍🦽‍➡">Fẹsin | Ízí To Yuz | Laít Skín Ton | Man | Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="👨🏻‍🦽‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏼‍🦽‍➡">Fẹsin | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | Mídíọ́m-Laít Skín Ton | ráít | Wílchia</annotation>
+		<annotation cp="👨🏼‍🦽‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏽‍🦽‍➡">Fẹsin | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | Mídíọ́m Skín Ton | ráít | Wílchia</annotation>
+		<annotation cp="👨🏽‍🦽‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏾‍🦽‍➡">Fẹsin | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | Mídíọ́m Dák Skín Ton | ráít | Wílchia</annotation>
+		<annotation cp="👨🏾‍🦽‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👨🏿‍🦽‍➡">Dák Skín Ton | Fẹsin | Ízí To Yuz | Man | Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin | ráít | Wílchia</annotation>
+		<annotation cp="👨🏿‍🦽‍➡" type="tts">Man Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="👩🏻‍🦽">Ízí To Yuz | Laít Skín Ton | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin</annotation>
 		<annotation cp="👩🏻‍🦽" type="tts">Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Laít Skín Ton</annotation>
 		<annotation cp="👩🏼‍🦽">Ízí To Yuz | Mídíọ́m-Laít Skín Ton | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin</annotation>
@@ -2836,6 +3255,18 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="👩🏾‍🦽" type="tts">Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="👩🏿‍🦽">Dák Skín Ton | Ízí To Yuz | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin</annotation>
 		<annotation cp="👩🏿‍🦽" type="tts">Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Dák Skín Ton</annotation>
+		<annotation cp="👩‍🦽‍➡">Fẹsin | Ízí To Yuz | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩‍🦽‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Fẹsin ráít</annotation>
+		<annotation cp="👩🏻‍🦽‍➡">Fẹsin | Ízí To Yuz | Laít Skín Ton | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩🏻‍🦽‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏼‍🦽‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m-Laít Skín Ton | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩🏼‍🦽‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏽‍🦽‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m Skín Ton | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩🏽‍🦽‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏾‍🦽‍➡">Fẹsin | Ízí To Yuz | Mídíọ́m Dák Skín Ton | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩🏾‍🦽‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="👩🏿‍🦽‍➡">Dák Skín Ton | Fẹsin | Ízí To Yuz | ráít | Wílchia | Wúman | Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin</annotation>
+		<annotation cp="👩🏿‍🦽‍➡" type="tts">Wúman Wé Dé Fọ Wílchia Wé Nọ́ Gẹ́t Ẹ́njin: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="🏃🏻">De Rọn | Laít Skín Ton | Márátọn | Pẹ́sin Wé De Rọn</annotation>
 		<annotation cp="🏃🏻" type="tts">Pẹ́sin Wé De Rọn: Laít Skín Ton</annotation>
 		<annotation cp="🏃🏼">De Rọn | Márátọn | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Rọn</annotation>
@@ -2866,6 +3297,42 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🏃🏾‍♀" type="tts">Wúman Wé De Rọn: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🏃🏿‍♀">Dák Skín Ton | De Rọn | De Rọ́n Fast | Márátọn | Wúman | Wúman Wé De Rọn</annotation>
 		<annotation cp="🏃🏿‍♀" type="tts">Wúman Wé De Rọn: Dák Skín Ton</annotation>
+		<annotation cp="🏃‍➡">De Rọn | Fẹsin | Márátọn | Pẹ́sin Wé De Rọn | ráít</annotation>
+		<annotation cp="🏃‍➡" type="tts">Pẹ́sin Wé De Rọn: Fẹsin ráít</annotation>
+		<annotation cp="🏃🏻‍➡">De Rọn | Fẹsin | Laít Skín Ton | Márátọn | Pẹ́sin Wé De Rọn | ráít</annotation>
+		<annotation cp="🏃🏻‍➡" type="tts">Pẹ́sin Wé De Rọn: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏼‍➡">De Rọn | Fẹsin | Márátọn | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Rọn | ráít</annotation>
+		<annotation cp="🏃🏼‍➡" type="tts">Pẹ́sin Wé De Rọn: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏽‍➡">De Rọn | Fẹsin | Márátọn | Mídíọ́m Skín Ton | Pẹ́sin Wé De Rọn | ráít</annotation>
+		<annotation cp="🏃🏽‍➡" type="tts">Pẹ́sin Wé De Rọn: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏾‍➡">De Rọn | Fẹsin | Márátọn | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Rọn | ráít</annotation>
+		<annotation cp="🏃🏾‍➡" type="tts">Pẹ́sin Wé De Rọn: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏿‍➡">Dák Skín Ton | De Rọn | Fẹsin | Márátọn | Pẹ́sin Wé De Rọn | ráít</annotation>
+		<annotation cp="🏃🏿‍➡" type="tts">Pẹ́sin Wé De Rọn: Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃‍♀‍➡">De Rọn | De Rọ́n Fast | Fẹsin | Márátọn | ráít | Wúman | Wúman Wé De Rọn</annotation>
+		<annotation cp="🏃‍♀‍➡" type="tts">Wúman Wé De Rọn: Fẹsin ráít</annotation>
+		<annotation cp="🏃🏻‍♀‍➡">De Rọn | De Rọ́n Fast | Fẹsin | Laít Skín Ton | Márátọn | ráít | Wúman | Wúman Wé De Rọn</annotation>
+		<annotation cp="🏃🏻‍♀‍➡" type="tts">Wúman Wé De Rọn: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏼‍♀‍➡">De Rọn | De Rọ́n Fast | Fẹsin | Márátọn | Mídíọ́m-Laít Skín Ton | ráít | Wúman | Wúman Wé De Rọn</annotation>
+		<annotation cp="🏃🏼‍♀‍➡" type="tts">Wúman Wé De Rọn: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏽‍♀‍➡">De Rọn | De Rọ́n Fast | Fẹsin | Márátọn | Mídíọ́m Skín Ton | ráít | Wúman | Wúman Wé De Rọn</annotation>
+		<annotation cp="🏃🏽‍♀‍➡" type="tts">Wúman Wé De Rọn: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏾‍♀‍➡">De Rọn | De Rọ́n Fast | Fẹsin | Márátọn | Mídíọ́m Dák Skín Ton | ráít | Wúman | Wúman Wé De Rọn</annotation>
+		<annotation cp="🏃🏾‍♀‍➡" type="tts">Wúman Wé De Rọn: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏿‍♀‍➡">Dák Skín Ton | De Rọn | De Rọ́n Fast | Fẹsin | Márátọn | ráít | Wúman | Wúman Wé De Rọn</annotation>
+		<annotation cp="🏃🏿‍♀‍➡" type="tts">Wúman Wé De Rọn: Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃‍♂‍➡">De Rọn | De Rọ́n Fast | Fẹsin | Man | Man Wé De Rọn | Márátọn | ráít</annotation>
+		<annotation cp="🏃‍♂‍➡" type="tts">Man Wé De Rọn: Fẹsin ráít</annotation>
+		<annotation cp="🏃🏻‍♂‍➡">De Rọn | De Rọ́n Fast | Fẹsin | Laít Skín Ton | Man | Man Wé De Rọn | Márátọn | ráít</annotation>
+		<annotation cp="🏃🏻‍♂‍➡" type="tts">Man Wé De Rọn: Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏼‍♂‍➡">De Rọn | De Rọ́n Fast | Fẹsin | Man | Man Wé De Rọn | Márátọn | Mídíọ́m-Laít Skín Ton | ráít</annotation>
+		<annotation cp="🏃🏼‍♂‍➡" type="tts">Man Wé De Rọn: Mídíọ́m-Laít Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏽‍♂‍➡">De Rọn | De Rọ́n Fast | Fẹsin | Man | Man Wé De Rọn | Márátọn | Mídíọ́m Skín Ton | ráít</annotation>
+		<annotation cp="🏃🏽‍♂‍➡" type="tts">Man Wé De Rọn: Mídíọ́m Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏾‍♂‍➡">De Rọn | De Rọ́n Fast | Fẹsin | Man | Man Wé De Rọn | Márátọn | Mídíọ́m Dák Skín Ton | ráít</annotation>
+		<annotation cp="🏃🏾‍♂‍➡" type="tts">Man Wé De Rọn: Mídíọ́m Dák Skín Ton, Fẹsin ráít</annotation>
+		<annotation cp="🏃🏿‍♂‍➡">Dák Skín Ton | De Rọn | De Rọ́n Fast | Fẹsin | Man | Man Wé De Rọn | Márátọn | ráít</annotation>
+		<annotation cp="🏃🏿‍♂‍➡" type="tts">Man Wé De Rọn: Dák Skín Ton, Fẹsin ráít</annotation>
 		<annotation cp="💃🏻">Dans | De Dans | Laít Skín Ton | Wúman | Wúman Wé De Dans</annotation>
 		<annotation cp="💃🏻" type="tts">Wúman Wé De Dans: Laít Skín Ton</annotation>
 		<annotation cp="💃🏼">Dans | De Dans | Mídíọ́m-Laít Skín Ton | Wúman | Wúman Wé De Dans</annotation>
@@ -2896,6 +3363,36 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🕴🏾" type="tts">Pẹ́sin Wé Wiá Sút-An-Sut An De Flót Fọ Ea: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🕴🏿">Bíznẹs | Dák Skín Ton | Pẹ́sin Wé Wiá Sút-An-Sut An De Flót Fọ Ea | Sut</annotation>
 		<annotation cp="🕴🏿" type="tts">Pẹ́sin Wé Wiá Sút-An-Sut An De Flót Fọ Ea: Dák Skín Ton</annotation>
+		<annotation cp="👯🏻">Dánsa | Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="👯🏻" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Laít Skín Ton</annotation>
+		<annotation cp="👯🏼">Dánsa | Mídíọ́m-Laít Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="👯🏼" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👯🏽">Dánsa | Mídíọ́m Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="👯🏽" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👯🏾">Dánsa | Mídíọ́m Dák Skín Ton | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="👯🏾" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👯🏿">Dák Skín Ton | Dánsa | Patí | Pípul Wé De Dans | Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia | Rábit Ia</annotation>
+		<annotation cp="👯🏿" type="tts">Pípul Wé Wiá Tins Wé Rizẹ́mbúl Rábit Ia: Dák Skín Ton</annotation>
+		<annotation cp="👯🏻‍♀">Dánsa | Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👯🏻‍♀" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Laít Skín Ton</annotation>
+		<annotation cp="👯🏼‍♀">Dánsa | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👯🏼‍♀" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👯🏽‍♀">Dánsa | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👯🏽‍♀" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👯🏾‍♀">Dánsa | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👯🏾‍♀" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👯🏿‍♀">Dák Skín Ton | Dánsa | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia | Wímẹn | Wímẹn Wé Wiá Rábít Iá Kaín Tins</annotation>
+		<annotation cp="👯🏿‍♀" type="tts">Wímẹn Wé Wiá Rábít Iá Kaín Tins: Dák Skín Ton</annotation>
+		<annotation cp="👯🏻‍♂">Dánsa | Laít Skín Ton | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👯🏻‍♂" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Laít Skín Ton</annotation>
+		<annotation cp="👯🏼‍♂">Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👯🏼‍♂" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="👯🏽‍♂">Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👯🏽‍♂" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Skín Ton</annotation>
+		<annotation cp="👯🏾‍♂">Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👯🏾‍♂" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="👯🏿‍♂">Dák Skín Ton | Dánsa | Mẹn | Mẹn Wé Wiá Rábít Iá Kaín Tins | Pẹ́sin Wé De Dans | Pípul Wé De Dú Patí | Rábit Ia</annotation>
+		<annotation cp="👯🏿‍♂" type="tts">Mẹn Wé Wiá Rábít Iá Kaín Tins: Dák Skín Ton</annotation>
 		<annotation cp="🧖🏻">Họ́t-Wọ́t-Smók Rum | Laít Skín Ton | Pẹ́sin Wé Dé Ínsaíd Họ́t-Wọ́ta-Smók Rum | Sọ́na | Stim Rum</annotation>
 		<annotation cp="🧖🏻" type="tts">Pẹ́sin Wé Dé Ínsaíd Họ́t-Wọ́ta-Smók Rum: Laít Skín Ton</annotation>
 		<annotation cp="🧖🏼">Họ́t-Wọ́t-Smók Rum | Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé Dé Ínsaíd Họ́t-Wọ́ta-Smók Rum | Sọ́na | Stim Rum</annotation>
@@ -3246,6 +3743,36 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🤸🏾‍♀" type="tts">Wúman Wé De Dú Kátwil: Mídíọ́m Dák Skín Ton</annotation>
 		<annotation cp="🤸🏿‍♀">Dák Skín Ton | Jimnástik | Kátwil | Wúman | Wúman Wé De Dú Kátwil</annotation>
 		<annotation cp="🤸🏿‍♀" type="tts">Wúman Wé De Dú Kátwil: Dák Skín Ton</annotation>
+		<annotation cp="🤼🏻">Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🤼🏻" type="tts">Pípul Wé De Rẹ́sul: Laít Skín Ton</annotation>
+		<annotation cp="🤼🏼">Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🤼🏼" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🤼🏽">Mídíọ́m Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🤼🏽" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🤼🏾">Mídíọ́m Dák Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🤼🏾" type="tts">Pípul Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🤼🏿">Dák Skín Ton | Pẹ́sin Wé De Rẹ́sul | Pípul Wé De Rẹ́sul | Rẹ́sul | Rẹ́súla</annotation>
+		<annotation cp="🤼🏿" type="tts">Pípul Wé De Rẹ́sul: Dák Skín Ton</annotation>
+		<annotation cp="🤼🏻‍♀">Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="🤼🏻‍♀" type="tts">Wímẹn Wé De Rẹ́sul: Laít Skín Ton</annotation>
+		<annotation cp="🤼🏼‍♀">Mídíọ́m-Laít Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="🤼🏼‍♀" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🤼🏽‍♀">Mídíọ́m Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="🤼🏽‍♀" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🤼🏾‍♀">Mídíọ́m Dák Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="🤼🏾‍♀" type="tts">Wímẹn Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🤼🏿‍♀">Dák Skín Ton | Rẹ́sul | Wímẹn | Wímẹn Wé De Rẹ́sul</annotation>
+		<annotation cp="🤼🏿‍♀" type="tts">Wímẹn Wé De Rẹ́sul: Dák Skín Ton</annotation>
+		<annotation cp="🤼🏻‍♂">Laít Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Rẹ́sul</annotation>
+		<annotation cp="🤼🏻‍♂" type="tts">Mẹn Wé De Rẹ́sul: Laít Skín Ton</annotation>
+		<annotation cp="🤼🏼‍♂">Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m-Laít Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="🤼🏼‍♂" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m-Laít Skín Ton</annotation>
+		<annotation cp="🤼🏽‍♂">Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="🤼🏽‍♂" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m Skín Ton</annotation>
+		<annotation cp="🤼🏾‍♂">Mẹn | Mẹn Wé De Rẹ́sul | Mídíọ́m Dák Skín Ton | Rẹ́sul</annotation>
+		<annotation cp="🤼🏾‍♂" type="tts">Mẹn Wé De Rẹ́sul: Mídíọ́m Dák Skín Ton</annotation>
+		<annotation cp="🤼🏿‍♂">Dák Skín Ton | Mẹn | Mẹn Wé De Rẹ́sul | Rẹ́sul</annotation>
+		<annotation cp="🤼🏿‍♂" type="tts">Mẹn Wé De Rẹ́sul: Dák Skín Ton</annotation>
 		<annotation cp="🤽🏻">Laít Skín Ton | Pẹ́sin Wé De Plé Wọ́tá Poló | Poló | Wọtá</annotation>
 		<annotation cp="🤽🏻" type="tts">Pẹ́sin Wé De Plé Wọ́tá Poló: Laít Skín Ton</annotation>
 		<annotation cp="🤽🏼">Mídíọ́m-Laít Skín Ton | Pẹ́sin Wé De Plé Wọ́tá Poló | Poló | Wọtá</annotation>
@@ -3776,6 +4303,8 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇨🇴" type="tts">Flag: Kolómbia</annotation>
 		<annotation cp="🇨🇵">Flag</annotation>
 		<annotation cp="🇨🇵" type="tts">Flag: Klipatọ́n Aíland</annotation>
+		<annotation cp="🇨🇶">Flag</annotation>
+		<annotation cp="🇨🇶" type="tts">Flag: Sák</annotation>
 		<annotation cp="🇨🇷">Flag</annotation>
 		<annotation cp="🇨🇷" type="tts">Flag: Kósta Ríka</annotation>
 		<annotation cp="🇨🇺">Flag</annotation>
@@ -3867,7 +4396,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇬🇹">Flag</annotation>
 		<annotation cp="🇬🇹" type="tts">Flag: Guátẹmála</annotation>
 		<annotation cp="🇬🇺">Flag</annotation>
-		<annotation cp="🇬🇺" type="tts">Flag: Guam</annotation>
+		<annotation cp="🇬🇺" type="tts">Flag: Guám</annotation>
 		<annotation cp="🇬🇼">Flag</annotation>
 		<annotation cp="🇬🇼" type="tts">Flag: Gíní-Bisáu</annotation>
 		<annotation cp="🇬🇾">Flag</annotation>
@@ -3901,7 +4430,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇮🇶">Flag</annotation>
 		<annotation cp="🇮🇶" type="tts">Flag: Irak</annotation>
 		<annotation cp="🇮🇷">Flag</annotation>
-		<annotation cp="🇮🇷" type="tts">Flag: Iran</annotation>
+		<annotation cp="🇮🇷" type="tts">Flag: Irán</annotation>
 		<annotation cp="🇮🇸">Flag</annotation>
 		<annotation cp="🇮🇸" type="tts">Flag: Aísland</annotation>
 		<annotation cp="🇮🇹">Flag</annotation>
@@ -3913,7 +4442,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇯🇴">Flag</annotation>
 		<annotation cp="🇯🇴" type="tts">Flag: Jọ́dan</annotation>
 		<annotation cp="🇯🇵">Flag</annotation>
-		<annotation cp="🇯🇵" type="tts">Flag: Japan</annotation>
+		<annotation cp="🇯🇵" type="tts">Flag: Japán</annotation>
 		<annotation cp="🇰🇪">Flag</annotation>
 		<annotation cp="🇰🇪" type="tts">Flag: Kẹ́nya</annotation>
 		<annotation cp="🇰🇬">Flag</annotation>
@@ -3937,7 +4466,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇰🇿">Flag</annotation>
 		<annotation cp="🇰🇿" type="tts">Flag: Kazakstan</annotation>
 		<annotation cp="🇱🇦">Flag</annotation>
-		<annotation cp="🇱🇦" type="tts">Flag: Laos</annotation>
+		<annotation cp="🇱🇦" type="tts">Flag: Láos</annotation>
 		<annotation cp="🇱🇧">Flag</annotation>
 		<annotation cp="🇱🇧" type="tts">Flag: Lẹ́bánọn</annotation>
 		<annotation cp="🇱🇨">Flag</annotation>
@@ -4029,7 +4558,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇳🇿">Flag</annotation>
 		<annotation cp="🇳🇿" type="tts">Flag: Niú Zíland</annotation>
 		<annotation cp="🇴🇲">Flag</annotation>
-		<annotation cp="🇴🇲" type="tts">Flag: Oman</annotation>
+		<annotation cp="🇴🇲" type="tts">Flag: Omán</annotation>
 		<annotation cp="🇵🇦">Flag</annotation>
 		<annotation cp="🇵🇦" type="tts">Flag: Pánáma</annotation>
 		<annotation cp="🇵🇪">Flag</annotation>
@@ -4055,7 +4584,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇵🇹">Flag</annotation>
 		<annotation cp="🇵🇹" type="tts">Flag: Pọ́túgal</annotation>
 		<annotation cp="🇵🇼">Flag</annotation>
-		<annotation cp="🇵🇼" type="tts">Flag: Palau</annotation>
+		<annotation cp="🇵🇼" type="tts">Flag: Paláu</annotation>
 		<annotation cp="🇵🇾">Flag</annotation>
 		<annotation cp="🇵🇾" type="tts">Flag: Párágwue</annotation>
 		<annotation cp="🇶🇦">Flag</annotation>
@@ -4077,7 +4606,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇸🇨">Flag</annotation>
 		<annotation cp="🇸🇨" type="tts">Flag: Sẹ́chẹls</annotation>
 		<annotation cp="🇸🇩">Flag</annotation>
-		<annotation cp="🇸🇩" type="tts">Flag: Sudan</annotation>
+		<annotation cp="🇸🇩" type="tts">Flag: Sudán</annotation>
 		<annotation cp="🇸🇪">Flag</annotation>
 		<annotation cp="🇸🇪" type="tts">Flag: Swídẹn</annotation>
 		<annotation cp="🇸🇬">Flag</annotation>
@@ -4117,7 +4646,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇹🇨">Flag</annotation>
 		<annotation cp="🇹🇨" type="tts">Flag: Tọks an Kaíkọ́s Aílands</annotation>
 		<annotation cp="🇹🇩">Flag</annotation>
-		<annotation cp="🇹🇩" type="tts">Flag: Chad</annotation>
+		<annotation cp="🇹🇩" type="tts">Flag: Chád</annotation>
 		<annotation cp="🇹🇫">Flag</annotation>
 		<annotation cp="🇹🇫" type="tts">Flag: Frẹ́nch Saútán Tẹ́rẹ́tris</annotation>
 		<annotation cp="🇹🇬">Flag</annotation>
@@ -4143,7 +4672,7 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="🇹🇻">Flag</annotation>
 		<annotation cp="🇹🇻" type="tts">Flag: Tuválu</annotation>
 		<annotation cp="🇹🇼">Flag</annotation>
-		<annotation cp="🇹🇼" type="tts">Flag: Taiwan</annotation>
+		<annotation cp="🇹🇼" type="tts">Flag: Taíwán</annotation>
 		<annotation cp="🇹🇿">Flag</annotation>
 		<annotation cp="🇹🇿" type="tts">Flag: Tanzánia</annotation>
 		<annotation cp="🇺🇦">Flag</annotation>
@@ -4209,25 +4738,5 @@ CLDR data files are interpreted according to the LDML specification (http://unic
 		<annotation cp="₺" type="tts">Tọ́kí Líra</annotation>
 		<annotation cp="₼" type="tts">Azẹrbaiján Mánat</annotation>
 		<annotation cp="₾" type="tts">Jọ́jiá Lári</annotation>
-		<annotation cp="0⃣">Kíkap</annotation>
-		<annotation cp="0⃣" type="tts">Kíkap: 0</annotation>
-		<annotation cp="1⃣">Kíkap</annotation>
-		<annotation cp="1⃣" type="tts">Kíkap: 1</annotation>
-		<annotation cp="2⃣">Kíkap</annotation>
-		<annotation cp="2⃣" type="tts">Kíkap: 2</annotation>
-		<annotation cp="3⃣">Kíkap</annotation>
-		<annotation cp="3⃣" type="tts">Kíkap: 3</annotation>
-		<annotation cp="4⃣">Kíkap</annotation>
-		<annotation cp="4⃣" type="tts">Kíkap: 4</annotation>
-		<annotation cp="5⃣">Kíkap</annotation>
-		<annotation cp="5⃣" type="tts">Kíkap: 5</annotation>
-		<annotation cp="6⃣">Kíkap</annotation>
-		<annotation cp="6⃣" type="tts">Kíkap: 6</annotation>
-		<annotation cp="7⃣">Kíkap</annotation>
-		<annotation cp="7⃣" type="tts">Kíkap: 7</annotation>
-		<annotation cp="8⃣">Kíkap</annotation>
-		<annotation cp="8⃣" type="tts">Kíkap: 8</annotation>
-		<annotation cp="9⃣">Kíkap</annotation>
-		<annotation cp="9⃣" type="tts">Kíkap: 9</annotation>
 	</annotations>
 </ldml>

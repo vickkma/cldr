@@ -5,36 +5,34 @@ import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.unicode.cldr.draft.FileUtilities;
 import org.unicode.cldr.util.CLDRFile;
 import org.unicode.cldr.util.CLDRPaths;
 import org.unicode.cldr.util.Factory;
 import org.unicode.cldr.util.LanguageTagParser;
+import org.unicode.cldr.util.NameType;
 import org.unicode.cldr.util.StandardCodes;
 import org.unicode.cldr.util.TransliteratorUtilities;
 
-/**
- * Generates information used for some internal formats. Internal Use.
- */
+/** Generates information used for some internal formats. Internal Use. */
 public class GenerateKaraList {
-    /**
-     * Generates information used for some internal formats. Internal Use.
-     */
+    /** Generates information used for some internal formats. Internal Use. */
     public static void main(String[] args) throws IOException {
         cldrFactory = Factory.make(CLDRPaths.COMMON_DIRECTORY, ".*");
         english = cldrFactory.make("en", true);
-        PrintWriter log = FileUtilities.openUTF8Writer(CLDRPaths.GEN_DIRECTORY + "main/", "karaList.xml");
+        PrintWriter log =
+                FileUtilities.openUTF8Writer(CLDRPaths.GEN_DIRECTORY + "main/", "karaList.xml");
         Set<String> locales = LanguageTagParser.getLanguageScript(cldrFactory.getAvailable());
         // hack for now
         locales.remove("sr");
         locales.remove("zh");
         StandardCodes codes = StandardCodes.make();
         log.println("<root>");
-        printCodes(log, locales, codes.getAvailableCodes("language"), CLDRFile.LANGUAGE_NAME);
-        printCodes(log, locales, codes.getAvailableCodes("territory"), CLDRFile.TERRITORY_NAME);
-        printCodes(log, locales, codes.getAvailableCodes("currency"), CLDRFile.CURRENCY_NAME);
-        // printCodes(log, locales, codes.getAvailableCodes("script"), "//ldml/localeDisplayNames/scripts/script",
+        printCodes(log, locales, codes.getAvailableCodes("language"), NameType.LANGUAGE);
+        printCodes(log, locales, codes.getAvailableCodes("territory"), NameType.TERRITORY);
+        printCodes(log, locales, codes.getAvailableCodes("currency"), NameType.CURRENCY);
+        // printCodes(log, locales, codes.getAvailableCodes("script"),
+        // "//ldml/localeDisplayNames/scripts/script",
         // "script");
         log.println("</root>");
         log.close();
@@ -87,45 +85,55 @@ public class GenerateKaraList {
      * </hom>
      * </entry>
      */
-    /**
-     * @param log
-     * @param locales
-     * @param availableCodes
-     * @param choice
-     *            TODO
-     */
-    private static void printCodes(PrintWriter log, Set<String> locales, Set<String> availableCodes, int choice) {
-        boolean hasAbbreviation = choice == CLDRFile.CURRENCY_NAME;
+
+    private static void printCodes(
+            PrintWriter log, Set<String> locales, Set<String> availableCodes, NameType nameType) {
+        boolean hasAbbreviation = nameType == NameType.CURRENCY;
         // boolean skipDraft = true;
         Set<String> errors = new HashSet<>();
-        for (Iterator<String> it = availableCodes.iterator(); it.hasNext();) {
+        for (Iterator<String> it = availableCodes.iterator(); it.hasNext(); ) {
             String id = it.next();
-            String ename = english.getName(choice, id);
+            String ename = english.nameGetter().getNameFromTypeEnumCode(nameType, id);
             if (ename == null) ename = "[untranslated: " + id + "]";
             System.out.println(id + "\t" + ename);
             log.println("\t<entry>");
-            log.println("\t\t<hdterm>" + TransliteratorUtilities.toXML.transliterate(ename) + "</hdterm>\t<!-- "
-                + TransliteratorUtilities.toXML.transliterate(CLDRFile.getNameName(choice)) + ": " + id + " -->"); // English
+            log.println(
+                    "\t\t<hdterm>"
+                            + TransliteratorUtilities.toXML.transliterate(ename)
+                            + "</hdterm>\t<!-- "
+                            + TransliteratorUtilities.toXML.transliterate(nameType.toString())
+                            + ": "
+                            + id
+                            + " -->"); // English
             // name
             log.println("\t\t<hom>");
             log.println("\t\t\t<epos>n</epos>"); // this is the part of speech value. It is fixed.
             log.println("\t\t\t<sense>");
             if (hasAbbreviation) { // only applicable for the currency entries
-                String aename = english.getName(CLDRFile.CURRENCY_SYMBOL, id);
+                String aename =
+                        english.nameGetter().getNameFromTypeEnumCode(NameType.CURRENCY_SYMBOL, id);
                 if (aename != null) {
-                    log.println("\t\t\t\t<eabbr>" + TransliteratorUtilities.toXML.transliterate(aename) + "</eabbr>");
+                    log.println(
+                            "\t\t\t\t<eabbr>"
+                                    + TransliteratorUtilities.toXML.transliterate(aename)
+                                    + "</eabbr>");
                 }
             }
-            for (Iterator<String> it2 = locales.iterator(); it2.hasNext();) {
+            for (Iterator<String> it2 = locales.iterator(); it2.hasNext(); ) {
                 String locale = it2.next();
                 try {
                     CLDRFile cldrfile = cldrFactory.make(locale, true);
-                    String trans = cldrfile.getName(choice, id);
+                    String trans = cldrfile.nameGetter().getNameFromTypeEnumCode(nameType, id);
                     if (trans == null) continue;
                     log.println("\t\t\t\t<target>"); // one target block for each language
                     // String etrans = getName(english, "languages/language", locale, true);
-                    log.println("\t\t\t\t\t<tlanguage>" + locale + "</tlanguage>\t<!-- "
-                        + TransliteratorUtilities.toXML.transliterate(english.getName(locale)) + " -->"); // We do use
+                    log.println(
+                            "\t\t\t\t\t<tlanguage>"
+                                    + locale
+                                    + "</tlanguage>\t<!-- "
+                                    + TransliteratorUtilities.toXML.transliterate(
+                                            english.nameGetter().getNameFromIdentifier(locale))
+                                    + " -->"); // We do use
                     // non-ISO
                     // values but
                     // you can
@@ -141,12 +149,19 @@ public class GenerateKaraList {
                     // necessary
                     // mapping
                     // afterwards.
-                    log.println("\t\t\t\t\t<trans>" + TransliteratorUtilities.toXML.transliterate(trans) + "</trans>");
+                    log.println(
+                            "\t\t\t\t\t<trans>"
+                                    + TransliteratorUtilities.toXML.transliterate(trans)
+                                    + "</trans>");
                     if (hasAbbreviation) {
-                        String aename = cldrfile.getName(CLDRFile.CURRENCY_SYMBOL, id);
+                        String aename =
+                                cldrfile.nameGetter()
+                                        .getNameFromTypeEnumCode(NameType.CURRENCY_SYMBOL, id);
                         if (aename != null && !aename.equals(id)) {
-                            log.println("\t\t\t\t\t<tabbr>" + TransliteratorUtilities.toXML.transliterate(aename)
-                                + "</tabbr>");
+                            log.println(
+                                    "\t\t\t\t\t<tabbr>"
+                                            + TransliteratorUtilities.toXML.transliterate(aename)
+                                            + "</tabbr>");
                         }
                     }
                     log.println("\t\t\t\t</target>");
@@ -162,9 +177,9 @@ public class GenerateKaraList {
             log.println("\t\t</hom>");
             log.println("\t</entry>");
             // English name
-            // if (id.length() == 4 && 'A' <= ch && ch <= 'Z') return getName(english, "scripts/script", id);
+            // if (id.length() == 4 && 'A' <= ch && ch <= 'Z') return getName(english,
+            // "scripts/script", id);
             // return getName(english, "territories/territory", id);
         }
-
     }
 }

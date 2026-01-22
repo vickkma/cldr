@@ -84,14 +84,14 @@
               >
             </td>
             <td v-for="type of reports.types" :key="type">
-              <div
-                class="d-dr-status statuscell"
+              <span
+                class="statuscell"
                 :class="
                   'd-dr-' + reports.byLocale[locale].byReport[type].status
                 "
               >
-                &nbsp;
-              </div>
+                {{ statusIcon(reports.byLocale[locale].byReport[type].status) }}
+              </span>
               {{ reports.byLocale[locale].byReport[type].status
               }}<span
                 v-if="reports.byLocale[locale].byReport[type].acceptability"
@@ -118,14 +118,19 @@
         </tbody>
       </table>
     </section>
+    <button v-if="this.canSummarizeAllLocales" @click="getCoverageStatusXlsx()">
+      Get DDL Locale Coverage .xlsx <b>SLOOOW</b>
+    </button>
   </div>
 </template>
 
 <script>
-import * as cldrLoad from "../esm/cldrLoad.js";
-import * as cldrPriorityItems from "../esm/cldrPriorityItems.js";
-import * as cldrText from "../esm/cldrText.js";
-import * as cldrReport from "../esm/cldrReport.js";
+import * as cldrCoverage from "../esm/cldrCoverage.mjs";
+import * as cldrLoad from "../esm/cldrLoad.mjs";
+import * as cldrPriorityItems from "../esm/cldrPriorityItems.mjs";
+import * as cldrReport from "../esm/cldrReport.mjs";
+import * as cldrTable from "../esm/cldrTable.mjs";
+import * as cldrText from "../esm/cldrText.mjs";
 
 export default {
   data() {
@@ -159,7 +164,6 @@ export default {
       this.accessDenied = cldrText.get("summary_access_denied");
     }
   },
-
   methods: {
     start() {
       cldrPriorityItems.start(this.summarizeAllLocales);
@@ -284,20 +288,16 @@ export default {
       return cldrText.sub("summary_snapshot_hover", args);
     },
 
-    reportClass(kind) {
-      if (kind === "unacceptable") {
-        return cldrReport.reportClass(true, false);
-      } else if (kind === "acceptable") {
-        return cldrReport.reportClass(true, true);
-      } else if (kind === "totalVoters") {
-        return "totalVoters";
-      } else {
-        return cldrReport.reportClass(false, false);
-      }
-    },
-
     downloadReports() {
       return cldrReport.downloadAllReports();
+    },
+
+    statusIcon(status) {
+      return cldrTable.getStatusIcon(status);
+    },
+
+    getCoverageStatusXlsx() {
+      cldrCoverage.getCoverageStatusXlsx();
     },
   },
 };

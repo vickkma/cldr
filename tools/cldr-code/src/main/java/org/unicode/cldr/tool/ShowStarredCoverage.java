@@ -1,10 +1,18 @@
 package org.unicode.cldr.tool;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
+import com.ibm.icu.impl.Relation;
+import com.ibm.icu.impl.Row.R2;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +22,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import java.util.stream.Collectors;
 import org.unicode.cldr.tool.Option.Options;
 import org.unicode.cldr.util.CLDRConfig;
 import org.unicode.cldr.util.CLDRFile;
@@ -31,6 +39,7 @@ import org.unicode.cldr.util.DtdType;
 import org.unicode.cldr.util.LanguageTagCanonicalizer;
 import org.unicode.cldr.util.LanguageTagParser;
 import org.unicode.cldr.util.Level;
+import org.unicode.cldr.util.LocaleNames;
 import org.unicode.cldr.util.Pair;
 import org.unicode.cldr.util.PathHeader;
 import org.unicode.cldr.util.PathHeader.Factory;
@@ -44,21 +53,18 @@ import org.unicode.cldr.util.SupplementalDataInfo.LengthFirstComparator;
 import org.unicode.cldr.util.XMLFileReader;
 import org.unicode.cldr.util.XPathParts;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.TreeMultimap;
-import com.ibm.icu.impl.Relation;
-import com.ibm.icu.impl.Row.R2;
-
 public class ShowStarredCoverage {
     static final CLDRConfig config = CLDRConfig.getInstance();
 
     enum MyOptions {
-        language(".*", "it", "language to gather coverage data for"), tag(".*", null, "gather data on language tags"), dtdTypes(".*", "ldml",
-            "dtdTypes, comma separated."),
-        //filter(".*", "en_001", "locale ancestor"),
-        ;
+        language(".*", "it", "language to gather coverage data for"),
+        tag(".*", null, "gather data on language tags"),
+        dtdTypes(".*", "ldml", "dtdTypes, comma separated."),
+        pathRegex(".*", null, "If present, only matching paths"),
+        maxAttributes("\\d+", null, "At most this number of attributes"),
+        verbose(".*", "", "Verbose mode"),
+    // filter(".*", "en_001", "locale ancestor"),
+    ;
 
         // BOILERPLATE TO COPY
         final Option option;
@@ -68,6 +74,7 @@ public class ShowStarredCoverage {
         }
 
         static Options myOptions = new Options();
+
         static {
             for (MyOptions option : MyOptions.values()) {
                 myOptions.add(option, option.option);
@@ -79,12 +86,29 @@ public class ShowStarredCoverage {
         }
     }
 
-    static final PathStarrer pathStarrer = new PathStarrer().setSubstitutionPattern("*");
     static final Factory phf = PathHeader.getFactory(config.getEnglish());
     static final SupplementalDataInfo sdi = config.getSupplementalDataInfo();
+    static final CLDRFile ENGLISH =
+            config.getCommonAndSeedAndMainAndAnnotationsFactory().make("en", true);
+
+    static boolean verbose = false;
+    static Matcher pathRegex = null;
+    static int maxAttributes = 10;
+
+    static final Set<String> ALLOWED = ImmutableSet.of("main", "annotations");
 
     public static void main(String[] args) {
         MyOptions.parse(args, true);
+
+        verbose = MyOptions.verbose.option.doesOccur();
+
+        if (MyOptions.pathRegex.option.doesOccur()) {
+            pathRegex = Pattern.compile(MyOptions.pathRegex.option.getValue()).matcher("");
+        }
+
+        if (MyOptions.maxAttributes.option.doesOccur()) {
+            maxAttributes = Integer.parseInt(MyOptions.maxAttributes.option.getValue());
+        }
 
         if (MyOptions.tag.option.doesOccur()) {
             new LanguageTagCollector().getLanguageTags();
@@ -99,16 +123,24 @@ public class ShowStarredCoverage {
 
         final String fileLocale = MyOptions.language.option.getValue();
 
-        M3<Level, PathHeader, Boolean> levelToPathHeaders = ChainedMap.of(
-            new TreeMap<Level, Object>(),
-            new TreeMap<PathHeader, Object>(),
-            Boolean.class);
+        M3<Level, PathHeader, Boolean> levelToPathHeaders =
+                ChainedMap.of(
+                        new TreeMap<Level, Object>(),
+                        new TreeMap<PathHeader, Object>(),
+                        Boolean.class);
 
+        if (verbose) {
+            System.out.println("№\tLevel\tStarredPath\tPH Status\t?\tAttributes");
+        }
         for (DtdType dtdType : DtdType.values()) {
+            if (dtdType.getStatus() != DtdType.DtdStatus.active) continue;
             if (dtdTypes != null && !dtdTypes.contains(dtdType)) {
                 continue;
             }
             for (String dir : dtdType.directories) {
+                if (!ALLOWED.contains(dir)) {
+                    continue;
+                }
                 if (dtdType == DtdType.ldml) {
                     doLdml(dir, fileLocale, levelToPathHeaders);
                 } else {
@@ -116,74 +148,100 @@ public class ShowStarredCoverage {
                 }
             }
         }
-        System.out.println("№\tLevel\tSection|Page\tStarredPath");
-        for (Entry<Level, Map<PathHeader, Boolean>> levelAndPathHeader : levelToPathHeaders) {
-            Level level = levelAndPathHeader.getKey();
-            Map<PathHeader, Boolean> pathHeaders2 = levelAndPathHeader.getValue();
-            Counter<String> codeCount = new Counter<>();
-            for (PathHeader ph : pathHeaders2.keySet()) {
-                codeCount.add(condense(ph), 1);
+        if (!verbose) {
+            System.out.println("№\tLevel\tSection|Page\tStarredPath");
+            for (Entry<Level, Map<PathHeader, Boolean>> levelAndPathHeader : levelToPathHeaders) {
+                Level level = levelAndPathHeader.getKey();
+                Map<PathHeader, Boolean> pathHeaders2 = levelAndPathHeader.getValue();
+                Counter<String> codeCount = new Counter<>();
+                for (PathHeader ph : pathHeaders2.keySet()) {
+                    codeCount.add(condense(ph), 1);
+                }
+                showResults("code count", level, codeCount);
             }
-            showResults("code count", level, codeCount);
         }
     }
 
-    static final Set<PageId> MainDateTimePages = EnumSet.of(PageId.Fields, PageId.Gregorian, PageId.Generic);
+    static final Set<PageId> MainDateTimePages =
+            EnumSet.of(PageId.Fields, PageId.Gregorian, PageId.Generic);
 
     private static String condense(PathHeader ph) {
-        // TODO Auto-generated method stub
-        String starredPath = pathStarrer.set(ph.getOriginalPath()).toString();
-        starredPath = starredPath.replace("[@alt=\"*\"]", "");// collapse alts
+        // Use PathStarrer.SIMPLE_STAR_PATTERN ("*") for compatibility with other
+        // code used by ShowStarredCoverage. Also, collapse alts.
+        final String starredPath =
+                PathStarrer.getWithPattern(ph.getOriginalPath(), PathStarrer.SIMPLE_STAR_PATTERN)
+                        .replace("[@alt=\"*\"]", "");
         SectionId sectionId = ph.getSectionId();
         PageId pageId = ph.getPageId();
         String category = sectionId + "|" + pageId;
         switch (sectionId) {
-        case Core_Data:
-            category = sectionId.toString();
-            break;
-        case Currencies:
-            category = sectionId + " — " + (starredPath.contains("@count") ? "long name" : starredPath.contains("/symbol") ? "symbol" : "name");
-            break;
-        case DateTime:
-            category = sectionId + " — " + (starredPath.contains("/displayName") ? "field labels"
-                : starredPath.contains("/interval") ? "intervals"
-                    : pageId == PageId.Fields ? "relative"
-                        : "basic");
-            category += MainDateTimePages.contains(pageId) ? "" : " (non-greg)";
-            break;
-        case Locale_Display_Names:
-            category = "Names — " + (starredPath.contains("/subdivision") ? "Country subdivisions"
-                : pageId == PageId.Territories ? "Continents & Sub~"
-                    : pageId.toString().startsWith("Territor") ? "Countries"
-                        : pageId.toString());
-            break;
-        case Numbers:
-            category = pageId == PageId.Compact_Decimal_Formatting ? (starredPath.contains("currency") ? "Currency" : "Number") + " Formats — compact"
-                : sectionId.toString();
-            break;
-        case Misc:
-            category = starredPath.contains("/annotation") ? "Emoji " + (starredPath.contains("@type") ? "names" : "keywords")
-                : starredPath.contains("/characterLabel") ? "Character Labels"
-                    : PageId.LinguisticElements.toString();
-            break;
-        case Timezones:
-            category = sectionId.toString();
-            break;
-        case Units:
-            category = sectionId.toString();
-            break;
+            case Core_Data:
+                category = sectionId.toString();
+                break;
+            case Currencies:
+                category =
+                        sectionId
+                                + " — "
+                                + (starredPath.contains("@count")
+                                        ? "long name"
+                                        : starredPath.contains("/symbol") ? "symbol" : "name");
+                break;
+            case DateTime:
+                category =
+                        sectionId
+                                + " — "
+                                + (starredPath.contains("/displayName")
+                                        ? "field labels"
+                                        : starredPath.contains("/interval")
+                                                ? "intervals"
+                                                : pageId == PageId.Fields ? "relative" : "basic");
+                category += MainDateTimePages.contains(pageId) ? "" : " (non-greg)";
+                break;
+            case Locale_Display_Names:
+                category =
+                        "Names — "
+                                + (starredPath.contains("/subdivision")
+                                        ? "Country subdivisions"
+                                        : pageId == PageId.Territories
+                                                ? "Continents & Sub~"
+                                                : pageId.toString().startsWith("Territor")
+                                                        ? "Countries"
+                                                        : pageId.toString());
+                break;
+            case Numbers:
+                category =
+                        pageId == PageId.Compact_Decimal_Formatting
+                                ? (starredPath.contains("currency") ? "Currency" : "Number")
+                                        + " Formats — compact"
+                                : sectionId.toString();
+                break;
+            case Misc:
+                category =
+                        starredPath.contains("/annotation")
+                                ? "Emoji " + (starredPath.contains("@type") ? "names" : "keywords")
+                                : starredPath.contains("/characterLabel")
+                                        ? "Character Labels"
+                                        : PageId.LinguisticElements.toString();
+                break;
+            case Timezones:
+                category = sectionId.toString();
+                break;
+            case Units:
+                category = sectionId.toString();
+                break;
         }
         return stripParens(category + "\t" + starredPath);
     }
 
     static final Pattern PARENS = Pattern.compile("\\s*\\(.*\\)");
-    private static final boolean SHOW = false;
 
     private static String stripParens(String label) {
         if (label.contains("(")) {
             String newLabel = PARENS.matcher(label).replaceAll("");
             if (label.equals(newLabel)) {
-                System.out.println(RegexUtilities.showMismatch(Pattern.compile(".*" + PARENS.toString() + ".*"), label));
+                System.out.println(
+                        RegexUtilities.showMismatch(
+                                Pattern.compile(".*" + PARENS.toString() + ".*"), label));
             }
             return newLabel;
         } else {
@@ -194,13 +252,15 @@ public class ShowStarredCoverage {
     private static void showResults(String title, Level level, Counter<String> counts) {
         for (String key : counts.keySet()) {
             long results = counts.get(key);
-            System.out.println(results
-                + "\t" + level
-                + "\t" + key);
+            System.out.println(results + "\t" + level + "\t" + key);
         }
     }
 
-    private static void doNonLdml(DtdType dtdType, String dir, String fileLocale, M3<Level, PathHeader, Boolean> levelToPathHeaders) {
+    private static void doNonLdml(
+            DtdType dtdType,
+            String dir,
+            String fileLocale,
+            M3<Level, PathHeader, Boolean> levelToPathHeaders) {
         Matcher localeMatch = Pattern.compile("\\b" + fileLocale + "\\b").matcher("");
         // Not keyed by locale, need to dig into data for that.
         for (String file : new File(CLDRPaths.COMMON_DIRECTORY + dir).list()) {
@@ -214,7 +274,11 @@ public class ShowStarredCoverage {
 
             List<Pair<String, String>> contents1;
             try {
-                contents1 = XMLFileReader.loadPathValues(CLDRPaths.COMMON_DIRECTORY + dir + "/" + file, new ArrayList<Pair<String, String>>(), true);
+                contents1 =
+                        XMLFileReader.loadPathValues(
+                                CLDRPaths.COMMON_DIRECTORY + dir + "/" + file,
+                                new ArrayList<Pair<String, String>>(),
+                                true);
             } catch (Exception e) {
                 return;
             }
@@ -223,6 +287,10 @@ public class ShowStarredCoverage {
 
             for (Pair<String, String> s : contents1) {
                 String path = s.getFirst();
+                if (pathRegex != null && !pathRegex.reset(path).matches()) {
+                    continue;
+                }
+
                 if (path.contains("it")) {
                     int debug = 0;
                 }
@@ -235,7 +303,8 @@ public class ShowStarredCoverage {
                 Set<String> pathForValues = dtdData.getRegularizedPaths(pathPlain, extras);
                 if (pathForValues != null) {
                     for (String pathForValue : pathForValues) {
-                        if (!localeMatch.reset(pathForValue).find() && !localeMatch.reset(value).find()) {
+                        if (!localeMatch.reset(pathForValue).find()
+                                && !localeMatch.reset(value).find()) {
                             continue;
                         }
                         PathHeader pathHeader = phf.fromPath(pathForValue);
@@ -252,19 +321,22 @@ public class ShowStarredCoverage {
                 for (Entry<String, Collection<String>> entry : extras.asMap().entrySet()) {
                     final String extraPath = entry.getKey();
                     for (String value2 : entry.getValue()) {
-                        if (!localeMatch.reset(extraPath).find() && !localeMatch.reset(value2).find()) {
+                        if (!localeMatch.reset(extraPath).find()
+                                && !localeMatch.reset(value2).find()) {
                             continue;
                         }
                         final PathHeader pathHeaderExtra = phf.fromPath(extraPath);
                         levelToPathHeaders.put(Level.UNDETERMINED, pathHeaderExtra, true);
-//                    final Collection<String> extraValue = entry.getValue();
-//                    if (isExtraSplit(extraPath)) {
-//                        for (String items : extraValue) {
-//                            results.putAll(pathHeaderExtra, DtdData.SPACE_SPLITTER.splitToList(items));
-//                        }
-//                    } else {
-//                        results.putAll(pathHeaderExtra, extraValue);
-//                    }
+                        //                    final Collection<String> extraValue =
+                        // entry.getValue();
+                        //                    if (isExtraSplit(extraPath)) {
+                        //                        for (String items : extraValue) {
+                        //                            results.putAll(pathHeaderExtra,
+                        // DtdData.SPACE_SPLITTER.splitToList(items));
+                        //                        }
+                        //                    } else {
+                        //                        results.putAll(pathHeaderExtra, extraValue);
+                        //                    }
                     }
                 }
             }
@@ -272,7 +344,8 @@ public class ShowStarredCoverage {
     }
 
     static boolean isExtraSplit(String extraPath) {
-        if (extraPath.endsWith("/_type") && extraPath.startsWith("//supplementalData/metaZones/mapTimezones")) {
+        if (extraPath.endsWith("/_type")
+                && extraPath.startsWith("//supplementalData/metaZones/mapTimezones")) {
             return true;
         }
         return false;
@@ -287,29 +360,38 @@ public class ShowStarredCoverage {
         return false;
     }
 
-    private static void doLdml(String dir, String fileLocale, M3<Level, PathHeader, Boolean> levelToPathHeaders) {
+    private static void doLdml(
+            String dir, String fileLocale, M3<Level, PathHeader, Boolean> levelToPathHeaders) {
         Status status = new Status();
         boolean isMain = "main".equals(dir);
         System.out.println("directory:\t" + dir);
-        final org.unicode.cldr.util.Factory cldrFactory = org.unicode.cldr.util.Factory.make(
-            CLDRPaths.COMMON_DIRECTORY + dir, fileLocale, DraftStatus.unconfirmed);
+        final org.unicode.cldr.util.Factory cldrFactory =
+                org.unicode.cldr.util.Factory.make(
+                        CLDRPaths.COMMON_DIRECTORY + dir, fileLocale, DraftStatus.unconfirmed);
         CLDRFile file;
         try {
-            file = cldrFactory.make(fileLocale, isMain); // bug, resolving source doesn't work without directory
+            file =
+                    cldrFactory.make(
+                            fileLocale,
+                            isMain); // bug, resolving source doesn't work without directory
         } catch (Exception e) {
             System.out.println(Level.UNDETERMINED + "\tNo file " + dir + "/" + fileLocale + ".xml");
             return;
         }
-        M4<Level, String, String, Boolean> levelToData = ChainedMap.of(
-            new TreeMap<Level, Object>(),
-            new TreeMap<String, Object>(),
-            new TreeMap<String, Object>(),
-            Boolean.class);
+        M4<Level, String, String, Boolean> levelToData =
+                ChainedMap.of(
+                        new TreeMap<Level, Object>(),
+                        new TreeMap<String, Object>(),
+                        new TreeMap<String, Object>(),
+                        Boolean.class);
 
         Counter<Level> counter = new Counter<>();
         TreeSet<PathHeader> pathHeaders = new TreeSet<>();
         for (String path : file) {
             if (path.endsWith("/alias") || path.startsWith("//ldml/identity")) {
+                continue;
+            }
+            if (pathRegex != null && !pathRegex.reset(path).matches()) {
                 continue;
             }
             String locale = file.getSourceLocaleID(path, status);
@@ -324,22 +406,30 @@ public class ShowStarredCoverage {
             CLDRLocale loc = CLDRLocale.getInstance(fileLocale);
             int requiredVotes = sdi.getRequiredVotes(loc, ph);
 
-            Level level = config.getSupplementalDataInfo().getCoverageLevel(path, fileLocale); // isMain ? ... : Level.UNDETERMINED;
-            if (level.compareTo(Level.MODERN) > 0) {
-                continue;
-            }
+            Level level =
+                    config.getSupplementalDataInfo()
+                            .getCoverageLevel(
+                                    path, fileLocale); // isMain ? ... : Level.UNDETERMINED;
+            //            if (level.compareTo(Level.MODERN) > 0) {
+            //                continue;
+            //            }
             levelToPathHeaders.put(level, ph, true);
             pathHeaders.add(ph);
             SurveyToolStatus stStatus = ph.getSurveyToolStatus();
-            String starred = pathStarrer.set(path);
-            String attributes = Joiner.on("|").join(pathStarrer.getAttributes());
-            levelToData.put(level, starred + "|" + stStatus + "|" + requiredVotes, attributes, Boolean.TRUE);
+            String starred = PathStarrer.get(path);
+            String attributes =
+                    Joiner.on("|").join(XPathParts.getFrozenInstance(path).getAttributeValues());
+            levelToData.put(
+                    level,
+                    starred + "|" + stStatus + "|" + requiredVotes,
+                    attributes,
+                    Boolean.TRUE);
             counter.add(level, 1);
         }
-        if (SHOW) {
-            for (Level level : Level.values()) {
-                System.out.println(counter.get(level) + "\t" + level);
-            }
+        if (verbose) {
+            //            for (Level level : Level.values()) {
+            //                System.out.println(counter.get(level) + "\t" + level);
+            //            }
             for (Entry<Level, Map<String, Map<String, Boolean>>> entry : levelToData) {
                 Level level = entry.getKey();
                 for (Entry<String, Map<String, Boolean>> entry2 : entry.getValue().entrySet()) {
@@ -349,42 +439,93 @@ public class ShowStarredCoverage {
                     if (count < 1) {
                         count = 1;
                     }
-                    if (true) {
-                        String samples = Joiner.on(", ").join(attributes.keySet());
-                        if (samples.length() > 50) samples = samples.substring(0, 50) + "…";
-                        System.out.println(count
-                            + "\t" + level
-                            + "\t" + starredStatus[0]
-                            + "\t" + starredStatus[1]
-                            + "\t" + starredStatus[2]
-                            + "\t" + samples);
+                    if (maxAttributes > 0) {
+                        List<String> sampleList = new ArrayList<>(attributes.keySet());
+                        String suffix = "";
+                        if (sampleList.size() > maxAttributes) {
+                            sampleList = sampleList.subList(0, maxAttributes);
+                            suffix = ", …";
+                        }
+                        List<String> engList =
+                                sampleList.stream()
+                                        .map(x -> x + "[" + getEnglish(starredStatus[0], x) + "]")
+                                        .collect(Collectors.toList());
+                        String samples = Joiner.on(", ").join(engList) + suffix;
+                        System.out.println(
+                                count
+                                        + "\t"
+                                        + level
+                                        + "\t"
+                                        + starredStatus[0]
+                                        + "\t"
+                                        + starredStatus[1]
+                                        + "\t"
+                                        + starredStatus[2]
+                                        + "\t"
+                                        + samples);
                     }
                 }
             }
         }
-//        for (Entry<Level, Map<PathHeader, Boolean>> levelAndPathHeader : levelToPathHeaders) {
-//            Level level = levelAndPathHeader.getKey();
-//            Map<PathHeader, Boolean> pathHeaders2 = levelAndPathHeader.getValue();
-//            Builder<String, String> pageCount = ImmutableMultimap.builder();
-//            for (PathHeader ph : pathHeaders2.keySet()) {
-//                pageCount.put(ph.getSectionId() + "\t" + ph.getPageId(), ph.getHeader() + " : " + ph.getCode());
-//            }
-//            showResults("header+code count", level, pageCount.build());
-//        }
+        //        for (Entry<Level, Map<PathHeader, Boolean>> levelAndPathHeader :
+        // levelToPathHeaders) {
+        //            Level level = levelAndPathHeader.getKey();
+        //            Map<PathHeader, Boolean> pathHeaders2 = levelAndPathHeader.getValue();
+        //            Builder<String, String> pageCount = ImmutableMultimap.builder();
+        //            for (PathHeader ph : pathHeaders2.keySet()) {
+        //                pageCount.put(ph.getSectionId() + "\t" + ph.getPageId(), ph.getHeader() +
+        // " : " + ph.getCode());
+        //            }
+        //            showResults("header+code count", level, pageCount.build());
+        //        }
+    }
+
+    static final Splitter SPLIT_SLASH = Splitter.on('|');
+    static final Splitter SPLIT_STAR = Splitter.on('*');
+
+    static String getEnglish(String path, String value) {
+        Iterator<String> pathParts = SPLIT_STAR.split(path).iterator();
+        Iterator<String> values = SPLIT_SLASH.split(value).iterator();
+        StringBuilder pathBuffer = new StringBuilder();
+        boolean added = false;
+        do {
+            added = false;
+            if (pathParts.hasNext()) {
+                pathBuffer.append(pathParts.next());
+                added = true;
+            }
+            if (values.hasNext()) {
+                pathBuffer.append(values.next());
+                added = true;
+            }
+        } while (added);
+        String result = ENGLISH.getStringValue(pathBuffer.toString());
+        if (result != null && result.length() > 15) {
+            result = result.substring(0, 15) + '…';
+        }
+        return result;
     }
 
     static class LanguageTagCollector {
         private static final CLDRConfig CldrConfig = CLDRConfig.getInstance();
 
         enum Source {
-            main, canon, supp, seed, exemplars, keyboards, alias
+            main,
+            canon,
+            supp,
+            seed,
+            exemplars,
+            keyboards,
+            alias
         }
 
         LanguageTagParser ltp = new LanguageTagParser();
         LanguageTagCanonicalizer ltc = new LanguageTagCanonicalizer();
-        Relation<String, Source> languageTags = Relation.of(new TreeMap(new LengthFirstComparator()), TreeSet.class);
+        Relation<String, Source> languageTags =
+                Relation.of(new TreeMap(new LengthFirstComparator()), TreeSet.class);
         final SupplementalDataInfo supp = CldrConfig.getSupplementalDataInfo();
-        final Map<String, R2<List<String>, String>> languageFix = supp.getLocaleAliasInfo().get("language");
+        final Map<String, R2<List<String>, String>> languageFix =
+                supp.getLocaleAliasInfo().get("language");
 
         private void getLanguageTags() {
 
@@ -424,15 +565,17 @@ public class ShowStarredCoverage {
                 final String name = getName(written);
                 Set<Source> source = entry.getValue();
                 if (source.contains(Source.alias) && source.size() > 1) {
-                    badLines.add(written
-                        + "\t" + name
-                        + "\t" + languageFix.get(written).get0()
-                        + "\t" + Joiner.on(" ").join(source));
+                    badLines.add(
+                            written
+                                    + "\t"
+                                    + name
+                                    + "\t"
+                                    + languageFix.get(written).get0()
+                                    + "\t"
+                                    + Joiner.on(" ").join(source));
                     source = Collections.singleton(Source.alias);
                 }
-                System.out.println(written
-                    + "\t" + name
-                    + "\t" + Joiner.on(" ").join(source));
+                System.out.println(written + "\t" + name + "\t" + Joiner.on(" ").join(source));
             }
             for (String s : badLines) {
                 System.out.println("BAD:\t" + s);
@@ -440,11 +583,14 @@ public class ShowStarredCoverage {
         }
 
         public String getName(final String written) {
-            String result = CldrConfig.getEnglish().getName(written);
+            String result = CldrConfig.getEnglish().nameGetter().getNameFromIdentifier(written);
             if (result.equals(written)) {
                 R2<List<String>, String> alias = languageFix.get(written);
                 if (alias != null) {
-                    result = CldrConfig.getEnglish().getName(alias.get0().get(0));
+                    result =
+                            CldrConfig.getEnglish()
+                                    .nameGetter()
+                                    .getNameFromIdentifier(alias.get0().get(0));
                 }
             }
             return result;
@@ -469,12 +615,11 @@ public class ShowStarredCoverage {
                 }
                 addLanguage(fileName.substring(0, fileName.length() - 4), source);
             }
-
         }
 
         private void addLanguage(String key, Source source) {
-            if (key.startsWith("und") || key.startsWith("root")) {
-                languageTags.put("und", source);
+            if (key.startsWith(LocaleNames.UND) || key.startsWith(LocaleNames.ROOT)) {
+                languageTags.put(LocaleNames.UND, source);
                 return;
             }
             ltp.set(key);

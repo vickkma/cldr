@@ -4,14 +4,14 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.unicode.cldr.util.SupplementalDataInfo.PluralInfo;
 import org.unicode.cldr.util.SupplementalDataInfo.PluralInfo.Count;
 
 public class PluralSamples {
     private static final Map<String, PluralSamples> cache = new ConcurrentHashMap<>();
-    private static final int SAMPLE_SIZE = 4;
-    private final Map<Count, Double>[] samples = new Map[SAMPLE_SIZE]; // we do 1, 2, 3, and 4 decimals
+    private static final int SAMPLE_SIZE = 6;
+    private final Map<Count, Double>[] samples =
+            new Map[SAMPLE_SIZE]; // we do up to 1,000,000 — needed for Compact decimal
 
     public PluralSamples(String locale) {
         SupplementalDataInfo info = SupplementalDataInfo.getInstance();
@@ -22,9 +22,14 @@ public class PluralSamples {
         samples[1] = Collections.unmodifiableMap(getValuesForDigits(pluralInfo, total, 10, 99));
         samples[2] = Collections.unmodifiableMap(getValuesForDigits(pluralInfo, total, 100, 999));
         samples[3] = Collections.unmodifiableMap(getValuesForDigits(pluralInfo, total, 1000, 9999));
+        samples[4] =
+                Collections.unmodifiableMap(getValuesForDigits(pluralInfo, total, 10000, 99999));
+        samples[5] =
+                Collections.unmodifiableMap(getValuesForDigits(pluralInfo, total, 100000, 999999));
     }
 
-    private Map<Count, Double> getValuesForDigits(PluralInfo pluralInfo, int total, int start, int end) {
+    private Map<Count, Double> getValuesForDigits(
+            PluralInfo pluralInfo, int total, int start, int end) {
         Map<Count, Double> set = new EnumMap<>(Count.class);
         // Cycle through digits
         boolean favorPositive = start == 0;
@@ -72,6 +77,7 @@ public class PluralSamples {
 
     /**
      * Get a set of samples for the locale.
+     *
      * @param locale
      * @return
      */
@@ -86,6 +92,7 @@ public class PluralSamples {
 
     /**
      * Return a mapping from plural category to doubles
+     *
      * @param i
      * @return
      */

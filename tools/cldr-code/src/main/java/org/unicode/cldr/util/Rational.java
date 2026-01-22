@@ -1,8 +1,22 @@
 package org.unicode.cldr.util;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.math.BigIntegerMath;
+import com.ibm.icu.number.LocalizedNumberFormatter;
+import com.ibm.icu.number.Notation;
+import com.ibm.icu.number.NumberFormatter;
+import com.ibm.icu.number.NumberFormatter.GroupingStrategy;
+import com.ibm.icu.number.Precision;
+import com.ibm.icu.text.UnicodeSet;
+import com.ibm.icu.util.Freezable;
+import com.ibm.icu.util.ICUException;
+import com.ibm.icu.util.Output;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -12,29 +26,25 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.ibm.icu.number.LocalizedNumberFormatter;
-import com.ibm.icu.number.Notation;
-import com.ibm.icu.number.NumberFormatter;
-import com.ibm.icu.number.Precision;
-import com.ibm.icu.text.UnicodeSet;
-import com.ibm.icu.util.Freezable;
-import com.ibm.icu.util.ICUException;
-import com.ibm.icu.util.Output;
-
 /**
- * Very basic class for rational numbers. No attempt to optimize, since it will just
- * be used for testing within CLDR.
+ * Basic class for rational numbers. There is little attempt to optimize, since it will just be used
+ * for testing and data production within CLDR.
  *
  * @author markdavis
- *
  */
-public final class Rational implements Comparable<Rational> {
+public final class Rational extends Number implements Comparable<Rational> {
+    private static final long serialVersionUID = 1L;
     private static final Pattern INT_POWER_10 = Pattern.compile("10*");
     public final BigInteger numerator;
     public final BigInteger denominator;
+
+    static final BigInteger BI_TWO = BigInteger.valueOf(2);
+    static final BigInteger BI_FIVE = BigInteger.valueOf(5);
+    static final BigInteger BI_MINUS_ONE = BigInteger.valueOf(-1);
+    static final BigInteger BI_TEN = BigInteger.valueOf(10);
+
+    static final BigDecimal BD_TWO = BigDecimal.valueOf(2);
+    static final BigDecimal BD_FIVE = BigDecimal.valueOf(5);
 
     // Constraints:
     //   always stored in normalized form.
@@ -43,31 +53,48 @@ public final class Rational implements Comparable<Rational> {
     //   if numerator is zero, denominator is 1 or 0
     //   if denominator is zero, numerator is 1, -1, or 0
 
-    public static final Rational ZERO = Rational.of(0);
-    public static final Rational ONE = Rational.of(1);
+    // NOTE, the constructor doesn't do any checking, so everything other than these goes
+    // through Rational.of(...)
+    public static final Rational ZERO = new Rational(BigInteger.ZERO, BigInteger.ONE);
+    public static final Rational ONE = new Rational(BigInteger.ONE, BigInteger.ONE);
+    public static final Rational NaN = new Rational(BigInteger.ZERO, BigInteger.ZERO);
+    public static final Rational INFINITY = new Rational(BigInteger.ONE, BigInteger.ZERO);
+
     public static final Rational NEGATIVE_ONE = ONE.negate();
-
-    public static final Rational INFINITY = Rational.of(1,0);
     public static final Rational NEGATIVE_INFINITY = INFINITY.negate();
-    public static final Rational NaN = Rational.of(0,0);
 
-    public static final Rational TEN = Rational.of(10, 1);
+    public static final Rational TWO = new Rational(BI_TWO, BigInteger.ONE);
+    public static final Rational TEN = new Rational(BI_TEN, BigInteger.ONE);
     public static final Rational TENTH = TEN.reciprocal();
 
     public static final char REPTEND_MARKER = '˙';
+    public static final String APPROX = "~";
 
-    public static class RationalParser implements Freezable<RationalParser>{
+    public static class RationalParser implements Freezable<RationalParser> {
 
-        public static RationalParser BASIC = new RationalParser().freeze();
+        public static final RationalParser BASIC = new RationalParser().freeze();
 
-        private static Splitter slashSplitter = Splitter.on('/').trimResults();
-        private static Splitter starSplitter = Splitter.on('*').trimResults();
+        private static final Splitter slashSplitter = Splitter.on('/').trimResults();
+        private static final Splitter starSplitter = Splitter.on('*').trimResults();
 
-        private Map<String,Rational> constants = new LinkedHashMap<>();
-        private Map<String,String> constantStatus = new LinkedHashMap<>();
+        private Map<String, Rational> constants;
+        private Map<String, String> constantStatus;
+
+        public RationalParser() {
+            constants = new LinkedHashMap<>();
+            constantStatus = new LinkedHashMap<>();
+        }
+
+        public RationalParser(
+                Map<String, Rational> constants2, Map<String, String> constantStatus2) {
+            frozen = false;
+            constants = new LinkedHashMap<>(constants2);
+            constantStatus = new LinkedHashMap<>(constantStatus2);
+        }
 
         public RationalParser addConstant(String id, String value, String status) {
-            if (constants.put(id, parse(value)) != null) {
+            final Rational parsed = parse(value);
+            if (constants.put(id, parsed) != null) {
                 throw new IllegalArgumentException("Can't reset constant " + id + " = " + value);
             }
             if (status != null) {
@@ -84,24 +111,35 @@ public final class Rational implements Comparable<Rational> {
 
         public Rational parse(String input) {
             switch (input) {
-            case "NaN" : return NaN;
-            case "INF" : return INFINITY;
-            case "-INF": return NEGATIVE_INFINITY;
+                case "NaN":
+                    return NaN;
+                case "INF":
+                    return INFINITY;
+                case "-INF":
+                    return NEGATIVE_INFINITY;
             }
-            List<String> comps = slashSplitter.splitToList(input.replace(",", "")); // allow commas anywhere
+            if (input.startsWith(APPROX)) {
+                input = input.substring(1);
+            }
+            input = input.replace(",", ""); // allow commas anywhere
+            List<String> comps = slashSplitter.splitToList(input); // get num/den
             try {
                 switch (comps.size()) {
-                case 1: return process(comps.get(0));
-                case 2: return process(comps.get(0)).divide(process(comps.get(1)));
-                default: throw new IllegalArgumentException("too many slashes in " + input);
+                    case 1:
+                        return process(comps.get(0));
+                    case 2:
+                        return process(comps.get(0)).divide(process(comps.get(1)));
+                    default:
+                        throw new IllegalArgumentException("too many slashes in " + input);
                 }
             } catch (Exception e) {
                 throw new ICUException("bad input: " + input, e);
             }
         }
 
-        private  Rational process(String string) {
+        private Rational process(String string) {
             Rational result = null;
+            string = string.replace(HUMAN_EXPONENT, "E");
             for (String comp : starSplitter.split(string)) {
                 Rational ratComp = process2(comp);
                 result = result == null ? ratComp : result.multiply(ratComp);
@@ -109,7 +147,8 @@ public final class Rational implements Comparable<Rational> {
             return result;
         }
 
-        static final UnicodeSet ALLOWED_CHARS = new UnicodeSet("[-A-Za-z0-9_]").add(REPTEND_MARKER).freeze();
+        static final UnicodeSet ALLOWED_CHARS =
+                new UnicodeSet("[-A-Za-z0-9_]").add(REPTEND_MARKER).freeze();
 
         private Rational process2(String input) {
             final char firstChar = input.charAt(0);
@@ -119,16 +158,20 @@ public final class Rational implements Comparable<Rational> {
                     return Rational.of(new BigDecimal(input));
                 }
                 // handle repeating fractions
-                String reptend = input.substring(pos+1);
+                String reptend = input.substring(pos + 1);
                 int rlen = reptend.length();
-                input = input.substring(0,pos) + reptend;
+                input = input.substring(0, pos) + reptend;
 
                 BigDecimal rf = new BigDecimal(input);
-                BigDecimal rfPow = new BigDecimal(input+reptend).scaleByPowerOfTen(rlen);
+                BigDecimal rfPow = new BigDecimal(input + reptend).scaleByPowerOfTen(rlen);
                 BigDecimal num = rfPow.subtract(rf);
 
                 Rational result = Rational.of(num);
-                Rational den = Rational.of(BigDecimal.ONE.scaleByPowerOfTen(rlen).subtract(BigDecimal.ONE)); // could optimize
+                Rational den =
+                        Rational.of(
+                                BigDecimal.ONE
+                                        .scaleByPowerOfTen(rlen)
+                                        .subtract(BigDecimal.ONE)); // could optimize
                 return result.divide(den);
             } else {
                 if (!ALLOWED_CHARS.containsAll(input)) {
@@ -161,7 +204,7 @@ public final class Rational implements Comparable<Rational> {
 
         @Override
         public RationalParser cloneAsThawed() {
-            throw new UnsupportedOperationException();
+            return new RationalParser(constants, constantStatus);
         }
 
         public Map<String, Rational> getConstants() {
@@ -170,18 +213,41 @@ public final class Rational implements Comparable<Rational> {
     }
 
     public static Rational of(long numerator, long denominator) {
-        return new Rational(BigInteger.valueOf(numerator), BigInteger.valueOf(denominator));
+        return Rational.of(BigInteger.valueOf(numerator), BigInteger.valueOf(denominator));
     }
 
     public static Rational of(long numerator) {
-        return new Rational(BigInteger.valueOf(numerator), BigInteger.ONE);
+        return Rational.of(BigInteger.valueOf(numerator), BigInteger.ONE);
     }
 
     public static Rational of(BigInteger numerator, BigInteger denominator) {
-        return new Rational(numerator, denominator);
+        int dComparison = denominator.compareTo(BigInteger.ZERO);
+        if (dComparison == 0) {
+            // catch equivalents to NaN, -INF, +INF
+            // 0/0 => NaN
+            // +/0 => INF
+            // -/0 => -INF
+            int nComparison = numerator.compareTo(BigInteger.ZERO);
+            return nComparison < 0 ? NEGATIVE_INFINITY : nComparison > 0 ? INFINITY : NaN;
+        } else {
+            // reduce to lowest form
+            BigInteger gcd = numerator.gcd(denominator);
+            if (gcd.compareTo(BigInteger.ONE) > 0) {
+                numerator = numerator.divide(gcd);
+                denominator = denominator.divide(gcd);
+            }
+            if (dComparison < 0) {
+                // ** NOTE: is already reduced, so safe to use constructor
+                return new Rational(numerator, denominator);
+            } else {
+                // ** NOTE: is already reduced, so safe to use constructor
+                return new Rational(numerator.negate(), denominator.negate());
+            }
+        }
     }
 
     public static Rational of(BigInteger numerator) {
+        // ** NOTE: is already reduced, so safe to use constructor
         return new Rational(numerator, BigInteger.ONE);
     }
 
@@ -204,54 +270,47 @@ public final class Rational implements Comparable<Rational> {
     }
 
     public Rational add(Rational other) {
-        BigInteger gcd_den = denominator.gcd(other.denominator);
-        return new Rational(
-            numerator.multiply(other.denominator).divide(gcd_den)
-            .add(other.numerator.multiply(denominator).divide(gcd_den)),
-            denominator.multiply(other.denominator).divide(gcd_den)
-            );
+        BigInteger newNumerator =
+                numerator.multiply(other.denominator).add(other.numerator.multiply(denominator));
+        BigInteger newDenominator = denominator.multiply(other.denominator);
+        return Rational.of(newNumerator, newDenominator);
     }
 
     public Rational subtract(Rational other) {
-        BigInteger gcd_den = denominator.gcd(other.denominator);
-        return new Rational(
-            numerator.multiply(other.denominator).divide(gcd_den)
-            .subtract(other.numerator.multiply(denominator).divide(gcd_den)),
-            denominator.multiply(other.denominator).divide(gcd_den)
-            );
+        BigInteger newNumerator =
+                numerator
+                        .multiply(other.denominator)
+                        .subtract(other.numerator.multiply(denominator));
+        BigInteger newDenominator = denominator.multiply(other.denominator);
+        return Rational.of(newNumerator, newDenominator);
     }
 
     public Rational multiply(Rational other) {
-        BigInteger gcd_num_oden = numerator.gcd(other.denominator);
-        boolean isZero = gcd_num_oden.equals(BigInteger.ZERO);
-        BigInteger smallNum = isZero ? numerator : numerator.divide(gcd_num_oden);
-        BigInteger smallODen = isZero ? other.denominator : other.denominator.divide(gcd_num_oden);
+        BigInteger newNumerator = numerator.multiply(other.numerator);
+        BigInteger newDenominator = denominator.multiply(other.denominator);
+        return Rational.of(newNumerator, newDenominator);
+    }
 
-        BigInteger gcd_den_onum = denominator.gcd(other.numerator);
-        isZero = gcd_den_onum.equals(BigInteger.ZERO);
-        BigInteger smallONum = isZero ? other.numerator : other.numerator.divide(gcd_den_onum);
-        BigInteger smallDen = isZero ? denominator : denominator.divide(gcd_den_onum);
-
-        return new Rational(smallNum.multiply(smallONum), smallDen.multiply(smallODen));
+    public Rational divide(Rational other) {
+        BigInteger newNumerator = numerator.multiply(other.denominator);
+        BigInteger newDenominator = denominator.multiply(other.numerator);
+        return Rational.of(newNumerator, newDenominator);
     }
 
     public Rational pow(int i) {
-        return new Rational(numerator.pow(i), denominator.pow(i));
+        return Rational.of(numerator.pow(i), denominator.pow(i));
     }
 
     public static Rational pow10(int i) {
         return i > 0 ? TEN.pow(i) : TENTH.pow(-i);
     }
 
-    public Rational divide(Rational other) {
-        return multiply(other.reciprocal());
-    }
-
     public Rational reciprocal() {
-        return new Rational(denominator, numerator);
+        return Rational.of(denominator, numerator);
     }
 
     public Rational negate() {
+        // ** NOTE: is already reduced, so safe to use constructor
         return new Rational(numerator.negate(), denominator);
     }
 
@@ -259,39 +318,84 @@ public final class Rational implements Comparable<Rational> {
         try {
             return new BigDecimal(numerator).divide(new BigDecimal(denominator), mathContext);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Wrong math context for divide: " + this + ", " + mathContext);
+            throw new IllegalArgumentException(
+                    "Wrong math context for divide: " + this + ", " + mathContext);
         }
     }
 
+    public BigDecimal toBigDecimal() {
+        return toBigDecimal(MathContext.DECIMAL128); // prevent failures due to repeating fractions
+    }
+
+    @Override
     public double doubleValue() {
         if (denominator.equals(BigInteger.ZERO) && numerator.equals(BigInteger.ZERO)) {
             return Double.NaN;
         }
-        return new BigDecimal(numerator).divide(new BigDecimal(denominator), MathContext.DECIMAL64).doubleValue();
+        return toBigDecimal(MathContext.DECIMAL64).doubleValue();
     }
 
-
-    public BigDecimal toBigDecimal() {
-        return toBigDecimal(MathContext.UNLIMITED);
+    @Override
+    public float floatValue() {
+        if (denominator.equals(BigInteger.ZERO) && numerator.equals(BigInteger.ZERO)) {
+            return Float.NaN;
+        }
+        return toBigDecimal(MathContext.DECIMAL32).floatValue();
     }
 
     public static Rational of(BigDecimal bigDecimal) {
         // scale()
         // If zero or positive, the scale is the number of digits to the right of the decimal point.
-        // If negative, the unscaled value of the number is multiplied by ten to the power of the negation of the scale.
+        // If negative, the unscaled value of the number is multiplied by ten to the power of the
+        // negation of the scale.
         // For example, a scale of -3 means the unscaled value is multiplied by 1000.
         final int scale = bigDecimal.scale();
         final BigInteger unscaled = bigDecimal.unscaledValue();
         if (scale == 0) {
+            // ** NOTE: is already reduced, so safe to use constructor
             return new Rational(unscaled, BigInteger.ONE);
         } else if (scale >= 0) {
-            return new Rational(unscaled, BigDecimal.ONE.movePointRight(scale).toBigInteger());
+            return Rational.of(unscaled, BigDecimal.ONE.movePointRight(scale).toBigInteger());
         } else {
-            return new Rational(unscaled.multiply(BigDecimal.ONE.movePointLeft(scale).toBigInteger()), BigInteger.ONE);
+            // ** NOTE: is already reduced, so safe to use constructor
+            return new Rational(
+                    unscaled.multiply(BigDecimal.ONE.movePointLeft(scale).toBigInteger()),
+                    BigInteger.ONE);
         }
     }
 
-    public enum FormatStyle {plain, simple, repeating, html}
+    public static Rational of(double doubleValue) {
+        return of(new BigDecimal(doubleValue));
+    }
+
+    public enum FormatStyle {
+        /**
+         * Simple numerator / denominator, plain BigInteger.toString(), dropping " / 1". <br>
+         * The spaces are thin space (2009).
+         */
+        plain,
+        /**
+         * Approximate value if small number of digits, dropping " / 1" <br>
+         * The spaces are thin space (2009).
+         */
+        approx,
+        /**
+         * Repeating decimal where possible (otherwise = simple). The limit is 30 repeating digits.
+         */
+        repeating,
+        /**
+         * Repeating decimal where possible (otherwise = simple). The limit is 1000 repeating
+         * digits.
+         */
+        repeatingAll,
+        /**
+         * Formatted numerator / denominator, dropping " / 1" <br>
+         * The spaces are thin space (2009).
+         */
+        formatted,
+        /** HTML Formatted numerator / denominator, using sup/sub, dropping "/1" */
+        html
+    }
 
     @Override
     public String toString() {
@@ -299,69 +403,126 @@ public final class Rational implements Comparable<Rational> {
         return toString(FormatStyle.plain);
     }
 
+    private static final BigInteger NUM_OR_DEN_LIMIT = BigInteger.valueOf(10000000);
+    private static final BigInteger NUM_TIMES_DEN_LIMIT = BigInteger.valueOf(10000000);
+    private static final BigInteger BIG_HIGH = BigInteger.valueOf(10000000);
+    private static final double DOUBLE_HIGH = 10000000d;
+    private static final double DOUBLE_LOW = 0.001d;
+
+    static final String THIN_SPACE = "\u2009";
+    static final String DIVIDER = "/";
 
     public String toString(FormatStyle style) {
+        boolean denIsOne = denominator.equals(BigInteger.ONE);
+        BigInteger absNumerator = numerator.abs();
+        String result;
         switch (style) {
-        case plain:
-            return numerator + (denominator.equals(BigInteger.ONE) ? "" : " / " + denominator);
-        }
-        Output<BigDecimal> newNumerator = new Output<>(new BigDecimal(numerator));
-        final BigInteger newDenominator = minimalDenominator(newNumerator, denominator);
-        final String numStr = format(newNumerator.value);
-        final String denStr = nf.format(newDenominator).toString();
-        final boolean denIsOne = newDenominator.equals(BigInteger.ONE);
+            case plain:
+                result = numerator + (denIsOne ? "" : DIVIDER + denominator);
+                break;
+            case approx:
+                if (denIsOne) {
+                    if (absNumerator.compareTo(BIG_HIGH) < 0) {
+                        result = formatGroup.format(numerator).toString();
+                    } else {
+                        result = replaceE(formatSciSigDig5.format(numerator).toString());
+                    }
+                } else {
+                    int log10num = BigIntegerMath.log10(absNumerator, RoundingMode.UP);
+                    int log10den = BigIntegerMath.log10(denominator, RoundingMode.UP);
+                    if ((log10num <= 1 && log10den <= 4) || (log10num <= 4 && log10den <= 1)) {
+                        result =
+                                formatGroup.format(numerator)
+                                        + DIVIDER
+                                        + formatNoGroup.format(denominator);
+                    } else {
+                        final double doubleValue =
+                                numerator.doubleValue() / denominator.doubleValue();
+                        double absDoubleValue = Math.abs(doubleValue);
+                        if (DOUBLE_LOW < absDoubleValue && absDoubleValue < DOUBLE_HIGH) {
+                            result = formatSigDig5.format(doubleValue).toString();
+                        } else {
+                            result = formatSciSigDig5.format(doubleValue).toString();
+                        }
+                    }
+                }
+                break;
+            default:
+                Output<BigDecimal> newNumerator = new Output<>(new BigDecimal(numerator));
+                final BigInteger newDenominator = minimalDenominator(newNumerator, denominator);
+                final String numStr = formatGroup.format(newNumerator.value).toString();
+                final String denStr = formatNoGroup.format(newDenominator).toString();
+                denIsOne = newDenominator.equals(BigInteger.ONE);
+                int limit = 1000;
 
-        switch (style) {
-        case repeating:
-            String result = toRepeating(30); // limit of 30 on the repeating length, so we don't get unreasonable
-            if (result != null) {
-                return result;
-            }
-            // otherwise drop through to simple
-        case simple: {
-            return denIsOne ? numStr : numStr + "/" + denStr;
+                switch (style) {
+                    case repeating:
+                        limit = 30;
+                        // fall through with smaller limit
+                    case repeatingAll:
+                        // if we come directly here, the limit is huge
+                        result = toRepeating(limit);
+                        if (result != null) { // null is returned if we can't fit into the limit
+                            break;
+                        }
+                        // otherwise drop through to simple
+                    case formatted:
+                        // skip approximate test
+                        result = denIsOne ? numStr : numStr + DIVIDER + denStr;
+                        break;
+                    case html:
+                        // skip approximate test
+                        return denIsOne
+                                ? numStr
+                                : "<sup>" + numStr + "</sup>" + "/<sub>" + denStr + "<sub>";
+                    default:
+                        throw new UnsupportedOperationException();
+                }
         }
-        case html: {
-            return denIsOne ? numStr : "<sup>" + numStr + "</sup>" + "/<sub>" + denStr + "<sub>";
-        }
-        default: throw new UnsupportedOperationException();
-        }
+        Rational roundtrip = Rational.of(result);
+        return replaceE(roundtrip.equals(this) ? result : APPROX + result);
     }
 
-    static final LocalizedNumberFormatter nf = NumberFormatter.with().precision(Precision.unlimited()).locale(Locale.ENGLISH);
-    static final LocalizedNumberFormatter snf = NumberFormatter.with().precision(Precision.unlimited()).notation(Notation.engineering()).locale(Locale.ENGLISH);
+    static final String HUMAN_EXPONENT = "×10ˆ";
 
-    static String format(BigDecimal value) {
-        return nf.format(value).toString();
-        /*
-         * TODO Change 1000000 to 1×10<sup>-6</sup>, etc.
-         * Only for large/small numbers, eg:
-         * ≥ 1,000,000.0, => 1×10<sup>6</sup> — more than 6 trailing 0's
-         * ≤ 0.0000001 — more than 6 leading zeros
-         *
-         * relevant BigDecimal APIs:
-         * 123.4567 scale: 4 bigint: 1234567
-         * 123456700 scale: 0 bigint: 123456700
-         * 1234567 scale: 0 bigint: 1234567
-         * 0.1234567 scale: 7 bigint: 1234567
-         */
-        // return (Math.abs(newNumerator.scale()) > 10 ? snf : nf).format(newNumerator).toString();
-        //      Only do this for trailing zeros (above test isn't right)
+    private String replaceE(String format2) {
+        return format2.replace("E", HUMAN_EXPONENT);
     }
+
+    private static final LocalizedNumberFormatter formatGroup =
+            NumberFormatter.with().precision(Precision.unlimited()).locale(Locale.ENGLISH);
+
+    private static final LocalizedNumberFormatter formatNoGroup =
+            NumberFormatter.with()
+                    .precision(Precision.unlimited())
+                    .grouping(GroupingStrategy.OFF)
+                    .locale(Locale.ENGLISH);
+
+    private static final LocalizedNumberFormatter formatSigDig5 =
+            NumberFormatter.with()
+                    .precision(Precision.maxSignificantDigits(5))
+                    .locale(Locale.ENGLISH);
+
+    private static final LocalizedNumberFormatter formatSciSigDig5 =
+            NumberFormatter.with()
+                    .precision(Precision.maxSignificantDigits(5))
+                    .notation(Notation.engineering())
+                    .locale(Locale.ENGLISH);
 
     @Override
     public int compareTo(Rational other) {
-        return numerator.multiply(other.denominator).compareTo(other.numerator.multiply(denominator));
+        return numerator
+                .multiply(other.denominator)
+                .compareTo(other.numerator.multiply(denominator));
     }
 
     @Override
     public boolean equals(Object that) {
-        return equals((Rational)that); // TODO fix later
+        return equals((Rational) that); // TODO fix later
     }
 
     public boolean equals(Rational that) {
-        return numerator.equals(that.numerator)
-            && denominator.equals(that.denominator);
+        return numerator.equals(that.numerator) && denominator.equals(that.denominator);
     }
 
     @Override
@@ -373,22 +534,17 @@ public final class Rational implements Comparable<Rational> {
         return numerator.signum() >= 0 ? this : this.negate();
     }
 
-    static final BigInteger BI_TWO = BigInteger.valueOf(2);
-    static final BigInteger BI_FIVE = BigInteger.valueOf(5);
-    static final BigInteger BI_MINUS_ONE = BigInteger.valueOf(-1);
-
-    static final BigDecimal BD_TWO = BigDecimal.valueOf(2);
-    static final BigDecimal BD_FIVE = BigDecimal.valueOf(5);
-
-
     /**
-     * Goal is to be able to display rationals in a short but exact form, like 1,234,567/3 or 1.234567E21/3.
-     * To do this, find the smallest denominator (excluding powers of 2 and 5), and modify the numerator in the same way.
+     * Goal is to be able to display rationals in a short but exact form, like 1,234,567/3 or
+     * 1.234567E21/3. To do this, find the smallest denominator (excluding powers of 2 and 5), and
+     * modify the numerator in the same way.
+     *
      * @param denominator TODO
      * @param current
      * @return
      */
-    public static BigInteger minimalDenominator(Output<BigDecimal> outNumerator, BigInteger denominator) {
+    public static BigInteger minimalDenominator(
+            Output<BigDecimal> outNumerator, BigInteger denominator) {
         if (denominator.equals(BigInteger.ONE) || denominator.equals(BigInteger.ZERO)) {
             return denominator;
         }
@@ -405,9 +561,9 @@ public final class Rational implements Comparable<Rational> {
         return newDenominator;
     }
 
-
     public static class MutableLong {
         public long value;
+
         @Override
         public String toString() {
             return String.valueOf(value);
@@ -467,13 +623,14 @@ public final class Rational implements Comparable<Rational> {
                 k1 = k2;
             }
             if (intermediates != null) {
-                Rational last = intermediates.get(intermediates.size()-1);
-                intermediates.remove(intermediates.size()-1);
+                Rational last = intermediates.get(intermediates.size() - 1);
+                intermediates.remove(intermediates.size() - 1);
                 return last;
             } else {
                 return Rational.of(h1, k1);
             }
         }
+
         @Override
         public String toString() {
             return sequence.toString();
@@ -481,8 +638,9 @@ public final class Rational implements Comparable<Rational> {
 
         @Override
         public boolean equals(Object obj) {
-            return sequence.equals(((ContinuedFraction)obj).sequence);
+            return sequence.equals(((ContinuedFraction) obj).sequence);
         }
+
         @Override
         public int hashCode() {
             return sequence.hashCode();
@@ -493,11 +651,9 @@ public final class Rational implements Comparable<Rational> {
         return numerator.divide(denominator);
     }
 
+    /** The symmetric difference of a and b is 2 * abs(a - b) / (a + b) */
     public Rational symmetricDiff(Rational b) {
-        return this.subtract(b)
-            .divide(this.abs().add(b.abs()))
-            .multiply(Rational.of(2))
-            ;
+        return equals(b) ? ZERO : subtract(b).abs().multiply(TWO).divide(add(b));
     }
 
     /** Return repeating fraction, as long as the length is reasonable */
@@ -523,7 +679,7 @@ public final class Rational implements Comparable<Rational> {
             return s.toString();
         } else if (pToq > 0) {
             BigInteger intPart = p.divide(q);
-            s.append(nf.format(intPart));
+            s.append(formatNoGroup.format(intPart));
             p = p.remainder(q);
             if (p.compareTo(BigInteger.ZERO) == 0) {
                 return s.toString();
@@ -537,11 +693,11 @@ public final class Rational implements Comparable<Rational> {
         int pos = -1; // all places are right to the radix point
         Map<BigInteger, Integer> occurs = new HashMap<>();
         while (!occurs.containsKey(p)) {
-            occurs.put(p, pos);  // the position of the place with remainder p
+            occurs.put(p, pos); // the position of the place with remainder p
             BigInteger p10 = p.multiply(BigInteger.TEN);
             BigInteger z = p10.divide(q); // index z of digit within: 0 ≤ z ≤ b-1
-            p = p10.subtract(z.multiply(q));    // 0 ≤ p < q
-            s = s.append(((char)('0' + z.intValue()))); // append the character of the digit
+            p = p10.subtract(z.multiply(q)); // 0 ≤ p < q
+            s = s.append(((char) ('0' + z.intValue()))); // append the character of the digit
             if (p.equals(BigInteger.ZERO)) {
                 return s.toString();
             } else if (s.length() > stringLimit) {
@@ -549,8 +705,8 @@ public final class Rational implements Comparable<Rational> {
             }
             pos -= 1;
         }
-        int L = occurs.get(p)-pos; // the length of the reptend (being < q)
-        s.insert(s.length()-L, REPTEND_MARKER);
+        int L = occurs.get(p) - pos; // the length of the reptend (being < q)
+        s.insert(s.length() - L, REPTEND_MARKER);
         return s.toString();
     }
 
@@ -589,7 +745,32 @@ public final class Rational implements Comparable<Rational> {
         if (!INT_POWER_10.matcher(str).matches()) {
             throw new IllegalArgumentException("Prefix label must be power of 10: " + this);
         }
-        int result = str.length()-1;
+        int result = str.length() - 1;
         return String.valueOf(result * sign);
+    }
+
+    public static final Rational EPSILON = Rational.of(1, 1000000);
+
+    /** Approximately equal when symmetric difference of a and b < epsilon (default EPSILON) */
+    public boolean approximatelyEquals(Rational b, Rational epsilon) {
+        return symmetricDiff(b).compareTo(epsilon) < 0;
+    }
+
+    public boolean approximatelyEquals(Rational b) {
+        return approximatelyEquals(b, EPSILON);
+    }
+
+    public boolean approximatelyEquals(Number b) {
+        return approximatelyEquals(Rational.of(b.doubleValue()), EPSILON);
+    }
+
+    @Override
+    public int intValue() {
+        return toBigDecimal().intValue();
+    }
+
+    @Override
+    public long longValue() {
+        return toBigDecimal().longValue();
     }
 }

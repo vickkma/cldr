@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE ldml SYSTEM "../../common/dtd/ldml.dtd">
-<!-- Copyright © 1991-2022 Unicode, Inc.
+<!-- Copyright © 1991-2025 Unicode, Inc.
 For terms of use, see http://www.unicode.org/copyright.html
-SPDX-License-Identifier: Unicode-DFS-2016
+SPDX-License-Identifier: Unicode-3.0
 CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
 
 Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/ for derived annotations.
@@ -16,9 +16,10 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 	<localeDisplayNames>
 		<languages>
 			<language type="bla">Siksika</language>
+			<language type="ff">Fula</language>
 			<language type="mus" draft="contributed">Creek</language>
 			<language type="nds_NL">West Low German</language>
-			<language type="sah">Yakut</language>
+			<language type="sah">↑↑↑</language>
 		</languages>
 		<territories>
 			<territory type="BL">St Barthélemy</territory>
@@ -38,6 +39,8 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<types>
 			<type key="colNormalization" type="no">Sort Without Normalisation</type>
 			<type key="colNormalization" type="yes">Sort Unicode Normalised</type>
+			<type key="hc" type="c12">12-Hour System</type>
+			<type key="hc" type="c24">24-Hour System</type>
 			<type key="hc" type="h11">12-Hour System (0–11)</type>
 			<type key="hc" type="h12">12-Hour System (1–12)</type>
 			<type key="hc" type="h23">24-Hour System (0–23)</type>
@@ -51,19 +54,19 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 					<dateFormatLength type="full">
 						<dateFormat>
 							<pattern>EEEE, d MMMM r(U)</pattern>
-							<datetimeSkeleton>rMMMMEEEEd</datetimeSkeleton>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
 						</dateFormat>
 					</dateFormatLength>
 					<dateFormatLength type="long">
 						<dateFormat>
 							<pattern>d MMMM r(U)</pattern>
-							<datetimeSkeleton>rMMMMd</datetimeSkeleton>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
 						</dateFormat>
 					</dateFormatLength>
 					<dateFormatLength type="medium">
 						<dateFormat>
 							<pattern>d MMM r</pattern>
-							<datetimeSkeleton>rMMMd</datetimeSkeleton>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
 						</dateFormat>
 					</dateFormatLength>
 					<dateFormatLength type="short">
@@ -145,19 +148,19 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 					<dateFormatLength type="full">
 						<dateFormat>
 							<pattern>EEEE, d MMMM y G</pattern>
-							<datetimeSkeleton>GyMMMMEEEEd</datetimeSkeleton>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
 						</dateFormat>
 					</dateFormatLength>
 					<dateFormatLength type="long">
 						<dateFormat>
 							<pattern>d MMMM y G</pattern>
-							<datetimeSkeleton>GyMMMMd</datetimeSkeleton>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
 						</dateFormat>
 					</dateFormatLength>
 					<dateFormatLength type="medium">
 						<dateFormat>
 							<pattern>d MMM y G</pattern>
-							<datetimeSkeleton>GyMMMd</datetimeSkeleton>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
 						</dateFormat>
 					</dateFormatLength>
 					<dateFormatLength type="short">
@@ -169,15 +172,18 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				</dateFormats>
 				<dateTimeFormats>
 					<availableFormats>
-						<dateFormatItem id="Bhms">h:mm:ss B</dateFormatItem>
-						<dateFormatItem id="EBhm">E h:mm B</dateFormatItem>
-						<dateFormatItem id="EBhms">E h:mm:ss B</dateFormatItem>
+						<dateFormatItem id="Bhms">↑↑↑</dateFormatItem>
+						<dateFormatItem id="EBhm">↑↑↑</dateFormatItem>
+						<dateFormatItem id="EBhms">↑↑↑</dateFormatItem>
 						<dateFormatItem id="Ed">E d</dateFormatItem>
-						<dateFormatItem id="Ehm">E h:mm a</dateFormatItem>
-						<dateFormatItem id="EHm">E HH:mm</dateFormatItem>
-						<dateFormatItem id="Ehms">E h:mm:ss a</dateFormatItem>
-						<dateFormatItem id="EHms">E HH:mm:ss</dateFormatItem>
+						<dateFormatItem id="Ehm">↑↑↑</dateFormatItem>
+						<dateFormatItem id="Ehm" alt="ascii">↑↑↑</dateFormatItem>
+						<dateFormatItem id="EHm">↑↑↑</dateFormatItem>
+						<dateFormatItem id="Ehms">↑↑↑</dateFormatItem>
+						<dateFormatItem id="Ehms" alt="ascii">↑↑↑</dateFormatItem>
+						<dateFormatItem id="EHms">↑↑↑</dateFormatItem>
 						<dateFormatItem id="GyMd">dd/MM/y GGGGG</dateFormatItem>
+						<dateFormatItem id="GyMEd">E, dd/MM/y G</dateFormatItem>
 						<dateFormatItem id="GyMMMd">d MMM y G</dateFormatItem>
 						<dateFormatItem id="GyMMMEd">E, d MMM y G</dateFormatItem>
 						<dateFormatItem id="M">LL</dateFormatItem>
@@ -289,15 +295,15 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 					<dayPeriodContext type="format">
 						<dayPeriodWidth type="abbreviated">
 							<dayPeriod type="am">am</dayPeriod>
-							<dayPeriod type="noon">noon</dayPeriod>
+							<dayPeriod type="noon">↑↑↑</dayPeriod>
 							<dayPeriod type="pm">pm</dayPeriod>
 						</dayPeriodWidth>
 						<dayPeriodWidth type="narrow">
-							<dayPeriod type="noon">n</dayPeriod>
+							<dayPeriod type="noon">↑↑↑</dayPeriod>
 						</dayPeriodWidth>
 						<dayPeriodWidth type="wide">
 							<dayPeriod type="am">am</dayPeriod>
-							<dayPeriod type="noon">noon</dayPeriod>
+							<dayPeriod type="noon">↑↑↑</dayPeriod>
 							<dayPeriod type="pm">pm</dayPeriod>
 						</dayPeriodWidth>
 					</dayPeriodContext>
@@ -307,6 +313,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 							<dayPeriod type="pm">pm</dayPeriod>
 						</dayPeriodWidth>
 						<dayPeriodWidth type="narrow">
+							<dayPeriod type="am">am</dayPeriod>
 							<dayPeriod type="pm">pm</dayPeriod>
 						</dayPeriodWidth>
 						<dayPeriodWidth type="wide">
@@ -319,19 +326,19 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 					<dateFormatLength type="full">
 						<dateFormat>
 							<pattern>EEEE, d MMMM y</pattern>
-							<datetimeSkeleton>yMMMMEEEEd</datetimeSkeleton>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
 						</dateFormat>
 					</dateFormatLength>
 					<dateFormatLength type="long">
 						<dateFormat>
 							<pattern>d MMMM y</pattern>
-							<datetimeSkeleton>yMMMMd</datetimeSkeleton>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
 						</dateFormat>
 					</dateFormatLength>
 					<dateFormatLength type="medium">
 						<dateFormat>
 							<pattern>d MMM y</pattern>
-							<datetimeSkeleton>yMMMd</datetimeSkeleton>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
 						</dateFormat>
 					</dateFormatLength>
 					<dateFormatLength type="short">
@@ -343,14 +350,17 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				</dateFormats>
 				<dateTimeFormats>
 					<availableFormats>
-						<dateFormatItem id="EBhm">E h:mm B</dateFormatItem>
-						<dateFormatItem id="EBhms">E h:mm:ss B</dateFormatItem>
+						<dateFormatItem id="EBhm">↑↑↑</dateFormatItem>
+						<dateFormatItem id="EBhms">↑↑↑</dateFormatItem>
 						<dateFormatItem id="Ed">E d</dateFormatItem>
-						<dateFormatItem id="Ehm">E h:mm a</dateFormatItem>
-						<dateFormatItem id="EHm">E HH:mm</dateFormatItem>
-						<dateFormatItem id="Ehms">E h:mm:ss a</dateFormatItem>
-						<dateFormatItem id="EHms">E HH:mm:ss</dateFormatItem>
-						<dateFormatItem id="GyMd">d/M/y G</dateFormatItem>
+						<dateFormatItem id="Ehm">↑↑↑</dateFormatItem>
+						<dateFormatItem id="Ehm" alt="ascii">↑↑↑</dateFormatItem>
+						<dateFormatItem id="EHm">↑↑↑</dateFormatItem>
+						<dateFormatItem id="Ehms">↑↑↑</dateFormatItem>
+						<dateFormatItem id="Ehms" alt="ascii">↑↑↑</dateFormatItem>
+						<dateFormatItem id="EHms">↑↑↑</dateFormatItem>
+						<dateFormatItem id="GyMd">dd/MM/y G</dateFormatItem>
+						<dateFormatItem id="GyMEd">E, dd/MM/y G</dateFormatItem>
 						<dateFormatItem id="GyMMMd">d MMM y G</dateFormatItem>
 						<dateFormatItem id="GyMMMEd">E, d MMM y G</dateFormatItem>
 						<dateFormatItem id="Md">dd/MM</dateFormatItem>
@@ -463,11 +473,181 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				</dateTimeFormats>
 			</calendar>
 			<calendar type="islamic">
+				<dateFormats>
+					<dateFormatLength type="full">
+						<dateFormat>
+							<pattern>EEEE, d MMMM y G</pattern>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="long">
+						<dateFormat>
+							<pattern>d MMMM y G</pattern>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="medium">
+						<dateFormat>
+							<pattern>d MMM y G</pattern>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="short">
+						<dateFormat>
+							<pattern>dd/MM/y GGGGG</pattern>
+						</dateFormat>
+					</dateFormatLength>
+				</dateFormats>
 				<dateTimeFormats>
 					<availableFormats>
+						<dateFormatItem id="Ed">E d</dateFormatItem>
+						<dateFormatItem id="GyMd">dd/MM/y GGGGG</dateFormatItem>
+						<dateFormatItem id="GyMEd">E, dd/MM/y G</dateFormatItem>
+						<dateFormatItem id="GyMMMd">d MMM y G</dateFormatItem>
+						<dateFormatItem id="GyMMMEd">E, d MMM y G</dateFormatItem>
+						<dateFormatItem id="M">LL</dateFormatItem>
+						<dateFormatItem id="Md">dd/MM</dateFormatItem>
 						<dateFormatItem id="MEd">E dd/MM</dateFormatItem>
+						<dateFormatItem id="MMMd">d MMM</dateFormatItem>
 						<dateFormatItem id="MMMEd">E d MMM</dateFormatItem>
+						<dateFormatItem id="MMMMd">d MMMM</dateFormatItem>
+						<dateFormatItem id="yyyyM">MM/y GGGGG</dateFormatItem>
+						<dateFormatItem id="yyyyMd">dd/MM/y GGGGG</dateFormatItem>
+						<dateFormatItem id="yyyyMEd">E, dd/MM/y GGGGG</dateFormatItem>
+						<dateFormatItem id="yyyyMMMd">d MMM y G</dateFormatItem>
+						<dateFormatItem id="yyyyMMMEd">E, d MMM y G</dateFormatItem>
 					</availableFormats>
+				</dateTimeFormats>
+			</calendar>
+			<calendar type="japanese">
+				<dateFormats>
+					<dateFormatLength type="full">
+						<dateFormat>
+							<pattern>EEEE, d MMMM y G</pattern>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="long">
+						<dateFormat>
+							<pattern>d MMMM y G</pattern>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="medium">
+						<dateFormat>
+							<pattern>d MMM y G</pattern>
+							<datetimeSkeleton>↑↑↑</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+					<dateFormatLength type="short">
+						<dateFormat>
+							<pattern>dd/MM/y GGGGG</pattern>
+							<datetimeSkeleton>GGGGGyMMdd</datetimeSkeleton>
+						</dateFormat>
+					</dateFormatLength>
+				</dateFormats>
+				<dateTimeFormats>
+					<availableFormats>
+						<dateFormatItem id="Bhms">↑↑↑</dateFormatItem>
+						<dateFormatItem id="EBhm">↑↑↑</dateFormatItem>
+						<dateFormatItem id="EBhms">↑↑↑</dateFormatItem>
+						<dateFormatItem id="Ed">E d</dateFormatItem>
+						<dateFormatItem id="Ehm">↑↑↑</dateFormatItem>
+						<dateFormatItem id="Ehm" alt="ascii">↑↑↑</dateFormatItem>
+						<dateFormatItem id="EHm">↑↑↑</dateFormatItem>
+						<dateFormatItem id="Ehms">↑↑↑</dateFormatItem>
+						<dateFormatItem id="Ehms" alt="ascii">↑↑↑</dateFormatItem>
+						<dateFormatItem id="EHms">↑↑↑</dateFormatItem>
+						<dateFormatItem id="GyMd">dd/MM/y GGGGG</dateFormatItem>
+						<dateFormatItem id="GyMMMd">d MMM y G</dateFormatItem>
+						<dateFormatItem id="GyMMMEd">E, d MMM y G</dateFormatItem>
+						<dateFormatItem id="M">LL</dateFormatItem>
+						<dateFormatItem id="Md">dd/MM</dateFormatItem>
+						<dateFormatItem id="MEd">E, dd/MM</dateFormatItem>
+						<dateFormatItem id="MMMd">d MMM</dateFormatItem>
+						<dateFormatItem id="MMMEd">E, d MMM</dateFormatItem>
+						<dateFormatItem id="MMMMd">d MMMM</dateFormatItem>
+						<dateFormatItem id="yyyyM">MM/y GGGGG</dateFormatItem>
+						<dateFormatItem id="yyyyMd">dd/MM/y GGGGG</dateFormatItem>
+						<dateFormatItem id="yyyyMEd">E, dd/MM/y GGGGG</dateFormatItem>
+						<dateFormatItem id="yyyyMMMd">d MMM y G</dateFormatItem>
+						<dateFormatItem id="yyyyMMMEd">E, d MMM y G</dateFormatItem>
+					</availableFormats>
+					<intervalFormats>
+						<intervalFormatItem id="d">
+							<greatestDifference id="d">d–d</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="Gy">
+							<greatestDifference id="y">y–y G</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="GyMd">
+							<greatestDifference id="d">dd/MM/y – dd/MM/y GGGGG</greatestDifference>
+							<greatestDifference id="G">dd/MM/y GGGGG – dd/MM/y GGGGG</greatestDifference>
+							<greatestDifference id="M">dd/MM/y – dd/MM/y GGGGG</greatestDifference>
+							<greatestDifference id="y">dd/MM/y – dd/MM/y GGGGG</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="GyMEd">
+							<greatestDifference id="d">E, dd/MM/y – E, dd/MM/y GGGGG</greatestDifference>
+							<greatestDifference id="G">E, dd/MM/y GGGGG – E, dd/MM/y GGGGG</greatestDifference>
+							<greatestDifference id="M">E, dd/MM/y – E, dd/MM/y GGGGG</greatestDifference>
+							<greatestDifference id="y">E, dd/MM/y – E, dd/MM/y GGGGG</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="GyMMMd">
+							<greatestDifference id="d">d–d MMM y G</greatestDifference>
+							<greatestDifference id="G">d MMM y G – d MMM y G</greatestDifference>
+							<greatestDifference id="M">d MMM – d MMM y G</greatestDifference>
+							<greatestDifference id="y">d MMM y – d MMM y G</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="GyMMMEd">
+							<greatestDifference id="d">E, d MMM – E, d MMM y G</greatestDifference>
+							<greatestDifference id="G">E, d MMM y G – E, d MMM y G</greatestDifference>
+							<greatestDifference id="M">E, d MMM – E, d MMM y G</greatestDifference>
+							<greatestDifference id="y">E, d MMM y – E, d MMM y G</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="M">
+							<greatestDifference id="M">M–M</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="Md">
+							<greatestDifference id="d">dd/MM – dd/MM</greatestDifference>
+							<greatestDifference id="M">dd/MM – dd/MM</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="MEd">
+							<greatestDifference id="d">E dd/MM – E dd/MM</greatestDifference>
+							<greatestDifference id="M">E dd/MM – E dd/MM</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="MMMd">
+							<greatestDifference id="d">d–d MMM</greatestDifference>
+							<greatestDifference id="M">d MMM – d MMM</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="MMMEd">
+							<greatestDifference id="d">E d – E d MMM</greatestDifference>
+							<greatestDifference id="M">E d MMM – E d MMM</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="y">
+							<greatestDifference id="y">y–y G</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="yM">
+							<greatestDifference id="M">MM/y – MM/y GGGGG</greatestDifference>
+							<greatestDifference id="y">MM/y – MM/y GGGGG</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="yMd">
+							<greatestDifference id="d">dd/MM/y – dd/MM/y GGGGG</greatestDifference>
+							<greatestDifference id="M">dd/MM/y – dd/MM/y GGGGG</greatestDifference>
+							<greatestDifference id="y">dd/MM/y – dd/MM/y GGGGG</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="yMEd">
+							<greatestDifference id="d">E, dd/MM/y – E, dd/MM/y GGGGG</greatestDifference>
+							<greatestDifference id="M">E, dd/MM/y – E, dd/MM/y GGGGG</greatestDifference>
+							<greatestDifference id="y">E, dd/MM/y – E, dd/MM/y GGGGG</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="yMMMd">
+							<greatestDifference id="d">d–d MMM y G</greatestDifference>
+							<greatestDifference id="M">d MMM – d MMM y G</greatestDifference>
+							<greatestDifference id="y">d MMM y – d MMM y G</greatestDifference>
+						</intervalFormatItem>
+						<intervalFormatItem id="yMMMEd">
+							<greatestDifference id="d">E, d – E, d MMM y G</greatestDifference>
+							<greatestDifference id="M">E, d MMM – E, d MMM y G</greatestDifference>
+							<greatestDifference id="y">E, d MMM y – E, d MMM y G</greatestDifference>
+						</intervalFormatItem>
+					</intervalFormats>
 				</dateTimeFormats>
 			</calendar>
 		</calendars>
@@ -511,7 +691,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				</relativeTime>
 			</field>
 			<field type="quarter-narrow">
-				<displayName>qtr</displayName>
+				<displayName>↑↑↑</displayName>
 				<relativeTime type="future">
 					<relativeTimePattern count="one">in {0} qtr</relativeTimePattern>
 					<relativeTimePattern count="other">in {0} qtr</relativeTimePattern>
@@ -536,7 +716,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				</relativeTime>
 			</field>
 			<field type="month-narrow">
-				<displayName>mo</displayName>
+				<displayName>↑↑↑</displayName>
 				<relative type="-1">last mo</relative>
 				<relative type="0">this mo</relative>
 				<relative type="1">next mo</relative>
@@ -564,7 +744,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				</relativeTime>
 			</field>
 			<field type="week-narrow">
-				<displayName>wk</displayName>
+				<displayName>↑↑↑</displayName>
 				<relative type="-1">last wk</relative>
 				<relative type="0">this wk</relative>
 				<relative type="1">next wk</relative>
@@ -744,7 +924,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				</relativeTime>
 			</field>
 			<field type="minute-narrow">
-				<displayName>min</displayName>
+				<displayName>↑↑↑</displayName>
 				<relativeTime type="future">
 					<relativeTimePattern count="one">in {0} min</relativeTimePattern>
 					<relativeTimePattern count="other">in {0} min</relativeTimePattern>
@@ -777,36 +957,20 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 			</field>
 		</fields>
 		<timeZoneNames>
-			<zone type="Australia/Currie">
-				<exemplarCity>Currie</exemplarCity>
-			</zone>
 			<zone type="America/St_Barthelemy">
 				<exemplarCity>St Barthélemy</exemplarCity>
 			</zone>
 			<zone type="America/St_Johns">
 				<exemplarCity>St John’s</exemplarCity>
 			</zone>
-			<zone type="Pacific/Enderbury">
-				<exemplarCity>Enderbury</exemplarCity>
-			</zone>
 			<zone type="America/St_Kitts">
 				<exemplarCity>St Kitts</exemplarCity>
-			</zone>
-			<zone type="Asia/Aqtau">
-				<exemplarCity>Aktau</exemplarCity>
 			</zone>
 			<zone type="America/St_Lucia">
 				<exemplarCity>St Lucia</exemplarCity>
 			</zone>
 			<zone type="Atlantic/St_Helena">
 				<exemplarCity>St Helena</exemplarCity>
-			</zone>
-			<zone type="Pacific/Honolulu">
-				<short>
-					<generic>∅∅∅</generic>
-					<standard>∅∅∅</standard>
-					<daylight>∅∅∅</daylight>
-				</short>
 			</zone>
 			<zone type="America/St_Vincent">
 				<exemplarCity>St Vincent</exemplarCity>
@@ -854,6 +1018,11 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 					<generic>∅∅∅</generic>
 					<standard>∅∅∅</standard>
 					<daylight>∅∅∅</daylight>
+				</short>
+			</metazone>
+			<metazone type="Hawaii">
+				<short>
+					<standard>∅∅∅</standard>
 				</short>
 			</metazone>
 			<metazone type="Hawaii_Aleutian">
@@ -919,9 +1088,9 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<displayName count="other">Maldivian rufiyaa</displayName>
 			</currency>
 			<currency type="PHP">
-				<displayName>Philippine Peso</displayName>
-				<displayName count="one">Philippine peso</displayName>
-				<displayName count="other">Philippine pesos</displayName>
+				<displayName>↑↑↑</displayName>
+				<displayName count="one">↑↑↑</displayName>
+				<displayName count="other">↑↑↑</displayName>
 			</currency>
 			<currency type="RUB">
 				<displayName>Russian Rouble</displayName>
@@ -1028,7 +1197,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<unitPattern count="one">{0} kilowatt-hour</unitPattern>
 			</unit>
 			<unit type="force-kilowatt-hour-per-100-kilometer">
-				<displayName>kilowatt-hour per 100 kilometres</displayName>
+				<displayName>kilowatt-hours per 100 kilometres</displayName>
 				<unitPattern count="one">{0} kilowatt-hour per 100 kilometres</unitPattern>
 				<unitPattern count="other">{0} kilowatt-hours per 100 kilometres</unitPattern>
 			</unit>
@@ -1038,12 +1207,12 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<unitPattern count="other">{0} pixels per centimetre</unitPattern>
 			</unit>
 			<unit type="graphics-dot-per-centimeter">
-				<displayName>dots per centimetre</displayName>
-				<unitPattern count="one">{0} dot per centimetre</unitPattern>
-				<unitPattern count="other">{0} dots per centimetre</unitPattern>
+				<displayName draft="provisional">dots per centimetre</displayName>
+				<unitPattern count="one" draft="provisional">{0} dot per centimetre</unitPattern>
+				<unitPattern count="other" draft="provisional">{0} dots per centimetre</unitPattern>
 			</unit>
 			<unit type="graphics-dot">
-				<unitPattern count="other">{0} dots</unitPattern>
+				<unitPattern count="other" draft="provisional">↑↑↑</unitPattern>
 			</unit>
 			<unit type="length-earth-radius">
 				<unitPattern count="other">{0} earth radii</unitPattern>
@@ -1061,7 +1230,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<perUnitPattern>{0} per metre</perUnitPattern>
 			</unit>
 			<unit type="length-decimeter">
-				<displayName>decimetre</displayName>
+				<displayName>decimetres</displayName>
 				<unitPattern count="one">{0} decimetre</unitPattern>
 				<unitPattern count="other">{0} decimetres</unitPattern>
 			</unit>
@@ -1077,7 +1246,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<unitPattern count="other">{0} millimetres</unitPattern>
 			</unit>
 			<unit type="length-micrometer">
-				<displayName>micrometre</displayName>
+				<displayName>micrometres</displayName>
 				<unitPattern count="one">{0} micrometre</unitPattern>
 				<unitPattern count="other">{0} micrometres</unitPattern>
 			</unit>
@@ -1109,11 +1278,11 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 			</unit>
 			<unit type="mass-stone">
 				<displayName>stone</displayName>
-				<unitPattern count="one">{0} stone</unitPattern>
+				<unitPattern count="one">↑↑↑</unitPattern>
 				<unitPattern count="other">{0} stone</unitPattern>
 			</unit>
 			<unit type="mass-grain">
-				<unitPattern count="other">{0} grains</unitPattern>
+				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="pressure-millimeter-ofhg">
 				<displayName>millimetres of mercury</displayName>
@@ -1131,11 +1300,11 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<unitPattern count="other">{0} metres per second</unitPattern>
 			</unit>
 			<unit type="temperature-generic">
-				<displayName>degree</displayName>
+				<displayName>degrees</displayName>
 			</unit>
 			<unit type="temperature-kelvin">
 				<displayName>kelvin</displayName>
-				<unitPattern count="one">{0} kelvin</unitPattern>
+				<unitPattern count="one">↑↑↑</unitPattern>
 				<unitPattern count="other">{0} kelvin</unitPattern>
 			</unit>
 			<unit type="torque-newton-meter">
@@ -1219,29 +1388,29 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<unitPattern count="other">{0} fluid ounces</unitPattern>
 			</unit>
 			<unit type="volume-dessert-spoon">
-				<displayName>US dessertspoon</displayName>
+				<displayName>US dessertspoons</displayName>
 				<unitPattern count="one">{0} US dessertspoon</unitPattern>
 				<unitPattern count="other">{0} US dessertspoons</unitPattern>
 			</unit>
 			<unit type="volume-dessert-spoon-imperial">
-				<displayName>dessertspoon</displayName>
+				<displayName>dessertspoons</displayName>
 				<unitPattern count="one">{0} dessertspoon</unitPattern>
 				<unitPattern count="other">{0} dessertspoons</unitPattern>
 			</unit>
 			<unit type="volume-drop">
-				<unitPattern count="other">{0} drops</unitPattern>
+				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="volume-dram">
-				<unitPattern count="other">{0} drams</unitPattern>
+				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="volume-jigger">
-				<unitPattern count="other">{0} jiggers</unitPattern>
+				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="volume-pinch">
-				<unitPattern count="other">{0} pinches</unitPattern>
+				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="volume-quart-imperial">
-				<displayName>quart</displayName>
+				<displayName>quarts</displayName>
 				<unitPattern count="one">{0} quart</unitPattern>
 				<unitPattern count="other">{0} quarts</unitPattern>
 			</unit>
@@ -1254,7 +1423,7 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<unitPattern count="other">{0} revs</unitPattern>
 			</unit>
 			<unit type="area-square-meter">
-				<displayName>metres²</displayName>
+				<displayName>m²</displayName>
 			</unit>
 			<unit type="concentr-karat">
 				<displayName>carats</displayName>
@@ -1298,30 +1467,30 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<unitPattern count="other">{0} mpg</unitPattern>
 			</unit>
 			<unit type="duration-hour">
-				<unitPattern count="one">{0} hr</unitPattern>
+				<unitPattern count="one">↑↑↑</unitPattern>
 				<unitPattern count="other">{0} hrs</unitPattern>
-				<perUnitPattern>{0}/h</perUnitPattern>
+				<perUnitPattern>↑↑↑</perUnitPattern>
 			</unit>
 			<unit type="duration-minute">
-				<unitPattern count="one">{0} min</unitPattern>
+				<unitPattern count="one">↑↑↑</unitPattern>
 				<unitPattern count="other">{0} mins</unitPattern>
 			</unit>
 			<unit type="duration-second">
-				<unitPattern count="one">{0} sec</unitPattern>
+				<unitPattern count="one">↑↑↑</unitPattern>
 				<unitPattern count="other">{0} secs</unitPattern>
-				<perUnitPattern>{0}/s</perUnitPattern>
+				<perUnitPattern>↑↑↑</perUnitPattern>
 			</unit>
 			<unit type="duration-microsecond">
-				<displayName>μsecs</displayName>
-				<unitPattern count="one">{0} μs</unitPattern>
-				<unitPattern count="other">{0} μs</unitPattern>
+				<displayName>↑↑↑</displayName>
+				<unitPattern count="one">↑↑↑</unitPattern>
+				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="graphics-dot">
-				<unitPattern count="one">{0} dot</unitPattern>
-				<unitPattern count="other">{0} dots</unitPattern>
+				<unitPattern count="one" draft="provisional">↑↑↑</unitPattern>
+				<unitPattern count="other" draft="provisional">↑↑↑</unitPattern>
 			</unit>
 			<unit type="length-meter">
-				<displayName>metres</displayName>
+				<displayName>m</displayName>
 			</unit>
 			<unit type="length-micrometer">
 				<displayName>μmetres</displayName>
@@ -1334,16 +1503,16 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<unitPattern count="other">{0} ct</unitPattern>
 			</unit>
 			<unit type="mass-grain">
-				<unitPattern count="one">{0} grains</unitPattern>
-				<unitPattern count="other">{0} grains</unitPattern>
+				<unitPattern count="one">{0} gr</unitPattern>
+				<unitPattern count="other">{0} gr</unitPattern>
 			</unit>
 			<unit type="pressure-millimeter-ofhg">
-				<displayName>mmHg</displayName>
-				<unitPattern count="one">{0} mmHg</unitPattern>
-				<unitPattern count="other">{0} mmHg</unitPattern>
+				<displayName>↑↑↑</displayName>
+				<unitPattern count="one">↑↑↑</unitPattern>
+				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="pressure-inch-ofhg">
-				<displayName>inHg</displayName>
+				<displayName>↑↑↑</displayName>
 			</unit>
 			<unit type="speed-meter-per-second">
 				<displayName>metres/sec</displayName>
@@ -1417,20 +1586,20 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<unitPattern count="other">{0} dstspn</unitPattern>
 			</unit>
 			<unit type="volume-drop">
-				<unitPattern count="one">{0} drops</unitPattern>
+				<unitPattern count="one">{0} drop</unitPattern>
 				<unitPattern count="other">{0} drops</unitPattern>
 			</unit>
 			<unit type="volume-dram">
 				<displayName>dram</displayName>
-				<unitPattern count="one">{0} dram</unitPattern>
-				<unitPattern count="other">{0} drams</unitPattern>
+				<unitPattern count="one">↑↑↑</unitPattern>
+				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="volume-jigger">
-				<unitPattern count="one">{0} jigger</unitPattern>
-				<unitPattern count="other">{0} jiggers</unitPattern>
+				<unitPattern count="one">↑↑↑</unitPattern>
+				<unitPattern count="other">↑↑↑</unitPattern>
 			</unit>
 			<unit type="volume-pinch">
-				<unitPattern count="one">{0} pinches</unitPattern>
+				<unitPattern count="one">{0} pinch</unitPattern>
 				<unitPattern count="other">{0} pinches</unitPattern>
 			</unit>
 			<unit type="volume-quart-imperial">
@@ -1440,8 +1609,11 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 			</unit>
 		</unitLength>
 		<unitLength type="narrow">
+			<unit type="acceleration-g-force">
+				<unitPattern count="other">{0}G</unitPattern>
+			</unit>
 			<unit type="area-square-meter">
-				<displayName draft="contributed">metres²</displayName>
+				<displayName draft="contributed">m²</displayName>
 			</unit>
 			<unit type="concentr-karat">
 				<displayName>carat</displayName>
@@ -1479,11 +1651,15 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<unitPattern count="other">{0}mpg</unitPattern>
 			</unit>
 			<unit type="length-meter">
-				<displayName>metre</displayName>
+				<displayName>m</displayName>
 			</unit>
 			<unit type="mass-pound">
 				<unitPattern count="one">{0}lb</unitPattern>
 				<unitPattern count="other">{0}lb</unitPattern>
+			</unit>
+			<unit type="mass-carat">
+				<unitPattern count="one">{0}ct</unitPattern>
+				<unitPattern count="other">{0}ct</unitPattern>
 			</unit>
 			<unit type="speed-kilometer-per-hour">
 				<displayName>km/h</displayName>
@@ -1492,8 +1668,8 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 				<displayName>mph</displayName>
 			</unit>
 			<unit type="temperature-celsius">
-				<unitPattern count="one">{0}°</unitPattern>
-				<unitPattern count="other">{0}°</unitPattern>
+				<unitPattern count="one">{0}°C</unitPattern>
+				<unitPattern count="other">{0}°C</unitPattern>
 			</unit>
 			<unit type="temperature-fahrenheit">
 				<unitPattern count="one">{0}°F</unitPattern>
@@ -1532,15 +1708,20 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 			</unit>
 			<unit type="volume-gallon">
 				<displayName>US gal</displayName>
-				<unitPattern count="one">{0}galUS</unitPattern>
-				<unitPattern count="other">{0}galUS</unitPattern>
-				<perUnitPattern>{0}/galUS</perUnitPattern>
+				<unitPattern count="one">{0}USgal</unitPattern>
+				<unitPattern count="other">{0}USgal</unitPattern>
+				<perUnitPattern>{0}/USgal</perUnitPattern>
 			</unit>
 			<unit type="volume-gallon-imperial">
 				<displayName>gal</displayName>
 				<unitPattern count="one">{0}gal</unitPattern>
 				<unitPattern count="other">{0}gal</unitPattern>
 				<perUnitPattern>{0}/gal</perUnitPattern>
+			</unit>
+			<unit type="volume-quart">
+				<displayName>USqt</displayName>
+				<unitPattern count="one">{0}USqt</unitPattern>
+				<unitPattern count="other">{0}USqt</unitPattern>
 			</unit>
 			<unit type="volume-fluid-ounce">
 				<displayName>US fl oz</displayName>
@@ -1602,8 +1783,11 @@ Warnings: All cp values have U+FE0F characters removed. See /annotationsDerived/
 		<characterLabel type="math_symbols">maths symbol</characterLabel>
 	</characterLabels>
 	<personNames>
-		<sampleName item="full">
-			<nameField type="prefix">Prof. Dr</nameField>
+		<sampleName item="nativeFull">
+			<nameField type="title">Mr</nameField>
+		</sampleName>
+		<sampleName item="foreignFull">
+			<nameField type="title">Prof Dr</nameField>
 		</sampleName>
 	</personNames>
 </ldml>

@@ -231,13 +231,45 @@ h3.collapse-review > span:first-child {position: relative; top: -220px;display: 
 	margin-top: 5px;
 	font-weight: bold;
 	color: black;
+	border-collapse: separate;
+	background-color: #DFF;
+	display: inline-block;
+	margin: 1px;
+	padding: 1px;
+	border-radius: 5px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: flex;
+	border: 1px solid #0FF;
 }
 .data .visible-mark{
 	background-color: #d9edf7;
 	border-color: #bce8f1;
 	color: #666666;
 	margin: 0 2.5px;
+	font-size: small;
 }
+.data .visible-mark:hover{
+	color: #d9edf7;
+	background-color: #666666;
+}
+.lrmarker-container > .lrmarker-text {
+	flex-grow: 1;
+
+}
+.lrmarker-container .visible-mark{
+	flex-grow: 0;
+}
+.lrmarker-container > .hiddenMoreInfo {
+	opacity: .1;
+}
+.lrmarker-container:hover > .hiddenMoreInfo {
+	opacity: 1;
+}
+.hiddenMoreInfo{
+	color: black;
+}
+
 .data .subSpan {
 	margin-left:9px;
 	position:relative;
@@ -250,6 +282,7 @@ h3.collapse-review > span:first-child {position: relative; top: -220px;display: 
 
 .table-vote {
 	margin-top:10px;
+	margin-bottom:2px;
 }
 
 
@@ -302,12 +335,6 @@ h3.collapse-review > span:first-child {position: relative; top: -220px;display: 
 	min-width:0px;
 }
 
-.data .statuscell {
-	background-position:center center;
-	display:table-cell;
-	left:0px;
-}
-
 .othercell hr {
 	border-top:1px solid white;
 }
@@ -345,6 +372,9 @@ h3.collapse-review > span:first-child {position: relative; top: -220px;display: 
 }
 
 .data .d-example {
+	display:none;
+}
+.data .d-trans-hint {
 	display:none;
 }
 /* direct override of bootstrap
@@ -454,7 +484,7 @@ h3.collapse-review > span:first-child {position: relative; top: -220px;display: 
 }
 
 
-.sidebar-chooser, #review-link  {
+.sidebar-chooser  {
 	cursor:pointer;
 }
 
@@ -1126,4 +1156,13 @@ html {
 	display: none;
 	flex-direction: column;
 	overflow: hidden;
+}
+
+footer {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+	border-top: 0.5em solid #eeeefe;
+	font-size: smaller;
 }

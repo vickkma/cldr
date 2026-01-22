@@ -1,5 +1,9 @@
 package org.unicode.cldr.util.personname;
 
+import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.ibm.icu.util.ULocale;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -7,20 +11,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-
 import org.unicode.cldr.util.CldrUtility;
 import org.unicode.cldr.util.personname.PersonNameFormatter.Field;
 import org.unicode.cldr.util.personname.PersonNameFormatter.ModifiedField;
 import org.unicode.cldr.util.personname.PersonNameFormatter.Modifier;
 import org.unicode.cldr.util.personname.PersonNameFormatter.NameObject;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
-import com.ibm.icu.util.ULocale;
-
 /**
- * Simple implementation for testing and using in CLDR examples.
- * Note: an invariant is that if there is a value for a modified field, there must be a value for the completely unmodified field.
+ * Simple implementation for testing and using in CLDR examples. Note: an invariant is that if there
+ * is a value for a modified field, there must be a value for the completely unmodified field.
  * Immutable
  */
 public class SimpleNameObject implements NameObject {
@@ -39,10 +38,9 @@ public class SimpleNameObject implements NameObject {
     }
 
     /**
-     * Return the best fit.
-     *  The data is organized by field, and then by modifier sets.
-     *  The ordering is lexicographic among items with the same number of elements, so we favor earlier values in Modifier.values();
-     * We are guaranteed by construction that the last one is empty
+     * Return the best fit. The data is organized by field, and then by modifier sets. The ordering
+     * is lexicographic among items with the same number of elements, so we favor earlier values in
+     * Modifier.values(); We are guaranteed by construction that the last one is empty
      */
     @Override
     public String getBestValue(ModifiedField modifiedField, Set<Modifier> remainingModifers) {
@@ -67,7 +65,8 @@ public class SimpleNameObject implements NameObject {
 
         // Find the longest match for the field modifiers
         // If there are multiple, choose the lexicographically first, by construction
-        // Note: we could shortcut the case where there are no modifiers, but probably not worth it since the lists will be short
+        // Note: we could shortcut the case where there are no modifiers, but probably not worth it
+        // since the lists will be short
 
         String bestValue = null;
         Set<Modifier> bestModifiers = ImmutableSet.of(); // empty
@@ -81,7 +80,8 @@ public class SimpleNameObject implements NameObject {
                 // we know that we can't get any longer than we have, so we can skip anything else
                 break;
             }
-            int intersectionSize = PersonNameFormatter.getIntersectionSize(dataModifiers, modifiers);
+            int intersectionSize =
+                    PersonNameFormatter.getIntersectionSize(dataModifiers, modifiers);
             if (intersectionSize != 0 && intersectionSize > largestIntersectionSize) {
                 bestValue = lastValue;
                 bestModifiers = dataModifiers;
@@ -112,26 +112,26 @@ public class SimpleNameObject implements NameObject {
             final String value = entry.getValue();
             putChain(_patternData, field, modifiers, value);
         }
-
         // check data, and adjust as necessary
-
         Map<Field, Map<Set<Modifier>, String>> additions = null;
         for (Entry<Field, Map<Set<Modifier>, String>> entry : _patternData.entrySet()) {
             Map<Set<Modifier>, String> map = entry.getValue();
             if (map.get(Modifier.EMPTY) == null) {
-
-                // ok to have no empty map if there exists a core
+                // OK to have no value for the same fields with no modifiers IF there exists a core
                 // in that case, we manufacture a name
                 String coreValue = map.get(ImmutableSet.of(Modifier.core));
-                if (coreValue == null) {
-                    throw new IllegalArgumentException("Every field must have a completely modified value " + entry);
+                if (coreValue != null) {
+                    if (additions == null) {
+                        additions = new EnumMap<>(Field.class);
+                    }
+                    String prefixValue = map.get(ImmutableSet.of(Modifier.prefix));
+                    Field field = entry.getKey();
+                    putChain(
+                            additions,
+                            field,
+                            Modifier.EMPTY,
+                            prefixValue == null ? coreValue : prefixValue + " " + coreValue);
                 }
-                String prefixValue = map.get(ImmutableSet.of(Modifier.prefix));
-                if (additions == null) {
-                    additions = new EnumMap<>(Field.class);
-                }
-                Field field = entry.getKey();
-                putChain(additions, field, Modifier.EMPTY, prefixValue == null ? coreValue : prefixValue + " " + coreValue);
             }
         }
         if (additions != null) { // copy in additions
@@ -145,7 +145,11 @@ public class SimpleNameObject implements NameObject {
         this.patternData = CldrUtility.protectCollection(_patternData);
     }
 
-    private void putChain(Map<Field, Map<Set<Modifier>, String>> _patternData, final Field field, final Set<Modifier> modifiers, final String value) {
+    private void putChain(
+            Map<Field, Map<Set<Modifier>, String>> _patternData,
+            final Field field,
+            final Set<Modifier> modifiers,
+            final String value) {
         Map<Set<Modifier>, String> fieldData = _patternData.get(field);
         if (fieldData == null) {
             _patternData.put(field, fieldData = new TreeMap<>(Modifier.LONGEST_FIRST));
@@ -157,22 +161,28 @@ public class SimpleNameObject implements NameObject {
      * Takes string in form locale=fr, given=John Bob, given2=Edwin ...
      */
     public static SimpleNameObject from(String namePattern) {
+        return from(',', namePattern);
+    }
+
+    public static SimpleNameObject from(char separator, String namePattern) {
         Map<ModifiedField, String> patternData = new LinkedHashMap<>();
         ULocale nameLocale = ULocale.ROOT;
-        for (String setting : PersonNameFormatter.SPLIT_COMMA.split(namePattern)) {
+        for (String setting : Splitter.on(separator).trimResults().split(namePattern)) {
             List<String> parts = PersonNameFormatter.SPLIT_EQUALS.splitToList(setting);
             if (parts.size() != 2) {
-                throw new IllegalArgumentException("Bad format, should be like: given=John Bob, given2=Edwin, …: " + namePattern);
+                throw new IllegalArgumentException(
+                        "Bad format, should be like: given=John Bob, given2=Edwin, …: "
+                                + namePattern);
             }
             final String key = parts.get(0);
             final String value = parts.get(1);
-            switch(key) {
-            case "locale":
-                nameLocale = new ULocale(value);
-                break;
-            default:
-                patternData.put(ModifiedField.from(key), value);
-                break;
+            switch (key) {
+                case "locale":
+                    nameLocale = new ULocale(value);
+                    break;
+                default:
+                    patternData.put(ModifiedField.from(key), value);
+                    break;
             }
         }
         return new SimpleNameObject(nameLocale, patternData);
@@ -183,25 +193,48 @@ public class SimpleNameObject implements NameObject {
         return "{locale=" + nameLocale + " " + "patternData=" + show(patternData) + "}";
     }
 
-    private String show(Map<Field, Map<Set<Modifier>, String>> patternData2) {
+    public enum ShowStyle {
+        toString("{", ", ", "}"),
+        semicolon("", "; ", "");
+        private final String start;
+        private final String middle;
+        private final String end;
+
+        private ShowStyle(String start, String middle, String end) {
+            this.start = start;
+            this.middle = middle;
+            this.end = end;
+        }
+    }
+
+    public static String show(Map<Field, Map<Set<Modifier>, String>> patternData2) {
+        return show(patternData2, ShowStyle.toString);
+    }
+
+    public static String show(
+            Map<Field, Map<Set<Modifier>, String>> patternData2, ShowStyle showStyle) {
         // make a bit more concise
-        StringBuilder sb = new StringBuilder("{");
+        StringBuilder sb = new StringBuilder(showStyle.start);
         boolean first = true;
         for (Entry<Field, Map<Set<Modifier>, String>> entry : patternData2.entrySet()) {
             if (first) {
                 first = false;
             } else {
-                sb.append(", ");
+                sb.append(showStyle.middle);
             }
             sb.append(entry.getKey()).append('=');
             Map<Set<Modifier>, String> map = entry.getValue();
             if (map.size() == 1) {
-                sb.append(map.values().iterator().next()); // if there is one value, we are guaranteed the key is empty
+                sb.append(
+                        map.values()
+                                .iterator()
+                                .next()); // if there is one value, we are guaranteed the key is
+                // empty
             } else {
                 sb.append(map);
             }
         }
-        return sb.append("}").toString();
+        return sb.append(showStyle.end).toString();
     }
 
     public Map<Field, Map<Set<Modifier>, String>> getPatternData() {

@@ -1,5 +1,9 @@
 package org.unicode.cldr.tool;
 
+import com.ibm.icu.text.Collator;
+import com.ibm.icu.text.MessageFormat;
+import com.ibm.icu.text.UnicodeSet;
+import com.ibm.icu.util.ULocale;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,32 +11,38 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-
-import com.ibm.icu.text.Collator;
-import com.ibm.icu.text.MessageFormat;
-import com.ibm.icu.text.UnicodeSet;
-import com.ibm.icu.util.ULocale;
+import org.unicode.cldr.util.CollatorHelper;
 
 public class TablePrinter {
 
+    public static final String LS = System.lineSeparator();
+
     public static void main(String[] args) {
         // quick test;
-        TablePrinter tablePrinter = new TablePrinter()
-            .setTableAttributes("style='border-collapse: collapse' border='1'")
-            .addColumn("Language").setSpanRows(true).setSortPriority(0).setBreakSpans(true)
-            .addColumn("Junk").setSpanRows(true)
-            .addColumn("Territory").setHeaderAttributes("bgcolor='green'").setCellAttributes("align='right'")
-            .setSpanRows(true)
-            .setSortPriority(1).setSortAscending(false);
+        TablePrinter tablePrinter =
+                new TablePrinter()
+                        .setTableAttributes("style='border-collapse: collapse' border='1'")
+                        .addColumn("Language")
+                        .setSpanRows(true)
+                        .setSortPriority(0)
+                        .setBreakSpans(true)
+                        .addColumn("Junk")
+                        .setSpanRows(true)
+                        .addColumn("Territory")
+                        .setHeaderAttributes("bgcolor='green'")
+                        .setCellAttributes("align='right'")
+                        .setSpanRows(true)
+                        .setSortPriority(1)
+                        .setSortAscending(false);
         Comparable<?>[][] data = {
-            { "German", 1.3d, 3 },
-            { "French", 1.3d, 2 },
-            { "English", 1.3d, 2 },
-            { "English", 1.3d, 4 },
-            { "English", 1.3d, 6 },
-            { "English", 1.3d, 8 },
-            { "Arabic", 1.3d, 5 },
-            { "Zebra", 1.3d, 10 }
+            {"German", 1.3d, 3},
+            {"French", 1.3d, 2},
+            {"English", 1.3d, 2},
+            {"English", 1.3d, 4},
+            {"English", 1.3d, 6},
+            {"English", 1.3d, 8},
+            {"Arabic", 1.3d, 5},
+            {"Zebra", 1.3d, 10}
         };
         tablePrinter.addRows(data);
         tablePrinter.addRow().addCell("Foo").addCell(1.5d).addCell(99).finishRow();
@@ -84,23 +94,27 @@ public class TablePrinter {
 
         boolean spanRows;
         MessageFormat cellPattern;
-        private boolean repeatHeader = false;
         private boolean hidden = false;
         private boolean isHeader = false;
-//        private boolean divider = false;
 
         public Column(String header) {
             this.header = header;
         }
 
         public Column setCellAttributes(String cellAttributes) {
-            this.cellAttributes = new MessageFormat(MessageFormat.autoQuoteApostrophe(cellAttributes), ULocale.ENGLISH);
+            this.cellAttributes =
+                    new MessageFormat(
+                            MessageFormat.autoQuoteApostrophe(cellAttributes), ULocale.ENGLISH);
             return this;
         }
 
         public Column setCellPattern(String cellPattern) {
-            this.cellPattern = cellPattern == null ? null : new MessageFormat(
-                MessageFormat.autoQuoteApostrophe(cellPattern), ULocale.ENGLISH);
+            this.cellPattern =
+                    cellPattern == null
+                            ? null
+                            : new MessageFormat(
+                                    MessageFormat.autoQuoteApostrophe(cellPattern),
+                                    ULocale.ENGLISH);
             return this;
         }
 
@@ -114,10 +128,6 @@ public class TablePrinter {
             return this;
         }
 
-        public void setRepeatHeader(boolean b) {
-            repeatHeader = b;
-        }
-
         public void setHidden(boolean b) {
             hidden = b;
         }
@@ -125,16 +135,20 @@ public class TablePrinter {
         public void setHeaderCell(boolean b) {
             isHeader = b;
         }
-
-//        public void setDivider(boolean b) {
-//            divider = b;
-//        }
     }
 
-    public TablePrinter addColumn(String header, String headerAttributes, String cellPattern, String cellAttributes,
-        boolean spanRows) {
-        columns.add(new Column(header).setHeaderAttributes(headerAttributes).setCellPattern(cellPattern)
-            .setCellAttributes(cellAttributes).setSpanRows(spanRows));
+    public TablePrinter addColumn(
+            String header,
+            String headerAttributes,
+            String cellPattern,
+            String cellAttributes,
+            boolean spanRows) {
+        columns.add(
+                new Column(header)
+                        .setHeaderAttributes(headerAttributes)
+                        .setCellPattern(cellPattern)
+                        .setCellAttributes(cellAttributes)
+                        .setSpanRows(spanRows));
         setSortAscending(true);
         return this;
     }
@@ -147,8 +161,9 @@ public class TablePrinter {
 
     public TablePrinter addRow(Comparable<Object>[] data) {
         if (data.length != columns.size()) {
-            throw new IllegalArgumentException(String.format("Data size (%d) != column count (%d)", data.length,
-                columns.size()));
+            throw new IllegalArgumentException(
+                    String.format(
+                            "Data size (%d) != column count (%d)", data.length, columns.size()));
         }
         // make sure we can compare; get exception early
         if (rows.size() > 0) {
@@ -157,7 +172,8 @@ public class TablePrinter {
                 try {
                     data[i].compareTo(data2[i]);
                 } catch (RuntimeException e) {
-                    throw new IllegalArgumentException("Can't compare column " + i + ", " + data[i] + ", " + data2[i]);
+                    throw new IllegalArgumentException(
+                            "Can't compare column " + i + ", " + data[i] + ", " + data2[i]);
                 }
             }
         }
@@ -175,7 +191,7 @@ public class TablePrinter {
         return this;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public TablePrinter addCell(Comparable cell) {
         if (rows.size() > 0) {
             int i = partialRow.size();
@@ -183,9 +199,9 @@ public class TablePrinter {
             try {
                 cell.compareTo(cell0);
             } catch (RuntimeException e) {
-                throw new IllegalArgumentException("Can't compare column " + i + ", " + cell + ", " + cell0);
+                throw new IllegalArgumentException(
+                        "Can't compare column " + i + ", " + cell + ", " + cell0);
             }
-
         }
         partialRow.add(cell);
         return this;
@@ -193,8 +209,11 @@ public class TablePrinter {
 
     public TablePrinter finishRow() {
         if (partialRow.size() != columns.size()) {
-            throw new IllegalArgumentException("Items in row (" + partialRow.size()
-                + " not same as number of columns" + columns.size());
+            throw new IllegalArgumentException(
+                    "Items in row ("
+                            + partialRow.size()
+                            + " not same as number of columns"
+                            + columns.size());
         }
         addRow(partialRow);
         partialRow = null;
@@ -207,7 +226,7 @@ public class TablePrinter {
         return this;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public TablePrinter addRows(Collection data) {
         for (Object row : data) {
             if (row instanceof Collection) {
@@ -219,7 +238,7 @@ public class TablePrinter {
         return this;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public TablePrinter addRows(Comparable[][] data) {
         for (Comparable[] row : data) {
             addRow(row);
@@ -247,7 +266,7 @@ public class TablePrinter {
     static class ColumnSorter<T extends Comparable> implements Comparator<T[]> {
         private int[] sortPriorities = new int[0];
         private BitSet ascending = new BitSet();
-        Collator englishCollator = Collator.getInstance(ULocale.ENGLISH);
+        Collator englishCollator = CollatorHelper.ROOT_COLLATOR;
 
         @Override
         @SuppressWarnings("unchecked")
@@ -256,9 +275,10 @@ public class TablePrinter {
             for (int curr : sortPriorities) {
                 final T c1 = o1[curr];
                 final T c2 = o2[curr];
-                result = c1 instanceof String
-                    ? englishCollator.compare((String) c1, (String) c2)
-                    : c1.compareTo(c2);
+                result =
+                        c1 instanceof String
+                                ? englishCollator.compare((String) c1, (String) c2)
+                                : c1.compareTo(c2);
                 if (0 != result) {
                     if (ascending.get(curr)) {
                         return result;
@@ -293,9 +313,11 @@ public class TablePrinter {
 
     @SuppressWarnings("rawtypes")
     ColumnSorter<Comparable> columnSorter = new ColumnSorter<>();
+
     private boolean sort;
 
-    public void toTsvInternal(@SuppressWarnings("rawtypes") Comparable[][] sortedFlat, PrintWriter tsvFile) {
+    public void toTsvInternal(
+            @SuppressWarnings("rawtypes") Comparable[][] sortedFlat, PrintWriter tsvFile) {
         String sep0 = "#";
         for (Column column : columns) {
             if (column.hidden) {
@@ -323,16 +345,19 @@ public class TablePrinter {
                 final Comparable value = sortedFlat[i][j];
                 patternArgs[0] = value;
 
-//                if (false && columnsFlat[j].cellPattern != null) {
-//                    try {
-//                        patternArgs[0] = value;
-//                        System.arraycopy(sortedFlat[i], 0, patternArgs, 1, sortedFlat[i].length);
-//                        tsvFile.append(sep).append(format(columnsFlat[j].cellPattern.format(patternArgs)).replace("<br>", " "));
-//                    } catch (RuntimeException e) {
-//                        throw (RuntimeException) new IllegalArgumentException("cellPattern<" + i + ", " + j + "> = "
-//                            + value).initCause(e);
-//                    }
-//                } else
+                //                if (false && columnsFlat[j].cellPattern != null) {
+                //                    try {
+                //                        patternArgs[0] = value;
+                //                        System.arraycopy(sortedFlat[i], 0, patternArgs, 1,
+                // sortedFlat[i].length);
+                //
+                // tsvFile.append(sep).append(format(columnsFlat[j].cellPattern.format(patternArgs)).replace("<br>", " "));
+                //                    } catch (RuntimeException e) {
+                //                        throw (RuntimeException) new
+                // IllegalArgumentException("cellPattern<" + i + ", " + j + "> = "
+                //                            + value).initCause(e);
+                //                    }
+                //                } else
                 {
                     tsvFile.append(sep).append(tsvFormat(value));
                 }
@@ -340,7 +365,6 @@ public class TablePrinter {
             }
             tsvFile.println();
         }
-
     }
 
     private String tsvFormat(Comparable value) {
@@ -350,7 +374,7 @@ public class TablePrinter {
         if (value instanceof Number) {
             int debug = 0;
         }
-        String s = value.toString().replace("\n", " • ");
+        String s = value.toString().replace(LS, " • ");
         return BIDI.containsNone(s) ? s : RLE + s + PDF;
     }
 
@@ -366,84 +390,90 @@ public class TablePrinter {
 
         columnsFlat = columns.toArray(new Column[0]);
 
-        StringBuilder result = new StringBuilder();
+        StringBuilder strBuilder = new StringBuilder();
 
-        result.append("<table");
+        strBuilder.append(LS);
+        strBuilder.append(
+                "<!-- table generated by TablePrinter.java in https://github.com/unicode-org/cldr/ -->"
+                        + LS);
+        strBuilder.append("<table");
         if (tableAttributes != null) {
-            result.append(' ').append(tableAttributes);
+            strBuilder.append(' ').append(tableAttributes);
         }
-        result.append(">" + System.lineSeparator());
+        strBuilder.append(">" + LS);
 
         if (caption != null) {
-            result.append("<caption>").append(caption).append("</caption>");
+            strBuilder.append("\t<caption>").append(caption).append("</caption>");
         }
 
-        showHeader(result);
-        int visibleWidth = 0;
-        for (int j = 0; j < columns.size(); ++j) {
-            if (!columnsFlat[j].hidden) {
-                ++visibleWidth;
-            }
-        }
+        // Create primary table header. After a user scrolls the header will stay at the top of the
+        // screen
+        addHeaderRow(strBuilder);
 
-        for (int i = 0; i < sortedFlat.length; ++i) {
-            System.arraycopy(sortedFlat[i], 0, patternArgs, 1, sortedFlat[i].length);
-            // check to see if we repeat the header
-            if (i != 0) {
-                boolean divider = false;
-                for (int j = 0; j < sortedFlat[i].length; ++j) {
-                    final Column column = columns.get(j);
-                    if (column.repeatHeader && !sortedFlat[i - 1][j].equals(sortedFlat[i][j])) {
-                        showHeader(result);
-                        break;
-//                    } else if (column.divider && !sortedFlat[i - 1][j].equals(sortedFlat[i][j])) {
-//                        divider = true;
-                    }
-                }
-                if (divider) {
-                    result.append("\t<tr><td class='divider' colspan='" + visibleWidth + "'></td></tr>");
-                }
-            }
-            result.append("\t<tr>");
-            for (int j = 0; j < sortedFlat[i].length; ++j) {
-                int identical = findIdentical(sortedFlat, i, j);
+        // Create table body
+        strBuilder.append("\t<tbody>" + LS);
+        for (int iRow = 0; iRow < sortedFlat.length; ++iRow) {
+            System.arraycopy(sortedFlat[iRow], 0, patternArgs, 1, sortedFlat[iRow].length);
+            strBuilder.append("\t\t<tr>" + LS);
+            for (int iCol = 0; iCol < sortedFlat[iRow].length; ++iCol) {
+                int identical = findIdentical(sortedFlat, iRow, iCol);
                 if (identical == 0) continue;
-                if (columnsFlat[j].hidden) {
+                if (columnsFlat[iCol].hidden) {
                     continue;
                 }
-                patternArgs[0] = sortedFlat[i][j];
-                result.append(columnsFlat[j].isHeader ? "<th" : "<td");
-                if (columnsFlat[j].cellAttributes != null) {
+                patternArgs[0] = sortedFlat[iRow][iCol];
+                strBuilder.append("\t\t\t").append(columnsFlat[iCol].isHeader ? "<th" : "<td");
+                if (columnsFlat[iCol].cellAttributes != null) {
                     try {
-                        result.append(' ').append(columnsFlat[j].cellAttributes.format(patternArgs));
+                        strBuilder
+                                .append(' ')
+                                .append(columnsFlat[iCol].cellAttributes.format(patternArgs));
                     } catch (RuntimeException e) {
-                        throw (RuntimeException) new IllegalArgumentException("cellAttributes<" + i + ", " + j + "> = "
-                            + sortedFlat[i][j]).initCause(e);
+                        throw (RuntimeException)
+                                new IllegalArgumentException(
+                                                "cellAttributes<"
+                                                        + iRow
+                                                        + ", "
+                                                        + iCol
+                                                        + "> = "
+                                                        + sortedFlat[iRow][iCol])
+                                        .initCause(e);
                     }
                 }
                 if (identical != 1) {
-                    result.append(" rowSpan='").append(identical).append('\'');
+                    strBuilder.append(" rowSpan='").append(identical).append('\'');
                 }
-                result.append('>');
+                strBuilder.append('>');
 
-                if (columnsFlat[j].cellPattern != null) {
+                if (columnsFlat[iCol].cellPattern != null) {
                     try {
-                        patternArgs[0] = sortedFlat[i][j];
-                        System.arraycopy(sortedFlat[i], 0, patternArgs, 1, sortedFlat[i].length);
-                        result.append(format(columnsFlat[j].cellPattern.format(patternArgs)));
+                        patternArgs[0] = sortedFlat[iRow][iCol];
+                        System.arraycopy(
+                                sortedFlat[iRow], 0, patternArgs, 1, sortedFlat[iRow].length);
+                        strBuilder.append(
+                                format(columnsFlat[iCol].cellPattern.format(patternArgs)));
                     } catch (RuntimeException e) {
-                        throw (RuntimeException) new IllegalArgumentException("cellPattern<" + i + ", " + j + "> = "
-                            + sortedFlat[i][j]).initCause(e);
+                        throw (RuntimeException)
+                                new IllegalArgumentException(
+                                                "cellPattern<"
+                                                        + iRow
+                                                        + ", "
+                                                        + iCol
+                                                        + "> = "
+                                                        + sortedFlat[iRow][iCol])
+                                        .initCause(e);
                     }
                 } else {
-                    result.append(format(sortedFlat[i][j]));
+                    strBuilder.append(format(sortedFlat[iRow][iCol]));
                 }
-                result.append(columnsFlat[j].isHeader ? "</th>" : "</td>");
+                strBuilder.append((columnsFlat[iCol].isHeader ? "</th>" : "</td>") + LS);
             }
-            result.append("</tr>" + System.lineSeparator());
+            strBuilder.append("\t\t</tr>" + LS);
         }
-        result.append("</table>");
-        return result.toString();
+        strBuilder.append("\t</tbody>" + LS);
+        strBuilder.append("</table>" + LS);
+
+        return strBuilder.toString();
     }
 
     static final UnicodeSet BIDI = new UnicodeSet("[[:bc=R:][:bc=AL:]]");
@@ -455,24 +485,25 @@ public class TablePrinter {
         if (comparable == null) {
             return null;
         }
-        String s = comparable.toString().replace("\n", "<br>");
+        String s = comparable.toString().replace(LS, "<br>");
         return BIDI.containsNone(s) ? s : RLE + s + PDF;
     }
 
-    private void showHeader(StringBuilder result) {
-        result.append("\t<tr>");
+    private void addHeaderRow(StringBuilder strBuilder) {
+        strBuilder.append("\t<thead style='position: sticky; top: 0;'>" + LS);
+        strBuilder.append("\t\t<tr>" + LS);
         for (int j = 0; j < columnsFlat.length; ++j) {
             if (columnsFlat[j].hidden) {
                 continue;
             }
-            result.append("<th");
+            strBuilder.append("\t\t\t<th");
             if (columnsFlat[j].headerAttributes != null) {
-                result.append(' ').append(columnsFlat[j].headerAttributes);
+                strBuilder.append(' ').append(columnsFlat[j].headerAttributes);
             }
-            result.append('>').append(columnsFlat[j].header).append("</th>");
-
+            strBuilder.append('>').append(columnsFlat[j].header).append("</th>" + LS);
         }
-        result.append("</tr>" + System.lineSeparator());
+        strBuilder.append("\t\t</tr>" + LS);
+        strBuilder.append("\t</thead>" + LS);
     }
 
     /**
@@ -493,8 +524,7 @@ public class TablePrinter {
             }
         }
         for (int k = rowIndex + 1; k < sortedFlat.length; ++k) {
-            if (!item.equals(sortedFlat[k][colIndex])
-                || breakSpans(sortedFlat, k, colIndex)) {
+            if (!item.equals(sortedFlat[k][colIndex]) || breakSpans(sortedFlat, k, colIndex)) {
                 return k - rowIndex;
             }
         }
@@ -511,12 +541,13 @@ public class TablePrinter {
      * @param colIndex2
      * @return
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private boolean breakSpans(Comparable[][] sortedFlat, int rowIndex, int colIndex2) {
         final int limit = Math.min(breaksSpans.length(), colIndex2);
         for (int colIndex = 0; colIndex < limit; ++colIndex) {
             if (breaksSpans.get(colIndex)
-                && sortedFlat[rowIndex][colIndex].compareTo(sortedFlat[rowIndex - 1][colIndex]) != 0) {
+                    && sortedFlat[rowIndex][colIndex].compareTo(sortedFlat[rowIndex - 1][colIndex])
+                            != 0) {
                 return true;
             }
         }
@@ -543,17 +574,8 @@ public class TablePrinter {
         return this;
     }
 
-    public TablePrinter setRepeatHeader(boolean b) {
-        columns.get(columns.size() - 1).setRepeatHeader(b);
-        if (b) {
-            breaksSpans.set(columns.size() - 1, true);
-        }
-        return this;
-    }
-
     /**
-     * In the style section, have something like:
-     * <style>
+     * In the style section, have something like: <style>
      * <!--
      * .redbar { border-style: solid; border-width: 1px; padding: 0; background-color:red; border-collapse: collapse}
      * -->
@@ -565,7 +587,11 @@ public class TablePrinter {
     public static String bar(String htmlClass, double value, double max, boolean log) {
         double width = 100 * (log ? Math.log(value) / Math.log(max) : value / max);
         if (!(width >= 0.5)) return ""; // do the comparison this way to catch NaN
-        return "<table class='" + htmlClass + "' width='" + width + "%'><tr><td>\u200B</td></tr></table>";
+        return "<table class='"
+                + htmlClass
+                + "' width='"
+                + width
+                + "%'><tr><td>\u200B</td></tr></table>";
     }
 
     public TablePrinter setHidden(boolean b) {
@@ -577,11 +603,6 @@ public class TablePrinter {
         columns.get(columns.size() - 1).setHeaderCell(b);
         return this;
     }
-
-//    public TablePrinter setRepeatDivider(boolean b) {
-//        //columns.get(columns.size() - 1).setDivider(b);
-//        return this;
-//    }
 
     public void clearRows() {
         rows.clear();

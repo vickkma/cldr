@@ -1,13 +1,17 @@
 <!--
-Copyright © 1991-2022 Unicode, Inc.
+Copyright © 1991-2024 Unicode, Inc.
 For terms of use, see http://www.unicode.org/copyright.html
-SPDX-License-Identifier: Unicode-DFS-2016
+SPDX-License-Identifier: Unicode-3.0
 CLDR data files are interpreted according to the LDML specification (http://unicode.org/reports/tr35/)
 -->
+<!-- This is a descriptive keyboard format frozen in v43 and included for backwards compatibility.
+     All new applications should use the prescriptive format available in ldmlKeyboard3.dtd -->
 
 <!ELEMENT platform ( hardwareMap? ) >
+    <!--@DEPRECATED-->
 <!ATTLIST platform id CDATA #REQUIRED >
     <!--@MATCH:literal/android, chromeos, osx, windows-->
+    <!--@DEPRECATED-->
 
 <!ELEMENT hardwareMap ( map+ ) >
 

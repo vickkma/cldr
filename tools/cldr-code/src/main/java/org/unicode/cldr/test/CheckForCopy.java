@@ -1,15 +1,13 @@
 package org.unicode.cldr.test;
 
+import com.ibm.icu.text.UnicodeSet;
+import com.ibm.icu.util.ICUException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.unicode.cldr.test.CheckCLDR.CheckStatus.Subtype;
 import org.unicode.cldr.util.*;
 import org.unicode.cldr.util.CLDRFile.Status;
-
-import com.ibm.icu.text.UnicodeSet;
-import com.ibm.icu.util.ICUException;
 
 public class CheckForCopy extends FactoryCheckCLDR {
 
@@ -20,72 +18,95 @@ public class CheckForCopy extends FactoryCheckCLDR {
         super(factory);
     }
 
-    private static final RegexLookup<Boolean> skip = new RegexLookup<Boolean>()
-        .add("/(availableFormats" +
-            "|exponential" +
-            "|nan" +
-            "|availableFormats" +
-            "|intervalFormatItem" +
-            "|exemplarCharacters\\[@type=\"(currencySymbol|index)\"]" +
-            "|scientificFormat" +
-            "|timeZoneNames/(hourFormat|gmtFormat|gmtZeroFormat)" +
-            "|dayPeriod" +
-            "|(monthWidth|dayWidth|quarterWidth)\\[@type=\"(narrow|abbreviated)\"]" +
-            "|exemplarCity" +
-            "|currency\\[@type=\"[A-Z]+\"]/symbol" +
-            "|pattern" +
-            "|field\\[@type=\"dayperiod\"]" +
-            "|defaultNumberingSystem" +
-            "|otherNumberingSystems" +
-            "|exemplarCharacters" +
-            "|durationUnitPattern" +
-            "|coordinateUnitPattern" +
-            "|unitLength\\[@type=\"(short|narrow)\"\\]/unit\\[@type=\"[^\"]++\"\\]/unitPattern\\[@count=\"[^\"]++\"\\]" +
-            "|unitLength\\[@type=\"(short|narrow)\"\\]/unit\\[@type=\"[^\"]++\"\\]/perUnitPattern" +
-            ")", true)
-        .add("^//ldml/dates/calendars/calendar\\[@type=\"gregorian\"]", false)
-        .add("^//ldml/dates/calendars/calendar", true);
+    private static final RegexLookup<Boolean> skip =
+            new RegexLookup<Boolean>()
+                    .add(
+                            "/(availableFormats"
+                                    + "|exponential"
+                                    + "|nan"
+                                    + "|availableFormats"
+                                    + "|intervalFormatItem"
+                                    + "|exemplarCharacters\\[@type=\"(currencySymbol|index)\"]"
+                                    + "|scientificFormat"
+                                    + "|timeZoneNames/(hourFormat|gmtFormat|gmtZeroFormat|gmtUnknownFormat)"
+                                    + "|dayPeriod"
+                                    + "|(monthWidth|dayWidth|quarterWidth)\\[@type=\"(narrow|abbreviated)\"]"
+                                    + "|exemplarCity"
+                                    + "|currency\\[@type=\"[A-Z]+\"]/symbol"
+                                    + "|pattern"
+                                    + "|field\\[@type=\"dayperiod\"]"
+                                    + "|defaultNumberingSystem"
+                                    + "|otherNumberingSystems"
+                                    + "|exemplarCharacters"
+                                    + "|durationUnitPattern"
+                                    + "|coordinateUnitPattern"
+                                    + "|unitLength\\[@type=\"(short|narrow)\"\\]/unit\\[@type=\"[^\"]++\"\\]/unitPattern\\[@count=\"[^\"]++\"\\]"
+                                    + "|unitLength\\[@type=\"(short|narrow)\"\\]/unit\\[@type=\"[^\"]++\"\\]/perUnitPattern"
+                                    + ")",
+                            true)
+                    .add("^//ldml/dates/calendars/calendar\\[@type=\"gregorian\"]", false)
+                    .add("^//ldml/dates/calendars/calendar", true);
 
-    private static final RegexLookup<Boolean> SKIP_CODE_CHECK = new RegexLookup<Boolean>()
-        .add("^//ldml/characterLabels/characterLabel", true)
-        .add("^//ldml/dates/fields/field\\[@type=\"(era|week|minute|quarter|second)\"]/displayName", true)
-        .add("^//ldml/localeDisplayNames/scripts/script\\[@type=\"(Jamo|Thai|Ahom|Loma|Moon|Newa|Arab|Lisu|Bali|Cham|Modi|Toto)\"]", true)
-        .add("^//ldml/localeDisplayNames/languages/language\\[@type=\"(fon|gaa|gan|luo|tiv|yao|vai)\"]", true)
-        .add("^//ldml/dates/timeZoneNames/metazone\\[@type=\"GMT\"]", true)
-        .add("^//ldml/localeDisplayNames/territories/territory\\[@type=\"[^\"]*+\"]\\[@alt=\"short\"]", true)
-        .add("^//ldml/localeDisplayNames/measurementSystemNames/measurementSystemName", true)
-        .add("^//ldml/localeDisplayNames/types/type\\[@key=\"collation\"]\\[@type=\"standard\"]", true)
-        ;
+    private static final RegexLookup<Boolean> SKIP_CODE_CHECK =
+            new RegexLookup<Boolean>()
+                    .add("^//ldml/characterLabels/characterLabel", true)
+                    .add(
+                            "^//ldml/dates/fields/field\\[@type=\"(era|week|minute|quarter|second)\"]/displayName",
+                            true)
+                    .add(
+                            "^//ldml/localeDisplayNames/scripts/script\\[@type=\"(Jamo|Thai|Ahom|Loma|Moon|Newa|Arab|Lisu|Bali|Cham|Modi|Toto)\"]",
+                            true)
+                    .add(
+                            "^//ldml/localeDisplayNames/languages/language\\[@type=\"(fon|gaa|gan|luo|tiv|yao|vai)\"]",
+                            true)
+                    .add("^//ldml/dates/timeZoneNames/metazone\\[@type=\"GMT\"]", true)
+                    .add(
+                            "^//ldml/localeDisplayNames/territories/territory\\[@type=\"[^\"]*+\"]\\[@alt=\"short\"]",
+                            true)
+                    .add(
+                            "^//ldml/localeDisplayNames/measurementSystemNames/measurementSystemName",
+                            true)
+                    .add(
+                            "^//ldml/localeDisplayNames/types/type\\[@key=\"collation\"]\\[@type=\"standard\"]",
+                            true)
+                    .add("^//ldml/typographicNames", true);
 
     static UnicodeSet ASCII_LETTER = new UnicodeSet("[a-zA-Z]").freeze();
 
     enum Failure {
-        ok, same_as_english, same_as_code
+        ok,
+        same_as_english,
+        same_as_code,
+        same_as_code_and_english,
     }
 
     @Override
     @SuppressWarnings("unused")
-    public CheckCLDR handleCheck(String path, String fullPath, String value,
-        Options options, List<CheckStatus> result) {
+    public CheckCLDR handleCheck(
+            String path, String fullPath, String value, Options options, List<CheckStatus> result) {
 
         if (fullPath == null || path == null || value == null) {
             return this; // skip root, and paths that we don't have
         }
-        Failure failure = sameAsCodeOrEnglish(value, path, unresolvedFile, getCldrFileToCheck(), false);
+        if (!accept(result)) return this;
+        Failure failure =
+                sameAsCodeOrEnglish(value, path, unresolvedFile, getCldrFileToCheck(), false);
         addFailure(result, failure);
         return this;
     }
 
     /**
      * Check the given path and value, and return true if it has a same_as_code failure
-
+     *
      * @param value the value
      * @param path the path
      * @param cldrFile the CLDRFile
      * @return true or false
      */
-    public static boolean sameAsCode(String value, String path, CLDRFile unresolvedFile, CLDRFile cldrFile) {
-        return sameAsCodeOrEnglish(value, path, unresolvedFile, cldrFile, true) == Failure.same_as_code;
+    public static boolean sameAsCode(
+            String value, String path, CLDRFile unresolvedFile, CLDRFile cldrFile) {
+        return sameAsCodeOrEnglish(value, path, unresolvedFile, cldrFile, true)
+                == Failure.same_as_code;
     }
 
     /**
@@ -97,7 +118,12 @@ public class CheckForCopy extends FactoryCheckCLDR {
      * @param contextIsVoteSubmission true when a new or imported vote is in question, else false
      * @return the Failure object
      */
-    private static Failure sameAsCodeOrEnglish(String value, String path, CLDRFile unresolvedFile, CLDRFile cldrFile, boolean contextIsVoteSubmission) {
+    private static Failure sameAsCodeOrEnglish(
+            String value,
+            String path,
+            CLDRFile unresolvedFile,
+            CLDRFile cldrFile,
+            boolean contextIsVoteSubmission) {
 
         Status status = new Status();
 
@@ -111,11 +137,11 @@ public class CheckForCopy extends FactoryCheckCLDR {
          * This code is confusing and warrants explanation.
          */
         String topStringValue = unresolvedFile.getStringValue(path);
-        final boolean topValueIsInheritanceMarker = CldrUtility.INHERITANCE_MARKER.equals(topStringValue);
+        final boolean topValueIsInheritanceMarker =
+                CldrUtility.INHERITANCE_MARKER.equals(topStringValue);
         String loc = cldrFile.getSourceLocaleID(path, status);
         if (!contextIsVoteSubmission && !topValueIsInheritanceMarker) {
-            if (!cldrFile.getLocaleID().equals(loc)
-                || !path.equals(status.pathWhereFound)) {
+            if (!cldrFile.getLocaleID().equals(loc) || !path.equals(status.pathWhereFound)) {
                 return Failure.ok;
             }
         }
@@ -131,7 +157,8 @@ public class CheckForCopy extends FactoryCheckCLDR {
 
         CLDRFile di = getDisplayInformation();
         if (di == null) {
-            throw new InternalCldrException("CheckForCopy.sameAsCodeOrEnglish error: getDisplayInformation is null");
+            throw new InternalCldrException(
+                    "CheckForCopy.sameAsCodeOrEnglish error: getDisplayInformation is null");
         }
         String english = di.getStringValue(path);
         if (value.equals(english)) {
@@ -164,7 +191,12 @@ public class CheckForCopy extends FactoryCheckCLDR {
             }
         }
         if (reallySameAsCode(path, value2)) {
-            return Failure.same_as_code;
+            if (value.equals(english.toLowerCase())) {
+                // allow to be same as lowercased English
+                return Failure.same_as_code_and_english;
+            } else {
+                return Failure.same_as_code;
+            }
         }
         return failure;
     }
@@ -196,8 +228,14 @@ public class CheckForCopy extends FactoryCheckCLDR {
                         return true;
                     }
                 } catch (NullPointerException e) {
-                    throw new ICUException("Value: " + value + "\nattributeValue: " + attributeValue
-                        + "\nPath: " + path, e);
+                    throw new ICUException(
+                            "Value: "
+                                    + value
+                                    + "\nattributeValue: "
+                                    + attributeValue
+                                    + "\nPath: "
+                                    + path,
+                            e);
                 }
             }
         }
@@ -206,11 +244,14 @@ public class CheckForCopy extends FactoryCheckCLDR {
 
     private static boolean sameAsEnglishOK(String loc, String path, String value) {
         if (path.startsWith("//ldml/units/unitLength")
-            || path.startsWith("//ldml/characters/parseLenients")) {
+                || path.startsWith("//ldml/characters/parseLenients")) {
             return true;
         }
         if ("en".equals(loc) || loc.startsWith("en_")) {
-            if ("year".equals(value) || "month".equals(value) || "day".equals(value) || "hour".equals(value)) {
+            if ("year".equals(value)
+                    || "month".equals(value)
+                    || "day".equals(value)
+                    || "hour".equals(value)) {
                 return true;
             }
         }
@@ -225,35 +266,44 @@ public class CheckForCopy extends FactoryCheckCLDR {
      */
     private void addFailure(List<CheckStatus> result, Failure failure) {
         switch (failure) {
-        case same_as_english:
-            result
-            .add(new CheckStatus()
-                .setCause(this)
-                .setMainType(CheckStatus.warningType)
-                .setSubtype(Subtype.sameAsEnglish)
-                .setCheckOnSubmit(false)
-                .setMessage(
-                    "The value is the same as in English: see <a target='CLDR-ST-DOCS' href='" + CLDRURLS.ERRORS_URL + "'>Fixing Errors and Warnings</a>.",
-                    new Object[] {}));
-            break;
-        case same_as_code:
-            result
-            .add(new CheckStatus()
-                .setCause(this)
-                .setMainType(CheckStatus.errorType)
-                .setSubtype(Subtype.sameAsCode)
-                .setCheckOnSubmit(false)
-                .setMessage(
-                    "The value is the same as the 'code': see <a target='CLDR-ST-DOCS' href='" + CLDRURLS.ERRORS_URL + "'>Fixing Errors and Warnings</a>.",
-                    new Object[] {}));
-            break;
-        default:
+            case same_as_english:
+                result.add(
+                        new CheckStatus()
+                                .setCause(this)
+                                .setMainType(CheckStatus.warningType)
+                                .setSubtype(Subtype.sameAsEnglish)
+                                .setCheckOnSubmit(false)
+                                .setMessage(
+                                        "The value is the same as in English.", new Object[] {}));
+                break;
+            case same_as_code_and_english:
+                result.add(
+                        new CheckStatus()
+                                .setCause(this)
+                                .setMainType(CheckStatus.warningType)
+                                .setSubtype(Subtype.sameAsEnglish)
+                                .setCheckOnSubmit(false)
+                                .setMessage(
+                                        "The value is the same as the 'code' and similar to English.",
+                                        new Object[] {}));
+                break;
+            case same_as_code:
+                result.add(
+                        new CheckStatus()
+                                .setCause(this)
+                                .setMainType(CheckStatus.errorType)
+                                .setSubtype(Subtype.sameAsCode)
+                                .setCheckOnSubmit(false)
+                                .setMessage(
+                                        "The value is the same as the 'code'", new Object[] {}));
+                break;
+            default:
         }
     }
 
     @Override
-    public CheckCLDR setCldrFileToCheck(CLDRFile cldrFileToCheck, Options options,
-        List<CheckStatus> possibleErrors) {
+    public CheckCLDR handleSetCldrFileToCheck(
+            CLDRFile cldrFileToCheck, Options options, List<CheckStatus> possibleErrors) {
 
         if (cldrFileToCheck == null) {
             return this;
@@ -267,7 +317,10 @@ public class CheckForCopy extends FactoryCheckCLDR {
         String lang = ltp.getLanguage();
 
         setSkipTest(false);
-        if (lang.equals("en") || localeID.equals("root")) {// || exemplars != null && ASCII_LETTER.containsNone(exemplars)) {
+        if (lang.equals("en")
+                || localeID.equals(
+                        "root")) { // || exemplars != null && ASCII_LETTER.containsNone(exemplars))
+            // {
             setSkipTest(true);
             if (DEBUG) {
                 System.out.println("# CheckForCopy: Skipping: " + localeID);
@@ -275,7 +328,7 @@ public class CheckForCopy extends FactoryCheckCLDR {
             return this;
         }
 
-        super.setCldrFileToCheck(cldrFileToCheck, options, possibleErrors);
+        super.handleSetCldrFileToCheck(cldrFileToCheck, options, possibleErrors);
         return this;
     }
 }
